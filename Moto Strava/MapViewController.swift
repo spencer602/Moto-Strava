@@ -5,6 +5,10 @@
 //  Created by Spencer DeBuf on 11/18/19.
 //  Copyright © 2019 Spencer DeBuf. All rights reserved.
 //
+//
+/*
+ had to check background mode - Location updates
+ */
 
 import UIKit
 import MapKit
@@ -24,6 +28,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
+        // allows background updates
+        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.startUpdatingLocation()
         mapKitView.showsUserLocation = true
         mapKitView.mapType = .satellite
@@ -105,6 +111,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("route Accuracy: \(locations.first!.horizontalAccuracy)")
         
         // educational purposes:, haven't ever seen a situation where locations.count > 1
         if locations.count > 1 {
@@ -116,6 +123,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             locationList.append(locations.first!)
             return
         }
+        
+        print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
+        
+        
+        
         
         locationList.append(locations.first!)
         
