@@ -35,7 +35,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     private func mapRegion() -> MKCoordinateRegion? {
-     
         let latitudes = locationList.map { location -> Double in
             return location.coordinate.latitude
         }
@@ -93,8 +92,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return renderer
     }
    
-    
-    
     
     /*
     // MARK: - Navigation
