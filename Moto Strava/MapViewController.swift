@@ -14,27 +14,51 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 
     private let locationManager = CLLocationManager()
     private var locationList = [CLLocation]()
+    private var hasZoomedToFirstLocation = false
     
     @IBOutlet weak var mapKitView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
         mapKitView.showsUserLocation = true
         mapKitView.mapType = .satellite
+        // setting the activity type, this could be changed for better optimization?
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
     }
     
-    @IBAction func buttonPressed(_ sender: UIButton) {
+    /// zooms to current location with hard coded region height/width
+    private func zoomToCurrentLocation() {
+        // if there has been a location registered with the location manager yet
+        if let currentLocation = locationManager.location {
+            let regionRadius: CLLocationDistance = 1000.0
+            let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+            mapKitView.setRegion(region, animated: true)
+        }
+    }
+    
+    @IBAction private func buttonPressed(_ sender: UIButton) {
         locationManager.stopUpdatingLocation()
         loadMap()
     }
     
-    private func mapRegion() -> MKCoordinateRegion? {
+    /**
+     creates and returns a MKCoordinateRegion enclosing all of the logged locations
+     
+     - Returns: a MKCoordinateRegion enclosing all of the logged locations
+     */
+    private func mapRegion() -> MKCoordinateRegion {
+        // if there are no locations, send a generic region
+        if locationList.count == 0 {
+            print("Error, no locations logged yet")
+            return MKCoordinateRegion()
+        }
+        
         let latitudes = locationList.map { location -> Double in
             return location.coordinate.latitude
         }
@@ -43,56 +67,69 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return location.coordinate.longitude
         }
 
+        // gather the max and mins of each
         let maxLat = latitudes.max()!
         let minLat = latitudes.min()!
         let maxLong = longitudes.max()!
         let minLong = longitudes.min()!
-        
-        print(maxLat)
-        
+                
+        // center around the middle of the extremes
         let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
                                           longitude: (minLong + maxLong) / 2)
+        // span the differences (with a ~1/3 buffer)
         let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
                                   longitudeDelta: (maxLong - minLong) * 1.3)
         return MKCoordinateRegion(center: center, span: span)
     }
     
+    /**
+     creates and returns an MKPolyLine following along all of the logged locations
+     
+     - Returns: an MKPolyLine following along all of the logged locations
+     */
     private func polyLine() -> MKPolyline {
+        // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
         let coords: [CLLocationCoordinate2D] = locationList.map { location in
-            return CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         }
-        print(coords.count)
+        // create and return an MKPolyLine with the coordinates
         return MKPolyline(coordinates: coords, count: coords.count)
     }
     
+    /// creates a region encompassing all logged locations and adds the overaly to the map
     private func loadMap() {
         let region = mapRegion()
-        mapKitView.setRegion(region!, animated: true)
+        mapKitView.setRegion(region, animated: true)
         mapKitView.addOverlay(polyLine())
-        print(mapKitView.overlays.count)
     }
     
+    // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationList.append(locations.first!)
-        print(locations.first!.coordinate.latitude)
+        
+        // if we haven't zoomed in to the first logged location yet, do so here
+        if !hasZoomedToFirstLocation {
+            print("zooming to first location")
+            print(locationList.count)
+            hasZoomedToFirstLocation = true
+            zoomToCurrentLocation()
+        }
     }
     
+    // delegate method of MKMapView
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        print("before guard")
-        
+        // ensures that the overlay is an MKPolyLine
         guard let polyline = overlay as? MKPolyline else {
-            print("Got in else")
             return MKOverlayRenderer(overlay: overlay)
         }
         
-        print("Not in else")
+        // changes a few of the properties of the renderer
         let renderer = MKPolylineRenderer(polyline: polyline)
         renderer.strokeColor = .red
         renderer.lineWidth = 1
         return renderer
     }
    
-    
     /*
     // MARK: - Navigation
 
