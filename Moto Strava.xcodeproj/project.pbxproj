@@ -9,21 +9,25 @@
 /* Begin PBXBuildFile section */
 		09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181C23834D8000A5D031 /* AppDelegate.swift */; };
 		09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181E23834D8000A5D031 /* SceneDelegate.swift */; };
-		09FA182123834D8000A5D031 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA182023834D8000A5D031 /* ViewController.swift */; };
 		09FA182423834D8000A5D031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182223834D8000A5D031 /* Main.storyboard */; };
 		09FA182623834D8200A5D031 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182523834D8200A5D031 /* Assets.xcassets */; };
 		09FA182923834D8200A5D031 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182723834D8200A5D031 /* LaunchScreen.storyboard */; };
+		09FA18312383833D00A5D031 /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA18302383833D00A5D031 /* DataViewController.swift */; };
+		09FA1833238385FC00A5D031 /* Route.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09FA1832238385FC00A5D031 /* Route.gpx */; };
+		09FA1835238387DB00A5D031 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA1834238387DB00A5D031 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		09FA181923834D8000A5D031 /* Moto Strava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Moto Strava.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09FA181C23834D8000A5D031 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09FA181E23834D8000A5D031 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		09FA182023834D8000A5D031 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		09FA182323834D8000A5D031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		09FA182523834D8200A5D031 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		09FA182823834D8200A5D031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		09FA182A23834D8200A5D031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		09FA18302383833D00A5D031 /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
+		09FA1832238385FC00A5D031 /* Route.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Route.gpx; sourceTree = "<group>"; };
+		09FA1834238387DB00A5D031 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,11 +62,13 @@
 			children = (
 				09FA181C23834D8000A5D031 /* AppDelegate.swift */,
 				09FA181E23834D8000A5D031 /* SceneDelegate.swift */,
-				09FA182023834D8000A5D031 /* ViewController.swift */,
 				09FA182223834D8000A5D031 /* Main.storyboard */,
+				09FA1834238387DB00A5D031 /* MapViewController.swift */,
+				09FA18302383833D00A5D031 /* DataViewController.swift */,
 				09FA182523834D8200A5D031 /* Assets.xcassets */,
 				09FA182723834D8200A5D031 /* LaunchScreen.storyboard */,
 				09FA182A23834D8200A5D031 /* Info.plist */,
+				09FA1832238385FC00A5D031 /* Route.gpx */,
 			);
 			path = "Moto Strava";
 			sourceTree = "<group>";
@@ -126,6 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09FA182923834D8200A5D031 /* LaunchScreen.storyboard in Resources */,
+				09FA1833238385FC00A5D031 /* Route.gpx in Resources */,
 				09FA182623834D8200A5D031 /* Assets.xcassets in Resources */,
 				09FA182423834D8000A5D031 /* Main.storyboard in Resources */,
 			);
@@ -138,9 +145,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09FA182123834D8000A5D031 /* ViewController.swift in Sources */,
 				09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */,
+				09FA18312383833D00A5D031 /* DataViewController.swift in Sources */,
 				09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */,
+				09FA1835238387DB00A5D031 /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
