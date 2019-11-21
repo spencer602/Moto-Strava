@@ -124,6 +124,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        // if we haven't zoomed in to the first logged location yet, do so here
+        if !hasZoomedToFirstLocation {
+            print("zooming to first location")
+            print(locationList.count)
+            hasZoomedToFirstLocation = true
+            zoomToCurrentLocation()
+        }
+        
         print("route Accuracy: \(locations.first!.horizontalAccuracy)")
         
         // educational purposes:, haven't ever seen a situation where locations.count > 1
@@ -132,16 +141,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         
         if isRecordingTracks {
-        // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
+            // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
             guard let lastLocation = locationList.last else {
                 locationList.append(locations.first!)
                 return
             }
             
             print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
-            
-            
-            
             
             locationList.append(locations.first!)
             
@@ -155,14 +161,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             // only do this if yo want to re-center the region around the most recent location
     //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
     //        mapKitView.setRegion(region, animated: true)
-            
-            // if we haven't zoomed in to the first logged location yet, do so here
-            if !hasZoomedToFirstLocation {
-                print("zooming to first location")
-                print(locationList.count)
-                hasZoomedToFirstLocation = true
-                zoomToCurrentLocation()
-            }
         }
         
         
