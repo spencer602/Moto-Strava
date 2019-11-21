@@ -53,21 +53,38 @@
                                 <rect key="frame" x="0.0" y="110" width="414" height="703"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sQg-df-tJs">
-                                <rect key="frame" x="184" y="44" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sQg-df-tJs">
+                                <rect key="frame" x="20" y="55" width="91" height="30"/>
+                                <state key="normal" title="Record Track"/>
                                 <connections>
-                                    <action selector="buttonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="OkK-9B-ndg"/>
+                                    <action selector="recordTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="OkK-9B-ndg"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fOb-aM-vkF" userLabel="Stop Recording Track">
+                                <rect key="frame" x="10" y="55" width="148" height="30"/>
+                                <state key="normal" title="Stop Recording Track"/>
+                                <connections>
+                                    <action selector="recordTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="aCP-k9-huI"/>
+                                    <action selector="stopRecordingTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="zHb-5e-xKi"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="sQg-df-tJs" firstAttribute="leading" secondItem="hBo-Iq-hMe" secondAttribute="leading" constant="20" id="3M0-CT-XWr"/>
+                            <constraint firstItem="sQg-df-tJs" firstAttribute="top" secondItem="hBo-Iq-hMe" secondAttribute="top" constant="11" id="3dg-me-mX6"/>
+                            <constraint firstItem="hBo-Iq-hMe" firstAttribute="trailing" secondItem="fOb-aM-vkF" secondAttribute="trailing" constant="256" id="7mx-48-dYW"/>
+                            <constraint firstItem="fOb-aM-vkF" firstAttribute="leading" secondItem="hBo-Iq-hMe" secondAttribute="leading" constant="10" id="Hw7-E9-YUV"/>
+                            <constraint firstItem="fOb-aM-vkF" firstAttribute="top" secondItem="hBo-Iq-hMe" secondAttribute="top" constant="11" id="YqU-6A-lPs"/>
+                            <constraint firstItem="hBo-Iq-hMe" firstAttribute="trailing" secondItem="sQg-df-tJs" secondAttribute="trailing" constant="303" id="ZEi-wl-Cac"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="hBo-Iq-hMe"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Map" id="jpJ-ie-bD8"/>
                     <connections>
                         <outlet property="mapKitView" destination="dQx-7S-0be" id="ADB-PS-LsI"/>
+                        <outlet property="recordTrackButton" destination="sQg-df-tJs" id="8yY-oK-0jx"/>
+                        <outlet property="stopRecordingButton" destination="fOb-aM-vkF" id="Jil-E1-co6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wjH-iA-kXi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -19,8 +19,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private let locationManager = CLLocationManager()
     private var locationList = [CLLocation]()
     private var hasZoomedToFirstLocation = false
+    private var isRecordingTracks = false
     
     @IBOutlet weak var mapKitView: MKMapView!
+    @IBOutlet weak var recordTrackButton: UIButton!
+    @IBOutlet weak var stopRecordingButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,12 +33,26 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.delegate = self
         // allows background updates
         locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.startUpdatingLocation()
         mapKitView.showsUserLocation = true
         mapKitView.mapType = .satellite
         // setting the activity type, this could be changed for better optimization?
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
+        locationManager.startUpdatingLocation()
+    }
+    
+    @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
+        isRecordingTracks = true
+        recordTrackButton.isHidden = true
+        stopRecordingButton.isHidden = false
+    }
+   
+    @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
+        isRecordingTracks = false
+        loadMap()
+        recordTrackButton.isHidden = false
+        stopRecordingButton.isHidden = true
+        
     }
     
     /// zooms to current location with hard coded region height/width
@@ -46,11 +63,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let region = MKCoordinateRegion(center: currentLocation.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
             mapKitView.setRegion(region, animated: true)
         }
-    }
-    
-    @IBAction private func buttonPressed(_ sender: UIButton) {
-        locationManager.stopUpdatingLocation()
-        loadMap()
     }
     
     /**
@@ -118,37 +130,41 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             print("#####   Locations.count: \(locations.count)")
         }
         
+        if isRecordingTracks {
         // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
-        guard let lastLocation = locationList.last else {
+            guard let lastLocation = locationList.last else {
+                locationList.append(locations.first!)
+                return
+            }
+            
+            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
+            
+            
+            
+            
             locationList.append(locations.first!)
-            return
+            
+            let newLocation = locations.first!
+            
+            // create the new 'change in coordinates'
+            let coordinates = [lastLocation.coordinate, newLocation.coordinate]
+            // add an overlay as a MKPolyline
+            mapKitView.addOverlay(MKPolyline(coordinates: coordinates, count: 2))
+            
+            // only do this if yo want to re-center the region around the most recent location
+    //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+    //        mapKitView.setRegion(region, animated: true)
+            
+            // if we haven't zoomed in to the first logged location yet, do so here
+            if !hasZoomedToFirstLocation {
+                print("zooming to first location")
+                print(locationList.count)
+                hasZoomedToFirstLocation = true
+                zoomToCurrentLocation()
+            }
         }
         
-        print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
         
-        
-        
-        
-        locationList.append(locations.first!)
-        
-        let newLocation = locations.first!
-        
-        // create the new 'change in coordinates'
-        let coordinates = [lastLocation.coordinate, newLocation.coordinate]
-        // add an overlay as a MKPolyline
-        mapKitView.addOverlay(MKPolyline(coordinates: coordinates, count: 2))
-        
-        // only do this if yo want to re-center the region around the most recent location
-//        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-//        mapKitView.setRegion(region, animated: true)
-        
-        // if we haven't zoomed in to the first logged location yet, do so here
-        if !hasZoomedToFirstLocation {
-            print("zooming to first location")
-            print(locationList.count)
-            hasZoomedToFirstLocation = true
-            zoomToCurrentLocation()
-        }
     }
     
     // delegate method of MKMapView
