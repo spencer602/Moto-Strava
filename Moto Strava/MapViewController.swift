@@ -53,6 +53,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         recordTrackButton.isHidden = false
         stopRecordingButton.isHidden = true
         
+        locationList.removeAll()
     }
     
     /// zooms to current location with hard coded region height/width
