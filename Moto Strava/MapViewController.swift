@@ -54,6 +54,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         print("route \(model.listOfTracks.count)")
         
+        
+        // FIXME: bug where currenttracks are also deleted, but not re-displayed when navigating away from map tab and then back to map tab while recoring a track
         removeAllTracks()
     
         addAllTracksToMap()
