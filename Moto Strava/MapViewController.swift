@@ -98,7 +98,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         zoomMapTo()
         // add the complete track to the map
         mapKitView.addOverlay(createPolyLine(using: locationList))
-
+        
+        recordTrackButton.isHidden = false
+        stopRecordingButton.isHidden = true
+        
         // remove the sections of track that were added while recording (as breadcrumbs)
         for pl in polyLinesFromCurrentRecording {
             mapKitView.removeOverlay(pl)
