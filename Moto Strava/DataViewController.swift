@@ -29,6 +29,13 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         trackTableView.reloadData()
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            motoStravaModel.listOfTracks.remove(at: indexPath.row)
+            trackTableView.reloadData()
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return motoStravaModel.listOfTracks.count
     }

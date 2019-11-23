@@ -68,7 +68,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
    
     @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = false
-        loadMap()
+        zoomMapTo()
+        mapKitView.addOverlay(createPolyLine(using: locationList))
+
         recordTrackButton.isHidden = false
         stopRecordingButton.isHidden = true
         
@@ -187,10 +189,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func loadMap() {
+    private func zoomMapTo() {
         let region = mapRegion()
         mapKitView.setRegion(region, animated: true)
-        mapKitView.addOverlay(createPolyLine(using: locationList))
     }
     
     // locationManager delegate method
