@@ -14,27 +14,36 @@ import UIKit
 import MapKit
 import CoreLocation
 
+/// a class for managing a map, displaying tracks, displaying current location, and recording tracks
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
+    /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
+    
+    /// the locations we are collecting while recording tracks
     private var locationList = [CLLocation]()
+    
+    /// keeps track of whether we have initially zoomed to our current location yet or not
     private var hasZoomedToFirstLocation = false
+    
+    /// keeps track of whether or not we are currently recording tracks
     private var isRecordingTracks = false
+    /// the complete list of logged locations from our current track recording
     private var polyLinesFromCurrentRecording = [MKPolyline]()
     
-    @IBOutlet weak var mapKitView: MKMapView!
-    @IBOutlet weak var recordTrackButton: UIButton!
-    @IBOutlet weak var stopRecordingButton: UIButton!
+    /// the main instance of mapKit
+    @IBOutlet private weak var mapKitView: MKMapView!
+    @IBOutlet private weak var recordTrackButton: UIButton!
+    @IBOutlet private weak var stopRecordingButton: UIButton!
     
+    /// our model, which must be set to a value (currently it is set in viewDidLoad)
     private var model: MotoStravaModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // sets our model using the owner of our model (the DataViewController
         model = (tabBarController!.viewControllers![0] as! DataViewController).motoStravaModel
-        
-        print("route MapViewController.viewDidLoad")
-
         
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -52,25 +61,34 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        print("route \(model.listOfTracks.count)")
-        
-        
-        
-        
+        // clears the tracks, this could be improved by sending notifications when the model changes
         removeAllTracks()
         
-        mapKitView.addOverlays(polyLinesFromCurrentRecording)
+        // adds the tracks for a current recording (if there is one)
+        if polyLinesFromCurrentRecording.count > 0 {
+            mapKitView.addOverlays(polyLinesFromCurrentRecording)
+        }
     
+        // adds the rest of the tracks from the model
         addAllTracksToMap()
-        
     }
     
+    /**
+     target action from when the 'record track' button is pressed. starts recording a track
+     
+     - Parameter sender: the button that triggered the action
+     */
     @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = true
         recordTrackButton.isHidden = true
         stopRecordingButton.isHidden = false
     }
    
+    /**
+      target action from when the 'stop recording track' button is pressed. stops  recording a track
+      
+      - Parameter sender: the button that triggered the action
+      */
     @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = false
         zoomMapTo()
