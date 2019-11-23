@@ -26,8 +26,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var recordTrackButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
     
+    private var model: MotoStravaModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        model = (tabBarController!.viewControllers![0] as! DataViewController).motoStravaModel
         
         print("route MapViewController.viewDidLoad")
 
@@ -43,6 +47,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        print("route \(model.listOfTracks.count)")
+        
+        removeAllTracks()
+    
+        addAllTracksToMap()
+        
     }
     
     @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
@@ -98,6 +113,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 
         
        
+    }
+    
+    
+    private func addAllTracksToMap() {
+        for track in model.listOfTracks {
+            let locationData = track.CLLocationArray
+            mapKitView.addOverlay(createPolyLine(using: locationData))
+        }
+    }
+    
+    private func removeAllTracks() {
+        mapKitView.removeOverlays(mapKitView.overlays)
     }
     
     /// zooms to current location with hard coded region height/width

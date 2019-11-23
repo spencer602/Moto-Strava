@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct MotoStravaModel: Codable {
+class MotoStravaModel: Codable {
     var listOfTracks = [TrackModel]()
 }
