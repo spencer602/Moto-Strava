@@ -20,13 +20,21 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private var locationList = [CLLocation]()
     private var hasZoomedToFirstLocation = false
     private var isRecordingTracks = false
+    private var polyLinesFromCurrentRecording = [MKPolyline]()
     
     @IBOutlet weak var mapKitView: MKMapView!
     @IBOutlet weak var recordTrackButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
     
+    private var model: MotoStravaModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        model = (tabBarController!.viewControllers![0] as! DataViewController).motoStravaModel
+        
+        print("route MapViewController.viewDidLoad")
+
         
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -41,6 +49,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.startUpdatingLocation()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        print("route \(model.listOfTracks.count)")
+        
+        
+        
+        
+        removeAllTracks()
+        
+        mapKitView.addOverlays(polyLinesFromCurrentRecording)
+    
+        addAllTracksToMap()
+        
+    }
+    
     @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = true
         recordTrackButton.isHidden = true
@@ -49,11 +73,65 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
    
     @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = false
-        loadMap()
+        zoomMapTo()
+        mapKitView.addOverlay(createPolyLine(using: locationList))
+
         recordTrackButton.isHidden = false
         stopRecordingButton.isHidden = true
         
+        var overlays = mapKitView.overlays
+        
+//        print("route number of overlays\(overlays.count)")
+//        print("route number of addedPolylines\(polyLinesFromCurrentRecording.count)")
+
+        for pl in polyLinesFromCurrentRecording {
+//            print("route an overlay")
+//            if overlays.contains(where: { $0.isEqual(pl) }) {
+//                print("route contained an overlay")
+//            }
+            mapKitView.removeOverlay(pl)
+        }
+        
+        polyLinesFromCurrentRecording.removeAll()
+        
+        let track = TrackModel(withCLLocationArray: locationList, withName: "track")
+        if let tbc = tabBarController {
+            print("route we have a tab bar controller")
+            if let vcs = tbc.viewControllers {
+                print("route we have an array of vcs: \(vcs.count)")
+                if let dvc = vcs[0] as? DataViewController {
+                    print("route We have a data view controller")
+                    dvc.motoStravaModel.listOfTracks.append(track)
+                    print("route added a track to trackmodel")
+                    print(dvc.motoStravaModel.listOfTracks.count)
+                }
+            }
+            
+        }
+               
         locationList.removeAll()
+        
+//        overlays = self.mapKitView.overlays
+//
+//        print("route new number of overlays\(overlays.count)")
+//        print("route new number of addedPolylines\(self.polyLinesFromCurrentRecording.count)")
+
+            
+                
+        
+       
+    }
+    
+    
+    private func addAllTracksToMap() {
+        for track in model.listOfTracks {
+            let locationData = track.CLLocationArray
+            mapKitView.addOverlay(createPolyLine(using: locationData))
+        }
+    }
+    
+    private func removeAllTracks() {
+        mapKitView.removeOverlays(mapKitView.overlays)
     }
     
     /// zooms to current location with hard coded region height/width
@@ -106,9 +184,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
      
      - Returns: an MKPolyLine following along all of the logged locations
      */
-    private func polyLine() -> MKPolyline {
+    private func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
         // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
-        let coords: [CLLocationCoordinate2D] = locationList.map { location in
+        let coords: [CLLocationCoordinate2D] = locationData.map { location in
             CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         }
         // create and return an MKPolyLine with the coordinates
@@ -116,10 +194,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func loadMap() {
+    private func zoomMapTo() {
         let region = mapRegion()
         mapKitView.setRegion(region, animated: true)
-        mapKitView.addOverlay(polyLine())
     }
     
     // locationManager delegate method
@@ -155,15 +232,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             
             // create the new 'change in coordinates'
             let coordinates = [lastLocation.coordinate, newLocation.coordinate]
+            // create an MKPolyline from the two coordinates
+            let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
+            // add the polyline to the list of polylines in current recording
+            polyLinesFromCurrentRecording.append(polyLine)
             // add an overlay as a MKPolyline
-            mapKitView.addOverlay(MKPolyline(coordinates: coordinates, count: 2))
+            mapKitView.addOverlay(polyLine)
             
             // only do this if yo want to re-center the region around the most recent location
     //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
     //        mapKitView.setRegion(region, animated: true)
         }
-        
-        
     }
     
     // delegate method of MKMapView
@@ -191,3 +270,4 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     */
 
 }
+
