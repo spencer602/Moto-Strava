@@ -9,26 +9,36 @@
 import UIKit
 import CoreLocation
 
-class DataViewController: UIViewController, CLLocationManagerDelegate {
-
-    let locationManager = CLLocationManager()
-
+class DataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+   
+    var motoStravaModel = MotoStravaModel()
+    
+    @IBOutlet weak var trackTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        trackTableView.delegate = self
+        trackTableView.dataSource = self
         
-//        locationManager.requestAlwaysAuthorization()
-//        locationManager.delegate = self
-//        locationManager.startUpdatingLocation()
-
-        // Do any additional setup after loading the view.
+        print("route DataViewController.viewDidLoad")
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("lat: \(locations.first!.coordinate.latitude), lon: \(locations.first!.coordinate.longitude), elevation: \(locations.first!.altitude)")
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        trackTableView.reloadData()
     }
     
-
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return motoStravaModel.listOfTracks.count
+    }
+       
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+        cell.textLabel?.text = motoStravaModel.listOfTracks[indexPath.row].name
+        return cell
+    }
+       
     /*
     // MARK: - Navigation
 
@@ -38,5 +48,6 @@ class DataViewController: UIViewController, CLLocationManagerDelegate {
         // Pass the selected object to the new view controller.
     }
     */
+    
 
 }
