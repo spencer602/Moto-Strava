@@ -21,7 +21,7 @@ class ModelController {
     func saveJSONToFile() {
         if let json = motoStravaModel.json {
             if let url = try? FileManager.default.url(
-                for: .documentDirectory,
+                for: .applicationSupportDirectory,
                 in: .userDomainMask,
                 appropriateFor: nil,
                 create: true).appendingPathComponent("motoStravaModel.json") {
@@ -37,7 +37,7 @@ class ModelController {
     
     func loadModelFromJSON() {
         if let url = try? FileManager.default.url(
-            for: .documentDirectory,
+            for: .applicationSupportDirectory,
             in: .userDomainMask,
             appropriateFor: nil,
             create: true).appendingPathComponent("motoStravaModel.json")
