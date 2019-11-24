@@ -24,21 +24,4 @@ class MotoStravaModel: Codable {
     var json: Data? {
         return try? JSONEncoder().encode(self)
     }
-    
-    func saveJSONToFile() {
-        if let json = self.json {
-            if let url = try? FileManager.default.url(
-                for: .documentDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true).appendingPathComponent("trackModel.json") {
-                do {
-                    try json.write(to: url)
-                    print("saved successfully!")
-                } catch let error {
-                    print("couldn't save \(error)")
-                }
-            }
-        }
-    }
 }

@@ -11,7 +11,7 @@ import CoreLocation
 
 class DataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
-    var motoStravaModel = MotoStravaModel()
+    var modelController: ModelController!
     
     @IBOutlet weak var trackTableView: UITableView!
     
@@ -19,57 +19,27 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         trackTableView.delegate = self
         trackTableView.dataSource = self
-        
-        print("route DataViewController.viewDidLoad")
-        loadModelFromJSON()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         trackTableView.reloadData()
-    }
-    
-    func loadModelFromJSON() {
-        if let url = try? FileManager.default.url(
-            for: .documentDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true).appendingPathComponent("trackModel.json")
-        {
-            if let jsonData = try? Data(contentsOf: url) {
-                print("loaded sucessfully!")
-                motoStravaModel = MotoStravaModel(withJSON: jsonData)!
-            }
-        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            motoStravaModel.listOfTracks.remove(at: indexPath.row)
+            modelController.removeTrack(at: indexPath.row)
             trackTableView.reloadData()
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return motoStravaModel.listOfTracks.count
+        return modelController.numberOfTracks
     }
        
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
-        cell.textLabel?.text = motoStravaModel.listOfTracks[indexPath.row].name
+        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
         return cell
     }
-       
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
-
 }

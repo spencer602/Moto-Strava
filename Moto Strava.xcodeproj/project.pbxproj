@@ -10,6 +10,7 @@
 		0920F65B23872B7E00613DEC /* TrackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65A23872B7E00613DEC /* TrackModel.swift */; };
 		0920F65D23872E3600613DEC /* CustomCodeableLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65C23872E3600613DEC /* CustomCodeableLocation.swift */; };
 		0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65E23888D2400613DEC /* MotoStravaModel.swift */; };
+		0920F661238B067600613DEC /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F660238B067600613DEC /* ModelController.swift */; };
 		09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181C23834D8000A5D031 /* AppDelegate.swift */; };
 		09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181E23834D8000A5D031 /* SceneDelegate.swift */; };
 		09FA182423834D8000A5D031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182223834D8000A5D031 /* Main.storyboard */; };
@@ -24,6 +25,7 @@
 		0920F65A23872B7E00613DEC /* TrackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModel.swift; sourceTree = "<group>"; };
 		0920F65C23872E3600613DEC /* CustomCodeableLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCodeableLocation.swift; sourceTree = "<group>"; };
 		0920F65E23888D2400613DEC /* MotoStravaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotoStravaModel.swift; sourceTree = "<group>"; };
+		0920F660238B067600613DEC /* ModelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		09FA181923834D8000A5D031 /* Moto Strava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Moto Strava.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09FA181C23834D8000A5D031 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09FA181E23834D8000A5D031 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				0920F65A23872B7E00613DEC /* TrackModel.swift */,
 				0920F65C23872E3600613DEC /* CustomCodeableLocation.swift */,
 				09FA18302383833D00A5D031 /* DataViewController.swift */,
+				0920F660238B067600613DEC /* ModelController.swift */,
 				09FA182523834D8200A5D031 /* Assets.xcassets */,
 				09FA182723834D8200A5D031 /* LaunchScreen.storyboard */,
 				09FA182A23834D8200A5D031 /* Info.plist */,
@@ -159,6 +162,7 @@
 				09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */,
 				0920F65B23872B7E00613DEC /* TrackModel.swift in Sources */,
 				0920F65D23872E3600613DEC /* CustomCodeableLocation.swift in Sources */,
+				0920F661238B067600613DEC /* ModelController.swift in Sources */,
 				0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */,
 				09FA1835238387DB00A5D031 /* MapViewController.swift in Sources */,
 			);

@@ -39,14 +39,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet private weak var recordTrackButton: UIButton!
     @IBOutlet private weak var stopRecordingButton: UIButton!
     
-    /// our model, which must be set to a value (currently it is set in viewDidLoad)
-    private var model: MotoStravaModel!
+    /// our model controller, which must be set to a value (currently it is set in viewDidLoad)
+    var modelController: ModelController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // sets our model using the owner of our model (the DataViewController
-        model = (tabBarController!.viewControllers![0] as! DataViewController).motoStravaModel
         
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -114,18 +111,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let track = TrackModel(withCLLocationArray: locationList)
         
         // add the track to the model's list of tracks
-        model.listOfTracks.append(track)
+        modelController.add(track: track)
         
-        // save the new file
-        model.saveJSONToFile()
-    
         // remove all of the locations from the current list
         locationList.removeAll()
     }
     
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
-        for track in model.listOfTracks {
+        for track in modelController.listOfTracks {
             let locationData = track.CLLocationArray
             mapKitView.addOverlay(createPolyLine(using: locationData))
         }
