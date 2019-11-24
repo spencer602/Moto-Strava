@@ -12,11 +12,7 @@ import CoreLocation
 struct TrackModel: Codable {
     let locations: [CustomCodeableLocation]
     let name: String
-    
-    var timeCreated: Date {
-        // TODO: compute the timestamp
-        return Date()
-    }
+    let timeStamp: Date
     
     var CLLocationArray: [CLLocation] {
         return locations.map() { $0.toCLLocation() }
@@ -27,5 +23,15 @@ struct TrackModel: Codable {
             CustomCodeableLocation.init(fromCLLocation: $0)
         }
         self.name = name
+        self.timeStamp = Date()
+    }
+    
+    init(withCLLocationArray cllocationArray: [CLLocation]) {
+        self.locations = cllocationArray.map {
+            CustomCodeableLocation.init(fromCLLocation: $0)
+        }
+        let currentTime = Date()
+        self.name = currentTime.description
+        self.timeStamp = currentTime
     }
 }
