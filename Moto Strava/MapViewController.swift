@@ -111,10 +111,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         polyLinesFromCurrentRecording.removeAll()
         
         // create the track
-        let track = TrackModel(withCLLocationArray: locationList, withName: "track")
+        let track = TrackModel(withCLLocationArray: locationList)
         
         // add the track to the model's list of tracks
         model.listOfTracks.append(track)
+        
+        // save the new file
+        model.saveJSONToFile()
     
         // remove all of the locations from the current list
         locationList.removeAll()

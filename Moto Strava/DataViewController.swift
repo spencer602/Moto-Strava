@@ -21,12 +21,27 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         trackTableView.dataSource = self
         
         print("route DataViewController.viewDidLoad")
+        loadModelFromJSON()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         trackTableView.reloadData()
+    }
+    
+    func loadModelFromJSON() {
+        if let url = try? FileManager.default.url(
+            for: .documentDirectory,
+            in: .userDomainMask,
+            appropriateFor: nil,
+            create: true).appendingPathComponent("trackModel.json")
+        {
+            if let jsonData = try? Data(contentsOf: url) {
+                print("loaded sucessfully!")
+                motoStravaModel = MotoStravaModel(withJSON: jsonData)!
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
