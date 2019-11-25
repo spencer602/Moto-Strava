@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import MapKit
 
 class DataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
@@ -48,6 +49,13 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.titleLabel.text = modelController.trackNameForRow(at: indexPath.row)
             cell.dateLabel.text = "test test test test test"
             
+            
+            let options = MKMapSnapshotter.Options()
+            options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: indexPath.row).CLLocationArray)
+            let snapShotter = MKMapSnapshotter(options: options)
+            snapShotter.start() { (snapshot, error) in
+                cell.imageOutlet.image = snapshot?.image
+            }
             
             
             return cell

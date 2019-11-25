@@ -141,41 +141,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     /**
-     creates and returns a MKCoordinateRegion enclosing all of the logged locations
-     
-     - Returns: a MKCoordinateRegion enclosing all of the logged locations
-     */
-    private func mapRegion() -> MKCoordinateRegion {
-        // if there are no locations, send a generic region
-        if locationList.count == 0 {
-            print("Error, no locations logged yet")
-            return MKCoordinateRegion()
-        }
-        
-        let latitudes = locationList.map { location -> Double in
-            return location.coordinate.latitude
-        }
-
-        let longitudes = locationList.map { location -> Double in
-            return location.coordinate.longitude
-        }
-
-        // gather the max and mins of each
-        let maxLat = latitudes.max()!
-        let minLat = latitudes.min()!
-        let maxLong = longitudes.max()!
-        let minLong = longitudes.min()!
-                
-        // center around the middle of the extremes
-        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
-                                          longitude: (minLong + maxLong) / 2)
-        // span the differences (with a ~1/3 buffer)
-        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
-                                  longitudeDelta: (maxLong - minLong) * 1.3)
-        return MKCoordinateRegion(center: center, span: span)
-    }
-    
-    /**
      creates and returns an MKPolyLine following along all of the logged locations
      
      - Returns: an MKPolyLine following along all of the logged locations
@@ -191,7 +156,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     /// creates a region encompassing all logged locations and adds the overaly to the map
     private func zoomMapTo() {
-        let region = mapRegion()
+        let region = MKCoordinateRegion.mapRegion(using: locationList)
         mapKitView.setRegion(region, animated: true)
     }
     
@@ -264,5 +229,43 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     */
 
+}
+
+extension MKCoordinateRegion {
+    /**
+     creates and returns a MKCoordinateRegion enclosing all of the logged locations
+     
+     - Returns: a MKCoordinateRegion enclosing all of the logged locations
+     */
+    static func mapRegion(using locations: [CLLocation]) -> MKCoordinateRegion {
+        // if there are no locations, send a generic region
+        if locations.count == 0 {
+            print("Error, no locations logged yet")
+            return MKCoordinateRegion()
+        }
+        
+        let latitudes = locations.map { location -> Double in
+            return location.coordinate.latitude
+        }
+
+        let longitudes = locations.map { location -> Double in
+            return location.coordinate.longitude
+        }
+
+        // gather the max and mins of each
+        let maxLat = latitudes.max()!
+        let minLat = latitudes.min()!
+        let maxLong = longitudes.max()!
+        let minLong = longitudes.min()!
+                
+        // center around the middle of the extremes
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
+                                          longitude: (minLong + maxLong) / 2)
+        // span the differences (with a ~1/3 buffer)
+        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
+                                  longitudeDelta: (maxLong - minLong) * 1.3)
+        return MKCoordinateRegion(center: center, span: span)
+        
+    }
 }
 
