@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import MapKit
 
 class DataViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
@@ -37,9 +38,65 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         return modelController.numberOfTracks
     }
        
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+//        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
+//        return cell
+//    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
-        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
-        return cell
+        if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
+            cell.titleLabel.text = modelController.trackNameForRow(at: indexPath.row)
+            
+            let date = modelController.dateForRow(at: indexPath.row)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .short
+            dateFormatter.locale = Locale(identifier: "en_US")
+            
+            cell.dateLabel.text = dateFormatter.string(from: date)
+            cell.distanceLabel.text = "Points: \(modelController.trackForRow(at: indexPath.row).locationCount)"
+            
+            let track = modelController.trackForRow(at: indexPath.row)
+            let locationPoints = track.CLLocationArray.map() { $0.coordinate }
+            let options = MKMapSnapshotter.Options()
+            options.region = MKCoordinateRegion.mapRegion(using: track.CLLocationArray)
+            options.mapType = .satellite
+            
+            let snapShotter = MKMapSnapshotter(options: options)
+            snapShotter.start() { (snapshot, error) in
+                if snapshot != nil {
+                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
+                    cell.imageOutlet.image = self.draw(points: cgPoints, on: snapshot!.image)
+                } else {
+                    cell.imageOutlet.image = snapshot?.image
+                }
+            }
+            
+            return cell
+        }
+        
+        return UITableViewCell()
     }
+    
+    func draw(points: [CGPoint], on image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        
+        for point in points {
+            let rectangle = CGRect(x: point.x, y: point.y, width: 3, height: 3)
+
+            UIColor.red.setFill()
+            UIRectFill(rectangle)
+        }
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
+    
 }

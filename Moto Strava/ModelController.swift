@@ -62,4 +62,12 @@ class ModelController {
         motoStravaModel.listOfTracks.append(track)
         saveJSONToFile()
     }
+    
+    func dateForRow(at index: Int) -> Date {
+        return motoStravaModel.listOfTracks[index].timeStamp
+    }
+    
+    func trackForRow(at index: Int) -> TrackModel {
+        return motoStravaModel.listOfTracks[index]
+    }
 }
