@@ -18,6 +18,8 @@ struct MotoStravaModel: Codable {
     init?(withJSON json: Data) {
         if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) {
             self = newValue
+        } else {
+            return nil
         }
     }
     
