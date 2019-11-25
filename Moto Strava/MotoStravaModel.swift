@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MotoStravaModel: Codable {
+struct MotoStravaModel: Codable {
     var listOfTracks = [TrackModel]()
     
     init() {
@@ -17,7 +17,7 @@ class MotoStravaModel: Codable {
     // this isn't the best code, this will need to be changed when we change to using a model controller
     init?(withJSON json: Data) {
         if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) {
-            self.listOfTracks = newValue.listOfTracks
+            self = newValue
         }
     }
     

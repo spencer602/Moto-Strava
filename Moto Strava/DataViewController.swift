@@ -47,7 +47,14 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
             cell.titleLabel.text = modelController.trackNameForRow(at: indexPath.row)
-            cell.dateLabel.text = modelController.dateForRow(at: indexPath.row).description
+            
+            let date = modelController.dateForRow(at: indexPath.row)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .short
+            dateFormatter.locale = Locale(identifier: "en_US")
+            
+            cell.dateLabel.text = dateFormatter.string(from: date)
             cell.distanceLabel.text = "Points: \(modelController.trackForRow(at: indexPath.row).locationCount)"
             
             let track = modelController.trackForRow(at: indexPath.row)

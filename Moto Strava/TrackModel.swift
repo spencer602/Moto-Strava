@@ -24,7 +24,7 @@ struct TrackModel: Codable {
             CustomCodeableLocation.init(fromCLLocation: $0)
         }
         self.name = name
-        self.timeStamp = Date()
+        self.timeStamp = locations.first!.timestamp
     }
     
     init(withCLLocationArray cllocationArray: [CLLocation]) {
@@ -33,6 +33,6 @@ struct TrackModel: Codable {
         }
         let currentTime = Date()
         self.name = currentTime.description
-        self.timeStamp = currentTime
+        self.timeStamp = locations.first!.timestamp
     }
 }
