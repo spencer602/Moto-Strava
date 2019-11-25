@@ -67,7 +67,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             snapShotter.start() { (snapshot, error) in
                 if snapshot != nil {
                     let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.imageOutlet.image = self.draw(points: cgPoints, on: snapshot!.image)
+                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image)
                 } else {
                     cell.imageOutlet.image = snapshot?.image
                 }
@@ -77,6 +77,32 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         return UITableViewCell()
+    }
+    
+    func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0
+        
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+        
+        let path = UIBezierPath()
+        
+        image.draw(at: CGPoint.zero)
+        
+        path.move(to: points[0])
+        
+        for (index, point) in points.enumerated() {
+            if index == 0 { continue }
+            path.addLine(to: point)
+        }
+        
+        UIColor.red.setStroke()
+        
+        path.stroke()
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
     }
     
     func draw(points: [CGPoint], on image: UIImage) -> UIImage? {
