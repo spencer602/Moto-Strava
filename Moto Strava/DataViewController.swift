@@ -52,6 +52,8 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let options = MKMapSnapshotter.Options()
             options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: indexPath.row).CLLocationArray)
+            options.mapType = .satellite
+            
             let snapShotter = MKMapSnapshotter(options: options)
             snapShotter.start() { (snapshot, error) in
                 cell.imageOutlet.image = snapshot?.image
