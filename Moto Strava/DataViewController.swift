@@ -55,7 +55,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             dateFormatter.locale = Locale(identifier: "en_US")
             
             cell.dateLabel.text = dateFormatter.string(from: date)
-            cell.distanceLabel.text = "Points: \(modelController.trackForRow(at: indexPath.row).locationCount)"
+            cell.distanceLabel.text = "\((modelController.distanceForRow(at: indexPath.row) / 1609.344).easyToReadNotation(withDecimalPlaces: 3)) miles"
             
             let track = modelController.trackForRow(at: indexPath.row)
             let locationPoints = track.CLLocationArray.map() { $0.coordinate }

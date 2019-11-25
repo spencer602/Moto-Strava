@@ -70,4 +70,19 @@ class ModelController {
     func trackForRow(at index: Int) -> TrackModel {
         return motoStravaModel.listOfTracks[index]
     }
+    
+    func distanceForRow(at index: Int) -> Double {
+        let track = motoStravaModel.listOfTracks[index]
+        var distance = 0.0
+        var previousLocation: CLLocation?
+        for location in track.CLLocationArray {
+            if previousLocation == nil {
+                previousLocation = location
+                continue
+            }
+            distance += location.distance(from: previousLocation!)
+            previousLocation = location
+        }
+        return distance
+    }
 }
