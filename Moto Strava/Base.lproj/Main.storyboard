@@ -7,6 +7,22 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Edit Detail View Controller-->
+        <scene sceneID="bz5-AF-25g">
+            <objects>
+                <viewController id="xRh-nL-W2Y" customClass="EditDetailViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eeM-fX-Ttu">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="5TG-U8-hra"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6jr-Ag-zZZ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1bO-yO-Ryl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1313" y="-4"/>
+        </scene>
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
             <objects>
@@ -19,25 +35,8 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="basicCell" textLabel="zjw-IU-gfQ" style="IBUITableViewCellStyleDefault" id="bPI-ha-2rH">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="bPI-ha-2rH" id="s12-9U-3l6">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zjw-IU-gfQ">
-                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="complexTrackCell" rowHeight="164" id="HbD-2W-Hn7" customClass="TrackTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="71.5" width="414" height="164"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="164"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HbD-2W-Hn7" id="MGi-Qd-M7h">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="164"/>
@@ -92,6 +91,7 @@
                                             <outlet property="distanceLabel" destination="fG8-uZ-mzq" id="TtE-hg-eUk"/>
                                             <outlet property="imageOutlet" destination="00P-cz-4Fz" id="A0n-v8-aEF"/>
                                             <outlet property="titleLabel" destination="frL-sm-ejB" id="8mj-dX-WHn"/>
+                                            <segue destination="xRh-nL-W2Y" kind="show" id="TUD-dK-vSS"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
