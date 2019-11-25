@@ -25,10 +25,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("window = \(self.window == nil ? "nil": "not nil")")
         if let tbc = window?.rootViewController as? UITabBarController {
             print("root as tab bar controller")
-            if let dvc = tbc.viewControllers?[0] as?  DataViewController {
-                print("first Data View Controller")
-                
-                dvc.modelController = model
+            if let nav = tbc.viewControllers?[0] as?  UINavigationController {
+                print("navigationController")
+                if let dvc = nav.viewControllers.first as? DataViewController {
+                    print("data view controller")
+                    dvc.modelController = model
+                }
             }
             if let mvc = tbc.viewControllers?[1] as?  MapViewController {
                 print("second Map View Controller")
