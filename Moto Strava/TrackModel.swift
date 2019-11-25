@@ -13,6 +13,7 @@ struct TrackModel: Codable {
     let locations: [CustomCodeableLocation]
     let name: String
     let timeStamp: Date
+    var locationCount: Int { return locations.count }
     
     var CLLocationArray: [CLLocation] {
         return locations.map() { $0.toCLLocation() }

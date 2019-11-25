@@ -37,9 +37,24 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         return modelController.numberOfTracks
     }
        
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+//        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
+//        return cell
+//    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
-        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
-        return cell
+        if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
+            cell.titleLabel.text = modelController.trackNameForRow(at: indexPath.row)
+            cell.dateLabel.text = "test test test test test"
+            
+            
+            
+            return cell
+        }
+        
+        return UITableViewCell()
     }
+    
+    
 }
