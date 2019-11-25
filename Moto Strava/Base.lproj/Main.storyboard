@@ -53,6 +53,7 @@
                                                     <rect key="frame" x="264" y="49.5" width="140" height="93.5"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="00P-cz-4Fz" secondAttribute="height" multiplier="3:2" id="FuV-HD-AJK"/>
+                                                        <constraint firstAttribute="width" constant="140" id="z84-MR-MU6"/>
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frL-sm-ejB">

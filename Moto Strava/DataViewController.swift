@@ -47,23 +47,48 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
             cell.titleLabel.text = modelController.trackNameForRow(at: indexPath.row)
-            cell.dateLabel.text = "test test test test test"
+            cell.dateLabel.text = modelController.dateForRow(at: indexPath.row).description
+            cell.distanceLabel.text = "Points: \(modelController.trackForRow(at: indexPath.row).locationCount)"
             
-            
+            let track = modelController.trackForRow(at: indexPath.row)
+            let locationPoints = track.CLLocationArray.map() { $0.coordinate }
             let options = MKMapSnapshotter.Options()
-            options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: indexPath.row).CLLocationArray)
+            options.region = MKCoordinateRegion.mapRegion(using: track.CLLocationArray)
             options.mapType = .satellite
             
             let snapShotter = MKMapSnapshotter(options: options)
             snapShotter.start() { (snapshot, error) in
-                cell.imageOutlet.image = snapshot?.image
+                if snapshot != nil {
+                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
+                    cell.imageOutlet.image = self.draw(points: cgPoints, on: snapshot!.image)
+                } else {
+                    cell.imageOutlet.image = snapshot?.image
+                }
             }
-            
             
             return cell
         }
         
         return UITableViewCell()
+    }
+    
+    func draw(points: [CGPoint], on image: UIImage) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+
+        image.draw(at: CGPoint.zero)
+        
+        for point in points {
+            let rectangle = CGRect(x: point.x, y: point.y, width: 3, height: 3)
+
+            UIColor.red.setFill()
+            UIRectFill(rectangle)
+        }
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
     }
     
     
