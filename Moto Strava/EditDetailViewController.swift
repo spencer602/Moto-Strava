@@ -16,16 +16,15 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
     var modelController: ModelController!
     
     @IBOutlet weak var titleTextField: UITextField!
-    
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var averageSpeedLabel: UILabel!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         titleTextField.delegate = self
-        
-        
         updateViewFromModel()
         // Do any additional setup after loading the view.
     }
@@ -37,18 +36,15 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
         return true
     }
     
-    
-//    @IBAction func titleTextFieldEditingDidEnd(_ sender: UITextField) {
-//        modelController.editNameForTrack(at: rowInModel, with: sender.text!)
-//    }
     private func updateViewFromModel() {
+        // update the track name
         titleTextField.text = trackModel.name
         
+        // update the track image preview
         let locationPoints = trackModel.CLLocationArray.map() { $0.coordinate }
         let options = MKMapSnapshotter.Options()
         options.region = MKCoordinateRegion.mapRegion(using: trackModel.CLLocationArray)
         options.mapType = .satellite
-        
         let snapShotter = MKMapSnapshotter(options: options)
         snapShotter.start() { (snapshot, error) in
             if snapshot != nil {
@@ -58,6 +54,20 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
                 self.imageView.image = snapshot?.image
             }
         }
+        
+        // update the date label
+        let date = modelController.dateForRow(at: rowInModel)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .short
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateLabel.text = dateFormatter.string(from: date)
+        
+        // update the distance
+        distanceLabel.text = "\((modelController.distanceForRow(at: rowInModel) / 1609.344).easyToReadNotation(withDecimalPlaces: 3)) miles"
+        
+        // update the average speed
+        averageSpeedLabel.text = "Avg speed: \(modelController.averageSpeedForRow(at: rowInModel).easyToReadNotation(withDecimalPlaces: 3)) mph"
     }
     
     func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {

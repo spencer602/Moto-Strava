@@ -90,4 +90,15 @@ class ModelController {
         motoStravaModel.listOfTracks[index].name = name
         saveJSONToFile()
     }
+    
+    func averageSpeedForRow(at index: Int) -> Double {
+        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        
+        let distance = distanceForRow(at: index)/1609.344
+        let startTime = trackForRow(at: index).locations.first!.timestamp
+        let endTime = trackForRow(at: index).locations.last!.timestamp
+        let duration = startTime.distance(to: endTime) / 3600.0
+        
+        return distance/duration
+    }
 }

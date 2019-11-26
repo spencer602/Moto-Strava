@@ -37,12 +37,6 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return modelController.numberOfTracks
     }
-       
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
-//        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
-//        return cell
-//    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
