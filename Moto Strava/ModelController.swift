@@ -94,11 +94,17 @@ class ModelController {
     func averageSpeedForRow(at index: Int) -> Double {
         if trackForRow(at: index).locationCount == 0 { return 0.0 }
         
-        let distance = distanceForRow(at: index)/1609.344
-        let startTime = trackForRow(at: index).locations.first!.timestamp
-        let endTime = trackForRow(at: index).locations.last!.timestamp
-        let duration = startTime.distance(to: endTime) / 3600.0
+        let distance = distanceForRow(at: index) / 1609.344
+        let duration = durationForRow(at: index) / 3600
         
         return distance/duration
+    }
+    
+    func durationForRow(at index: Int) -> TimeInterval {
+        let startTime = trackForRow(at: index).locations.first!.timestamp
+        let endTime = trackForRow(at: index).locations.last!.timestamp
+        let duration = startTime.distance(to: endTime)
+        
+        return duration
     }
 }

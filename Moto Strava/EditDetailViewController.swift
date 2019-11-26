@@ -20,6 +20,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var averageSpeedLabel: UILabel!
+    @IBOutlet weak var durationLabel: UILabel!
     
 
     override func viewDidLoad() {
@@ -68,6 +69,9 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
         
         // update the average speed
         averageSpeedLabel.text = "Avg speed: \(modelController.averageSpeedForRow(at: rowInModel).easyToReadNotation(withDecimalPlaces: 3)) mph"
+        
+        let (hours, minutes, seconds) = modelController.durationForRow(at: rowInModel).timeIntervalToHoursMinutesSeconds()
+        durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
     }
     
     func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {
