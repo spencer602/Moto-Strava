@@ -124,5 +124,12 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         return newImage
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let dest = segue.destination as? EditDetailViewController {
+            print("Destination as edit detail view controller")
+            dest.trackModel = modelController.trackForRow(at: trackTableView.indexPathForSelectedRow!.row)
+        }
+    }
+    
     
 }

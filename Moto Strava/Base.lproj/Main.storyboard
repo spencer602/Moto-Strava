@@ -8,20 +8,76 @@
     </dependencies>
     <scenes>
         <!--Edit Detail View Controller-->
-        <scene sceneID="bz5-AF-25g">
+        <scene sceneID="K9c-ll-6Kb">
             <objects>
-                <viewController id="xRh-nL-W2Y" customClass="EditDetailViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="eeM-fX-Ttu">
+                <tableViewController id="fPq-Se-9Aw" customClass="EditDetailViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r27-br-DL6">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="5TG-U8-hra"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="6jr-Ag-zZZ"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1bO-yO-Ryl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                        <sections>
+                            <tableViewSection id="bcA-2A-BCQ">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="60" id="EvC-w4-egb">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EvC-w4-egb" id="6ex-oz-14i">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dfH-qB-kAo">
+                                                    <rect key="frame" x="25" y="13" width="364" height="34"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <action selector="titleTextField:" destination="fPq-Se-9Aw" eventType="editingDidEnd" id="yML-wV-Nif"/>
+                                                    </connections>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="dfH-qB-kAo" secondAttribute="bottom" constant="2" id="oQn-yn-CRg"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="dfH-qB-kAo" secondAttribute="trailing" constant="5" id="rCl-iB-Ji0"/>
+                                                <constraint firstItem="dfH-qB-kAo" firstAttribute="top" secondItem="6ex-oz-14i" secondAttribute="topMargin" constant="2" id="sZ0-H1-rD7"/>
+                                                <constraint firstItem="dfH-qB-kAo" firstAttribute="leading" secondItem="6ex-oz-14i" secondAttribute="leadingMargin" constant="5" id="ynv-4Z-o4L"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="370" id="gEy-1i-pmM">
+                                        <rect key="frame" x="0.0" y="88" width="414" height="370"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gEy-1i-pmM" id="eWH-UP-Pf2">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="370"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WEh-hf-Jw9">
+                                                    <rect key="frame" x="20" y="11" width="374" height="348"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="WEh-hf-Jw9" firstAttribute="top" secondItem="eWH-UP-Pf2" secondAttribute="topMargin" id="Hj1-db-E21"/>
+                                                <constraint firstItem="WEh-hf-Jw9" firstAttribute="leading" secondItem="eWH-UP-Pf2" secondAttribute="leadingMargin" id="NLm-5E-Xab"/>
+                                                <constraint firstItem="WEh-hf-Jw9" firstAttribute="bottom" secondItem="eWH-UP-Pf2" secondAttribute="bottomMargin" id="nyH-5X-WVL"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="WEh-hf-Jw9" secondAttribute="trailing" id="nyW-tT-m7T"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="fPq-Se-9Aw" id="GiO-nH-C8f"/>
+                            <outlet property="delegate" destination="fPq-Se-9Aw" id="kVl-kk-v4g"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="hWe-RY-zVy"/>
+                    <connections>
+                        <outlet property="imageView" destination="WEh-hf-Jw9" id="2cR-qO-vjw"/>
+                        <outlet property="titleTextField" destination="dfH-qB-kAo" id="biR-4d-QcV"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qn8-s2-8xw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1313" y="-4"/>
+            <point key="canvasLocation" x="1292.753623188406" y="-50.223214285714285"/>
         </scene>
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
@@ -91,7 +147,7 @@
                                             <outlet property="distanceLabel" destination="fG8-uZ-mzq" id="TtE-hg-eUk"/>
                                             <outlet property="imageOutlet" destination="00P-cz-4Fz" id="A0n-v8-aEF"/>
                                             <outlet property="titleLabel" destination="frL-sm-ejB" id="8mj-dX-WHn"/>
-                                            <segue destination="xRh-nL-W2Y" kind="show" id="TUD-dK-vSS"/>
+                                            <segue destination="fPq-Se-9Aw" kind="show" id="cmz-SE-QGc"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
