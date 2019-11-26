@@ -88,5 +88,6 @@ class ModelController {
     
     func editNameForTrack(at index: Int, with name: String) {
         motoStravaModel.listOfTracks[index].name = name
+        saveJSONToFile()
     }
 }

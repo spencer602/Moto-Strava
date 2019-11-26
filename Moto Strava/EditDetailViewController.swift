@@ -33,6 +33,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        modelController.editNameForTrack(at: rowInModel, with: textField.text!)
         return true
     }
     
