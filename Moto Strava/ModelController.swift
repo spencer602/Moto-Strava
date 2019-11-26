@@ -85,4 +85,8 @@ class ModelController {
         }
         return distance
     }
+    
+    func editNameForTrack(at index: Int, with name: String) {
+        motoStravaModel.listOfTracks[index].name = name
+    }
 }

@@ -9,27 +9,37 @@
 import UIKit
 import MapKit
 
-class EditDetailViewController: UITableViewController {
+class EditDetailViewController: UITableViewController, UITextFieldDelegate {
     
     var trackModel: TrackModel!
+    var rowInModel: Int!
+    var modelController: ModelController!
+    
+    @IBOutlet weak var titleTextField: UITextField!
     
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var titleTextField: UITextField!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        titleTextField.delegate = self
+        
+        
         updateViewFromModel()
         // Do any additional setup after loading the view.
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        updateViewFromModel()
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
+    
+//    @IBAction func titleTextFieldEditingDidEnd(_ sender: UITextField) {
+//        modelController.editNameForTrack(at: rowInModel, with: sender.text!)
+//    }
     private func updateViewFromModel() {
         titleTextField.text = trackModel.name
         

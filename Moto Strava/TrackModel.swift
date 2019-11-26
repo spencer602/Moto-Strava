@@ -11,7 +11,7 @@ import CoreLocation
 
 struct TrackModel: Codable {
     let locations: [CustomCodeableLocation]
-    let name: String
+    var name: String
     let timeStamp: Date
     var locationCount: Int { return locations.count }
     

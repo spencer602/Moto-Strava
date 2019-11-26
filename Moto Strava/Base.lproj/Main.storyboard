@@ -25,20 +25,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dfH-qB-kAo">
-                                                    <rect key="frame" x="25" y="13" width="364" height="34"/>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ug8-4b-ZnP">
+                                                    <rect key="frame" x="30" y="13" width="354" height="34"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
-                                                    <connections>
-                                                        <action selector="titleTextField:" destination="fPq-Se-9Aw" eventType="editingDidEnd" id="yML-wV-Nif"/>
-                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="dfH-qB-kAo" secondAttribute="bottom" constant="2" id="oQn-yn-CRg"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="dfH-qB-kAo" secondAttribute="trailing" constant="5" id="rCl-iB-Ji0"/>
-                                                <constraint firstItem="dfH-qB-kAo" firstAttribute="top" secondItem="6ex-oz-14i" secondAttribute="topMargin" constant="2" id="sZ0-H1-rD7"/>
-                                                <constraint firstItem="dfH-qB-kAo" firstAttribute="leading" secondItem="6ex-oz-14i" secondAttribute="leadingMargin" constant="5" id="ynv-4Z-o4L"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Ug8-4b-ZnP" secondAttribute="trailing" constant="10" id="Y0d-8I-lwS"/>
+                                                <constraint firstItem="Ug8-4b-ZnP" firstAttribute="top" secondItem="6ex-oz-14i" secondAttribute="topMargin" constant="2" id="bfi-IN-0iq"/>
+                                                <constraint firstItem="Ug8-4b-ZnP" firstAttribute="leading" secondItem="6ex-oz-14i" secondAttribute="leadingMargin" constant="10" id="erj-sx-uII"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Ug8-4b-ZnP" secondAttribute="bottom" constant="2" id="kFc-M5-7f8"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -72,7 +69,7 @@
                     <navigationItem key="navigationItem" id="hWe-RY-zVy"/>
                     <connections>
                         <outlet property="imageView" destination="WEh-hf-Jw9" id="2cR-qO-vjw"/>
-                        <outlet property="titleTextField" destination="dfH-qB-kAo" id="biR-4d-QcV"/>
+                        <outlet property="titleTextField" destination="Ug8-4b-ZnP" id="EbO-N2-haR"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qn8-s2-8xw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -128,6 +128,8 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         if let dest = segue.destination as? EditDetailViewController {
             print("Destination as edit detail view controller")
             dest.trackModel = modelController.trackForRow(at: trackTableView.indexPathForSelectedRow!.row)
+            dest.rowInModel = trackTableView.indexPathForSelectedRow!.row
+            dest.modelController = modelController
         }
     }
     
