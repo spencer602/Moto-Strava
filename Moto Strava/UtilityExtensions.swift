@@ -135,6 +135,8 @@ extension Int {
      - Returns: the integer raised to the specified power
      */
     func raisedToPower(_ exponent: Int) -> Int {
+        if exponent == 0 { return 1 }
+        
         let base = self
         var newValue = self
         

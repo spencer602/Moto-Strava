@@ -107,4 +107,16 @@ class ModelController {
         
         return duration
     }
+    
+    func maxAltitudeForRow(at index: Int) -> Double {
+        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        
+        var maxAltitude = -10000.0
+        
+        for location in trackForRow(at: index).locations {
+            if location.altitude > maxAltitude { maxAltitude = location.altitude }
+        }
+        
+        return maxAltitude
+    }
 }

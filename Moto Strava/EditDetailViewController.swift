@@ -21,6 +21,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var averageSpeedLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
+    @IBOutlet weak var maxElevationLabel: UILabel!
     
 
     override func viewDidLoad() {
@@ -70,8 +71,13 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate {
         // update the average speed
         averageSpeedLabel.text = "Avg speed: \(modelController.averageSpeedForRow(at: rowInModel).easyToReadNotation(withDecimalPlaces: 3)) mph"
         
+        // update the duration
         let (hours, minutes, seconds) = modelController.durationForRow(at: rowInModel).timeIntervalToHoursMinutesSeconds()
         durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
+        
+        // update the Max Elevation
+        let maxElevation = (modelController.maxAltitudeForRow(at: rowInModel) * 3.281).customRounded(withDecimalPlaces: 0)
+        maxElevationLabel.text = "Max Elevation: \(maxElevation)"
     }
     
     func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {
