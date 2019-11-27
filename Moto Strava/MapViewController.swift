@@ -34,6 +34,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     /// the complete list of logged locations from our current track recording
     private var polyLinesFromCurrentRecording = [MKPolyline]()
     
+    private var colorForPolyline = [MKPolyline:UIColor]()
+    
     /// the main instance of mapKit
     @IBOutlet private weak var mapKitView: MKMapView!
     @IBOutlet private weak var recordTrackButton: UIButton!
@@ -121,7 +123,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private func addAllTracksToMap() {
         for track in modelController.listOfTracks {
             let locationData = track.CLLocationArray
-            mapKitView.addOverlay(createPolyLine(using: locationData))
+            
+            let overlay = createPolyLine(using: locationData)
+            mapKitView.addOverlay(overlay)
+            colorForPolyline[overlay] = track.color.uiColor
         }
     }
     
@@ -214,7 +219,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         // changes a few of the properties of the renderer
         let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = .red
+        renderer.strokeColor = colorForPolyline[polyline]
         renderer.lineWidth = 1
         return renderer
     }
@@ -268,4 +273,5 @@ extension MKCoordinateRegion {
         
     }
 }
+
 

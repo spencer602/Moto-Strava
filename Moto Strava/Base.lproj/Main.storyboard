@@ -168,6 +168,27 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="X0K-Zb-Rh2">
+                                        <rect key="frame" x="0.0" y="678" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="X0K-Zb-Rh2" id="unL-Pp-lBe">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Track Color" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="r2c-cy-4EB">
+                                                    <rect key="frame" x="30" y="13" width="354" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="r2c-cy-4EB" firstAttribute="top" secondItem="unL-Pp-lBe" secondAttribute="topMargin" constant="2" id="4f9-8Z-Yuk"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="r2c-cy-4EB" secondAttribute="trailing" constant="10" id="Ogy-Ll-qzH"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="r2c-cy-4EB" secondAttribute="bottom" constant="2" id="Rzu-sw-IH9"/>
+                                                <constraint firstItem="r2c-cy-4EB" firstAttribute="leading" secondItem="unL-Pp-lBe" secondAttribute="leadingMargin" constant="10" id="ioF-Vv-6m0"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -185,6 +206,7 @@
                         <outlet property="imageView" destination="WEh-hf-Jw9" id="2cR-qO-vjw"/>
                         <outlet property="maxElevationLabel" destination="8tz-vB-ACn" id="G6Z-WT-3gg"/>
                         <outlet property="titleTextField" destination="Ug8-4b-ZnP" id="EbO-N2-haR"/>
+                        <outlet property="trackColorTextField" destination="r2c-cy-4EB" id="h3c-Wt-aZi"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qn8-s2-8xw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

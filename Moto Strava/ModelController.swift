@@ -119,4 +119,9 @@ class ModelController {
         
         return maxAltitude
     }
+    
+    func editColorForRow(at index: Int, with color: CustomCodeableColor) {
+        motoStravaModel.listOfTracks[index].color = color
+        saveJSONToFile()
+    }
 }

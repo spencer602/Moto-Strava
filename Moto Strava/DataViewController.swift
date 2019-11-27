@@ -61,7 +61,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             snapShotter.start() { (snapshot, error) in
                 if snapshot != nil {
                     let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image)
+                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: indexPath.row).color.uiColor)
                 } else {
                     cell.imageOutlet.image = snapshot?.image
                 }
@@ -73,7 +73,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         return UITableViewCell()
     }
     
-    func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {
+    func drawLines(using points: [CGPoint], on image: UIImage, with color: UIColor) -> UIImage? {
         let imageSize = image.size
         let scale: CGFloat = 0
         
@@ -90,7 +90,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             path.addLine(to: point)
         }
         
-        UIColor.red.setStroke()
+        color.setStroke()
         
         path.stroke()
         
@@ -121,7 +121,6 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let dest = segue.destination as? EditDetailViewController {
             print("Destination as edit detail view controller")
-            dest.trackModel = modelController.trackForRow(at: trackTableView.indexPathForSelectedRow!.row)
             dest.rowInModel = trackTableView.indexPathForSelectedRow!.row
             dest.modelController = modelController
         }

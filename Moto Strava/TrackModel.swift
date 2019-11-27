@@ -8,16 +8,26 @@
 
 import Foundation
 import CoreLocation
+import UIKit
 
 struct TrackModel: Codable {
     let locations: [CustomCodeableLocation]
     var name: String
     let timeStamp: Date
     var locationCount: Int { return locations.count }
-    
+    var color = CustomCodeableColor()
+        
     var CLLocationArray: [CLLocation] {
         return locations.map() { $0.toCLLocation() }
     }
+    
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        locations = try container.decode([CustomCodeableLocation].self, forKey: .locations)
+//        name = try container.decode(String.self, forKey: .name)
+//        timeStamp = try container.decode(Date.self, forKey: .timeStamp)
+//        color = CustomCodeableColor()
+//    }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
         self.locations = cllocationArray.map {
