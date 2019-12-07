@@ -10,6 +10,17 @@ import Foundation
 
 extension Double {
     
+    func timeIntervalToHoursMinutesSeconds() -> (Int, Int, Int) {
+        var time = self
+        let hours = Int(time)/3600
+        time -= 3600.0 * Double(hours)
+        let minutes = Int(time)/60
+        time -= 60.0 * Double(minutes)
+        let seconds = Int(time)/1
+        
+        return(hours, minutes, seconds)
+    }
+    
     /**
      converts a double (represening  a number of seconds) into a string representation that is easy to comprehend magnitude.
      
@@ -124,6 +135,8 @@ extension Int {
      - Returns: the integer raised to the specified power
      */
     func raisedToPower(_ exponent: Int) -> Int {
+        if exponent == 0 { return 1 }
+        
         let base = self
         var newValue = self
         

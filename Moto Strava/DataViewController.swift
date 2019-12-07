@@ -37,12 +37,6 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return modelController.numberOfTracks
     }
-       
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = trackTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
-//        cell.textLabel?.text = modelController.trackNameForRow(at: indexPath.row)
-//        return cell
-//    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
@@ -67,7 +61,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             snapShotter.start() { (snapshot, error) in
                 if snapshot != nil {
                     let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image)
+                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: indexPath.row).color.uiColor)
                 } else {
                     cell.imageOutlet.image = snapshot?.image
                 }
@@ -79,7 +73,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         return UITableViewCell()
     }
     
-    func drawLines(using points: [CGPoint], on image: UIImage) -> UIImage? {
+    func drawLines(using points: [CGPoint], on image: UIImage, with color: UIColor) -> UIImage? {
         let imageSize = image.size
         let scale: CGFloat = 0
         
@@ -96,7 +90,7 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             path.addLine(to: point)
         }
         
-        UIColor.red.setStroke()
+        color.setStroke()
         
         path.stroke()
         
@@ -122,6 +116,14 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let dest = segue.destination as? EditDetailViewController {
+            print("Destination as edit detail view controller")
+            dest.rowInModel = trackTableView.indexPathForSelectedRow!.row
+            dest.modelController = modelController
+        }
     }
     
     

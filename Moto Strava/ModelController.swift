@@ -85,4 +85,43 @@ class ModelController {
         }
         return distance
     }
+    
+    func editNameForTrack(at index: Int, with name: String) {
+        motoStravaModel.listOfTracks[index].name = name
+        saveJSONToFile()
+    }
+    
+    func averageSpeedForRow(at index: Int) -> Double {
+        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        
+        let distance = distanceForRow(at: index) / 1609.344
+        let duration = durationForRow(at: index) / 3600
+        
+        return distance/duration
+    }
+    
+    func durationForRow(at index: Int) -> TimeInterval {
+        let startTime = trackForRow(at: index).locations.first!.timestamp
+        let endTime = trackForRow(at: index).locations.last!.timestamp
+        let duration = startTime.distance(to: endTime)
+        
+        return duration
+    }
+    
+    func maxAltitudeForRow(at index: Int) -> Double {
+        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        
+        var maxAltitude = -10000.0
+        
+        for location in trackForRow(at: index).locations {
+            if location.altitude > maxAltitude { maxAltitude = location.altitude }
+        }
+        
+        return maxAltitude
+    }
+    
+    func editColorForRow(at index: Int, with color: CustomCodeableColor) {
+        motoStravaModel.listOfTracks[index].color = color
+        saveJSONToFile()
+    }
 }
