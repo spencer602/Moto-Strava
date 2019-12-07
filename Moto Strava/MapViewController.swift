@@ -125,8 +125,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let locationData = track.CLLocationArray
             
             let overlay = createPolyLine(using: locationData)
-            mapKitView.addOverlay(overlay)
             colorForPolyline[overlay] = track.color.uiColor
+            mapKitView.addOverlay(overlay)
         }
     }
     
@@ -220,7 +220,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // changes a few of the properties of the renderer
         let renderer = MKPolylineRenderer(polyline: polyline)
         renderer.strokeColor = colorForPolyline[polyline]
-        renderer.lineWidth = 1
+        renderer.lineWidth = 2 
         return renderer
     }
    
