@@ -2,47 +2,42 @@
 //  TrackModel.swift
 //  Moto Strava
 //
-//  Created by Spencer DeBuf on 11/21/19.
+//  Created by Spencer DeBuf on 12/6/19.
 //  Copyright © 2019 Spencer DeBuf. All rights reserved.
 //
-
 import Foundation
 import CoreLocation
 import UIKit
 
 struct TrackModel: Codable {
-    let locations: [CustomCodeableLocation]
+    let locations: [CLLocation]
     var name: String
     let timeStamp: Date
     var locationCount: Int { return locations.count }
-    var color = CustomCodeableColor()
-        
-    var CLLocationArray: [CLLocation] {
-        return locations.map() { $0.toCLLocation() }
+    var color = UIColor.red
+    
+    private var toCodable: CodableTrackModel {
+        return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color)
     }
     
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        locations = try container.decode([CustomCodeableLocation].self, forKey: .locations)
-//        name = try container.decode(String.self, forKey: .name)
-//        timeStamp = try container.decode(Date.self, forKey: .timeStamp)
-//        color = CustomCodeableColor()
-//    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(toCodable)
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let codeableTrackModel = try container.decode(CodableTrackModel.self)
+        
+        locations = codeableTrackModel.CLLocationArray
+        name = codeableTrackModel.name
+        timeStamp = codeableTrackModel.timeStamp
+        color = codeableTrackModel.color.uiColor
+    }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
-        self.locations = cllocationArray.map {
-            CustomCodeableLocation.init(fromCLLocation: $0)
-        }
+        self.locations = cllocationArray
         self.name = name
-        self.timeStamp = locations.first!.timestamp
-    }
-    
-    init(withCLLocationArray cllocationArray: [CLLocation]) {
-        self.locations = cllocationArray.map {
-            CustomCodeableLocation.init(fromCLLocation: $0)
-        }
-        let currentTime = Date()
-        self.name = currentTime.description
         self.timeStamp = locations.first!.timestamp
     }
 }

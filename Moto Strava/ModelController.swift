@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import UIKit
 
 class ModelController {
     var motoStravaModel = MotoStravaModel()
@@ -75,7 +76,7 @@ class ModelController {
         let track = motoStravaModel.listOfTracks[index]
         var distance = 0.0
         var previousLocation: CLLocation?
-        for location in track.CLLocationArray {
+        for location in track.locations {
             if previousLocation == nil {
                 previousLocation = location
                 continue
@@ -120,7 +121,7 @@ class ModelController {
         return maxAltitude
     }
     
-    func editColorForRow(at index: Int, with color: CustomCodeableColor) {
+    func editColorForRow(at index: Int, with color: UIColor) {
         motoStravaModel.listOfTracks[index].color = color
         saveJSONToFile()
     }

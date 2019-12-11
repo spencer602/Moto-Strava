@@ -15,16 +15,25 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return CustomCodeableColor.allColors.count
+        return Self.allColors.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return CustomCodeableColor.allColorNames[row]
+        return Self.allColorNames[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        modelController.editColorForRow(at: rowInModel, with: CustomCodeableColor(with: row))
+        modelController.editColorForRow(at: rowInModel, with: Self.allColors[row])
         updateViewFromModel()
+    }
+    
+    
+    static var allColors: [UIColor] {
+        return [.black, .blue, .brown, .cyan, .darkGray, .gray, .green, .lightGray, .magenta, .orange, .purple, .red, .white, .yellow]
+    }
+   
+    static var allColorNames: [String] {
+        return ["black", "blue", "brown", "cyan", "darkGray", "gray", "green", "lightGray", "magenta", "orange", "purple", "red", "white", "yellow"]
     }
     
     var rowInModel: Int!
@@ -86,15 +95,15 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         titleTextField.text = modelController.trackForRow(at: rowInModel).name
         
         // update the track image preview
-        let locationPoints = modelController.trackForRow(at: rowInModel).CLLocationArray.map() { $0.coordinate }
+        let locationPoints = modelController.trackForRow(at: rowInModel).locations.map() { $0.coordinate }
         let options = MKMapSnapshotter.Options()
-        options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: rowInModel).CLLocationArray)
+        options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: rowInModel).locations)
         options.mapType = .satellite
         let snapShotter = MKMapSnapshotter(options: options)
         snapShotter.start() { (snapshot, error) in
             if snapshot != nil {
                 let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                self.imageView.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: self.rowInModel).color.uiColor)
+                self.imageView.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: self.rowInModel).color)
             } else {
                 self.imageView.image = snapshot?.image
             }
