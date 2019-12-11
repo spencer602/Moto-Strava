@@ -110,7 +110,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         polyLinesFromCurrentRecording.removeAll()
         
         // create the track
-        let track = TrackModel(withCLLocationArray: locationList, withName: <#T##String#>)
+        let track = TrackModel(withCLLocationArray: locationList, withName: Date().description)
         
         // add the track to the model's list of tracks
         modelController.add(track: track)
@@ -122,10 +122,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
         for track in modelController.listOfTracks {
-            let locationData = track.CLLocationArray
+            let locationData = track.locations
             
             let overlay = createPolyLine(using: locationData)
-            colorForPolyline[overlay] = track.color.uiColor
+            colorForPolyline[overlay] = track.color
             mapKitView.addOverlay(overlay)
         }
     }

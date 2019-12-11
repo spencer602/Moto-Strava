@@ -52,16 +52,16 @@ class DataViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.distanceLabel.text = "\((modelController.distanceForRow(at: indexPath.row) / 1609.344).easyToReadNotation(withDecimalPlaces: 3)) miles"
             
             let track = modelController.trackForRow(at: indexPath.row)
-            let locationPoints = track.CLLocationArray.map() { $0.coordinate }
+            let locationPoints = track.locations.map() { $0.coordinate }
             let options = MKMapSnapshotter.Options()
-            options.region = MKCoordinateRegion.mapRegion(using: track.CLLocationArray)
+            options.region = MKCoordinateRegion.mapRegion(using: track.locations)
             options.mapType = .satellite
             
             let snapShotter = MKMapSnapshotter(options: options)
             snapShotter.start() { (snapshot, error) in
                 if snapshot != nil {
                     let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: indexPath.row).color.uiColor)
+                    cell.imageOutlet.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: indexPath.row).color)
                 } else {
                     cell.imageOutlet.image = snapshot?.image
                 }

@@ -25,7 +25,7 @@ class ModelController {
                 for: .applicationSupportDirectory,
                 in: .userDomainMask,
                 appropriateFor: nil,
-                create: true).appendingPathComponent("motoStravaModel.json") {
+                create: true).appendingPathComponent("motoStravaModelTwo.json") {
                 do {
                     try json.write(to: url)
                     print("saved successfully!")
@@ -41,7 +41,7 @@ class ModelController {
             for: .applicationSupportDirectory,
             in: .userDomainMask,
             appropriateFor: nil,
-            create: true).appendingPathComponent("motoStravaModel.json")
+            create: true).appendingPathComponent("motoStravaModelTwo.json")
         {
             if let jsonData = try? Data(contentsOf: url) {
                 print("loaded sucessfully!")
