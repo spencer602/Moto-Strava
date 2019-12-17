@@ -40,4 +40,22 @@ struct TrackModel: Codable {
         self.name = name
         self.timeStamp = locations.first!.timestamp
     }
+    
+    var gpxString: String {
+        var s = "<?xml version=\"1.0\"?>\n" +
+                "<gpx version=\"1.1\" creator=\"Xcode\">\n"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                
+        for loc in locations {
+            s += "<wpt lat=\"\(loc.coordinate.latitude)\" lon=\"\(loc.coordinate.longitude)\">\n"
+            s += "<time>\(formatter.string(from: loc.timestamp))</time>\n"
+            s += "</wpt>\n"
+        }
+        
+        s += "</gpx>"
+        
+        return s
+    }
 }

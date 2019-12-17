@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="g1k-dU-Y4S">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="g1k-dU-Y4S">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -197,7 +197,13 @@
                             <outlet property="delegate" destination="fPq-Se-9Aw" id="kVl-kk-v4g"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="hWe-RY-zVy"/>
+                    <navigationItem key="navigationItem" id="hWe-RY-zVy">
+                        <barButtonItem key="rightBarButtonItem" image="square.and.arrow.up" catalog="system" id="8SG-e0-fp0">
+                            <connections>
+                                <action selector="shareButtonPressed:" destination="fPq-Se-9Aw" id="zho-aa-gxA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="averageSpeedLabel" destination="lkg-BF-af9" id="TBe-xI-2ie"/>
                         <outlet property="dateLabel" destination="adX-Ow-oaQ" id="36O-Xa-jG0"/>
@@ -393,4 +399,7 @@
             <point key="canvasLocation" x="382.60869565217394" y="733.92857142857144"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="square.and.arrow.up" catalog="system" width="56" height="64"/>
+    </resources>
 </document>

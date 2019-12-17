@@ -50,6 +50,10 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
     @IBOutlet weak var maxElevationLabel: UILabel!
     @IBOutlet weak var trackColorTextField: UITextField!
     
+    @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
+        print(modelController.trackForRow(at: rowInModel).gpxString)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         titleTextField.delegate = self

@@ -16,6 +16,8 @@
 		0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F666238C9E0200613DEC /* EditDetailViewController.swift */; };
 		0920F669238D9DCE00613DEC /* CustomCodeableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */; };
 		09B86E5A239B657700A718B0 /* TrackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B86E59239B657700A718B0 /* TrackModel.swift */; };
+		09F986F323A967C800DE854A /* 2_laps.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F123A967C800DE854A /* 2_laps.gpx */; };
+		09F986F423A967C800DE854A /* 1_lap.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F223A967C800DE854A /* 1_lap.gpx */; };
 		09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181C23834D8000A5D031 /* AppDelegate.swift */; };
 		09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181E23834D8000A5D031 /* SceneDelegate.swift */; };
 		09FA182423834D8000A5D031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182223834D8000A5D031 /* Main.storyboard */; };
@@ -36,6 +38,8 @@
 		0920F666238C9E0200613DEC /* EditDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDetailViewController.swift; sourceTree = "<group>"; };
 		0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCodeableColor.swift; sourceTree = "<group>"; };
 		09B86E59239B657700A718B0 /* TrackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModel.swift; sourceTree = "<group>"; };
+		09F986F123A967C800DE854A /* 2_laps.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 2_laps.gpx; sourceTree = "<group>"; };
+		09F986F223A967C800DE854A /* 1_lap.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 1_lap.gpx; sourceTree = "<group>"; };
 		09FA181923834D8000A5D031 /* Moto Strava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Moto Strava.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09FA181C23834D8000A5D031 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09FA181E23834D8000A5D031 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +63,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09F986F023A967A200DE854A /* Tracks */ = {
+			isa = PBXGroup;
+			children = (
+				09FA1832238385FC00A5D031 /* Route.gpx */,
+				09F986F223A967C800DE854A /* 1_lap.gpx */,
+				09F986F123A967C800DE854A /* 2_laps.gpx */,
+			);
+			path = Tracks;
+			sourceTree = "<group>";
+		};
 		09FA181023834D8000A5D031 = {
 			isa = PBXGroup;
 			children = (
@@ -81,8 +95,8 @@
 				09FA181C23834D8000A5D031 /* AppDelegate.swift */,
 				09FA181E23834D8000A5D031 /* SceneDelegate.swift */,
 				09FA182223834D8000A5D031 /* Main.storyboard */,
-				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
 				0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */,
+				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
 				0920F662238B439700613DEC /* TrackTableViewCell.swift */,
 				09FA1834238387DB00A5D031 /* MapViewController.swift */,
 				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
@@ -94,8 +108,8 @@
 				09FA182523834D8200A5D031 /* Assets.xcassets */,
 				09FA182723834D8200A5D031 /* LaunchScreen.storyboard */,
 				09FA182A23834D8200A5D031 /* Info.plist */,
-				09FA1832238385FC00A5D031 /* Route.gpx */,
 				0920F664238C96C800613DEC /* UtilityExtensions.swift */,
+				09F986F023A967A200DE854A /* Tracks */,
 			);
 			path = "Moto Strava";
 			sourceTree = "<group>";
@@ -162,6 +176,8 @@
 				09FA1833238385FC00A5D031 /* Route.gpx in Resources */,
 				09FA182623834D8200A5D031 /* Assets.xcassets in Resources */,
 				09FA182423834D8000A5D031 /* Main.storyboard in Resources */,
+				09F986F323A967C800DE854A /* 2_laps.gpx in Resources */,
+				09F986F423A967C800DE854A /* 1_lap.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
