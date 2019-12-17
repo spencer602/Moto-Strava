@@ -23,6 +23,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
     
+    private let defaultColor = UIColor.red
+    
     /// the locations we are collecting while recording tracks
     private var locationList = [CLLocation]()
     
@@ -87,7 +89,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
    
     /**
-      target action from when the 'stop recording track' button is pressed. stops  recording a track
+      target action from when the 'stop recording track' button is pressed. stops recording a track
       
       - Parameter sender: the button that triggered the action
       */
@@ -117,6 +119,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         // remove all of the locations from the current list
         locationList.removeAll()
+        
+        let overlay = createPolyLine(using: track.locations)
+        colorForPolyline[overlay] = track.color
+        mapKitView.addOverlay(overlay)
+        
     }
     
     /// adds all of the tracks in the model to the map
@@ -199,6 +206,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let coordinates = [lastLocation.coordinate, newLocation.coordinate]
             // create an MKPolyline from the two coordinates
             let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
+            colorForPolyline[polyLine] = defaultColor
             // add the polyline to the list of polylines in current recording
             polyLinesFromCurrentRecording.append(polyLine)
             // add an overlay as a MKPolyline
