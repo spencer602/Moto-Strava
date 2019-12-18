@@ -57,6 +57,9 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="WEh-hf-Jw9" secondAttribute="trailing" id="nyW-tT-m7T"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="cto-ms-L0Z" kind="show" id="alW-Zt-qdG"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="ZHa-bC-Xsv" userLabel="Timestamp Cell">
                                         <rect key="frame" x="0.0" y="458" width="414" height="44"/>
@@ -218,6 +221,36 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qn8-s2-8xw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1292.753623188406" y="-50.223214285714285"/>
+        </scene>
+        <!--Track Preview View Controller-->
+        <scene sceneID="BdU-Z4-HfF">
+            <objects>
+                <viewController id="cto-ms-L0Z" customClass="TrackPreviewViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fWc-nl-Ck9">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="satellite" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pim-GA-c6K">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Pim-GA-c6K" firstAttribute="leading" secondItem="WCR-ng-vBG" secondAttribute="leading" id="9Ff-pz-UeP"/>
+                            <constraint firstItem="WCR-ng-vBG" firstAttribute="bottom" secondItem="Pim-GA-c6K" secondAttribute="bottom" id="IMc-TR-s3c"/>
+                            <constraint firstItem="WCR-ng-vBG" firstAttribute="trailing" secondItem="Pim-GA-c6K" secondAttribute="trailing" id="oAY-eN-Hy9"/>
+                            <constraint firstItem="Pim-GA-c6K" firstAttribute="top" secondItem="WCR-ng-vBG" secondAttribute="top" id="vCC-L5-3Y1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="WCR-ng-vBG"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="j5R-6h-rMo"/>
+                    <connections>
+                        <outlet property="mapKitView" destination="Pim-GA-c6K" id="D1l-hA-j5n"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f6O-0k-WEr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2104" y="-48"/>
         </scene>
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
