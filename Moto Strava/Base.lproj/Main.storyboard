@@ -171,14 +171,14 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="X0K-Zb-Rh2">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="X0K-Zb-Rh2" userLabel="Track Color">
                                         <rect key="frame" x="0.0" y="678" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="X0K-Zb-Rh2" id="unL-Pp-lBe">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Track Color" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="r2c-cy-4EB">
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Edit Track Color" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="r2c-cy-4EB">
                                                     <rect key="frame" x="30" y="13" width="354" height="18"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits"/>
@@ -191,6 +191,31 @@
                                                 <constraint firstItem="r2c-cy-4EB" firstAttribute="leading" secondItem="unL-Pp-lBe" secondAttribute="leadingMargin" constant="10" id="ioF-Vv-6m0"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="mke-ma-4A7" userLabel="Edit Lap Gate">
+                                        <rect key="frame" x="0.0" y="722" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mke-ma-4A7" id="V5m-Oc-VcY">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit Lap Gate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hw0-fq-90M">
+                                                    <rect key="frame" x="30" y="13" width="354" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Hw0-fq-90M" secondAttribute="trailing" constant="10" id="5cn-2L-bgK"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Hw0-fq-90M" secondAttribute="bottom" constant="2" id="aii-MR-Lo2"/>
+                                                <constraint firstItem="Hw0-fq-90M" firstAttribute="top" secondItem="V5m-Oc-VcY" secondAttribute="topMargin" constant="2" id="dIh-tp-M0c"/>
+                                                <constraint firstItem="Hw0-fq-90M" firstAttribute="leading" secondItem="V5m-Oc-VcY" secondAttribute="leadingMargin" constant="10" id="ohp-QX-Rfc"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="3il-EK-NN0" kind="show" id="7QP-I1-o2u"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -250,7 +275,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f6O-0k-WEr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2104" y="-48"/>
+            <point key="canvasLocation" x="2096" y="-612"/>
         </scene>
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
@@ -430,6 +455,46 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RgB-qd-m8U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="382.60869565217394" y="733.92857142857144"/>
+        </scene>
+        <!--Lap Gate Editor View Controller-->
+        <scene sceneID="CnH-De-CXQ">
+            <objects>
+                <viewController id="3il-EK-NN0" customClass="LapGateEditorViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ClV-iZ-8lK">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1.5" minValue="0.5" maxValue="1.5" translatesAutoresizingMaskIntoConstraints="NO" id="qmM-w1-v8h">
+                                <rect key="frame" x="18" y="763" width="378" height="31"/>
+                                <connections>
+                                    <action selector="sliderValueChanged:" destination="3il-EK-NN0" eventType="valueChanged" id="VEi-FX-tbh"/>
+                                </connections>
+                            </slider>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="9b8-fz-Alo">
+                                <rect key="frame" x="0.0" y="88" width="414" height="655"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="dQn-Hs-dR1" firstAttribute="trailing" secondItem="qmM-w1-v8h" secondAttribute="trailing" constant="20" id="2hv-sG-NdG"/>
+                            <constraint firstItem="9b8-fz-Alo" firstAttribute="top" secondItem="dQn-Hs-dR1" secondAttribute="top" id="FJA-QG-dzK"/>
+                            <constraint firstItem="qmM-w1-v8h" firstAttribute="leading" secondItem="dQn-Hs-dR1" secondAttribute="leading" constant="20" id="KPP-0f-ns6"/>
+                            <constraint firstItem="dQn-Hs-dR1" firstAttribute="bottom" secondItem="qmM-w1-v8h" secondAttribute="bottom" constant="20" id="X6w-MN-yUQ"/>
+                            <constraint firstItem="dQn-Hs-dR1" firstAttribute="trailing" secondItem="9b8-fz-Alo" secondAttribute="trailing" id="cGc-no-Fhg"/>
+                            <constraint firstItem="qmM-w1-v8h" firstAttribute="top" secondItem="9b8-fz-Alo" secondAttribute="bottom" constant="20" id="l04-Lc-beu"/>
+                            <constraint firstItem="9b8-fz-Alo" firstAttribute="leading" secondItem="dQn-Hs-dR1" secondAttribute="leading" id="pzi-9s-5N1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="dQn-Hs-dR1"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Lxx-fy-spS"/>
+                    <connections>
+                        <outlet property="mapKitView" destination="9b8-fz-Alo" id="ShC-Vq-6cL"/>
+                        <outlet property="slider" destination="qmM-w1-v8h" id="345-85-8v3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DKV-RR-UtU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2096" y="67"/>
         </scene>
     </scenes>
     <resources>

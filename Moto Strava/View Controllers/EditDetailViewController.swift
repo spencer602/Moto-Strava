@@ -171,6 +171,11 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
             mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
             mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
         }
+        
+        if let mapPreview = segue.destination as? LapGateEditorViewController {
+            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
+            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
+        }
     }
     
     

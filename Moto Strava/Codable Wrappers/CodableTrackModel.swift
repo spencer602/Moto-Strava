@@ -16,6 +16,8 @@ struct CodableTrackModel: Codable {
     let timeStamp: Date
     var locationCount: Int { return locations.count }
     var color: CustomCodeableColor
+    
+    let lapGate: CustomCodeableLocation?
         
     var CLLocationArray: [CLLocation] {
         return locations.map() { $0.toCLLocation() }
@@ -29,12 +31,13 @@ struct CodableTrackModel: Codable {
 //        color = CustomCodeableColor()
 //    }
     
-    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String, withColor color: UIColor) {
+    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String, withColor color: UIColor, lapGate: CLLocation?) {
         self.locations = cllocationArray.map {
             CustomCodeableLocation.init(fromCLLocation: $0)
         }
         self.name = name
         self.timeStamp = locations.first!.timestamp
         self.color = CustomCodeableColor(with: color)
+        self.lapGate = lapGate != nil ? CustomCodeableLocation(fromCLLocation: lapGate!) : nil
     }
 }

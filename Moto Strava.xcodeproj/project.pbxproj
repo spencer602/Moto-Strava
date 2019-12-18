@@ -19,6 +19,7 @@
 		09F986F323A967C800DE854A /* 2_laps.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F123A967C800DE854A /* 2_laps.gpx */; };
 		09F986F423A967C800DE854A /* 1_lap.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F223A967C800DE854A /* 1_lap.gpx */; };
 		09F986F823A9958500DE854A /* TrackPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F986F723A9958500DE854A /* TrackPreviewViewController.swift */; };
+		09F986FA23A9E73700DE854A /* LapGateEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */; };
 		09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181C23834D8000A5D031 /* AppDelegate.swift */; };
 		09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FA181E23834D8000A5D031 /* SceneDelegate.swift */; };
 		09FA182423834D8000A5D031 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09FA182223834D8000A5D031 /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 		09F986F123A967C800DE854A /* 2_laps.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 2_laps.gpx; sourceTree = "<group>"; };
 		09F986F223A967C800DE854A /* 1_lap.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 1_lap.gpx; sourceTree = "<group>"; };
 		09F986F723A9958500DE854A /* TrackPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPreviewViewController.swift; sourceTree = "<group>"; };
+		09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LapGateEditorViewController.swift; sourceTree = "<group>"; };
 		09FA181923834D8000A5D031 /* Moto Strava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Moto Strava.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09FA181C23834D8000A5D031 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09FA181E23834D8000A5D031 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +77,38 @@
 			path = Tracks;
 			sourceTree = "<group>";
 		};
+		09F986FB23A9E74C00DE854A /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */,
+				09F986F723A9958500DE854A /* TrackPreviewViewController.swift */,
+				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
+				09FA1834238387DB00A5D031 /* MapViewController.swift */,
+				09FA18302383833D00A5D031 /* DataViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		09F986FC23A9E76E00DE854A /* Codable Wrappers */ = {
+			isa = PBXGroup;
+			children = (
+				0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */,
+				0920F65A23872B7E00613DEC /* CodableTrackModel.swift */,
+				0920F65C23872E3600613DEC /* CustomCodeableLocation.swift */,
+			);
+			path = "Codable Wrappers";
+			sourceTree = "<group>";
+		};
+		09F986FD23A9E79300DE854A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
+				09B86E59239B657700A718B0 /* TrackModel.swift */,
+				0920F660238B067600613DEC /* ModelController.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		09FA181023834D8000A5D031 = {
 			isa = PBXGroup;
 			children = (
@@ -97,21 +131,14 @@
 				09FA181C23834D8000A5D031 /* AppDelegate.swift */,
 				09FA181E23834D8000A5D031 /* SceneDelegate.swift */,
 				09FA182223834D8000A5D031 /* Main.storyboard */,
-				09F986F723A9958500DE854A /* TrackPreviewViewController.swift */,
-				0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */,
-				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
 				0920F662238B439700613DEC /* TrackTableViewCell.swift */,
-				09FA1834238387DB00A5D031 /* MapViewController.swift */,
-				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
-				0920F65A23872B7E00613DEC /* CodableTrackModel.swift */,
-				09B86E59239B657700A718B0 /* TrackModel.swift */,
-				0920F65C23872E3600613DEC /* CustomCodeableLocation.swift */,
-				09FA18302383833D00A5D031 /* DataViewController.swift */,
-				0920F660238B067600613DEC /* ModelController.swift */,
-				09FA182523834D8200A5D031 /* Assets.xcassets */,
+				0920F664238C96C800613DEC /* UtilityExtensions.swift */,
+				09F986FB23A9E74C00DE854A /* View Controllers */,
+				09F986FC23A9E76E00DE854A /* Codable Wrappers */,
+				09F986FD23A9E79300DE854A /* Models */,
 				09FA182723834D8200A5D031 /* LaunchScreen.storyboard */,
 				09FA182A23834D8200A5D031 /* Info.plist */,
-				0920F664238C96C800613DEC /* UtilityExtensions.swift */,
+				09FA182523834D8200A5D031 /* Assets.xcassets */,
 				09F986F023A967A200DE854A /* Tracks */,
 			);
 			path = "Moto Strava";
@@ -202,6 +229,7 @@
 				0920F661238B067600613DEC /* ModelController.swift in Sources */,
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,
 				09F986F823A9958500DE854A /* TrackPreviewViewController.swift in Sources */,
+				09F986FA23A9E73700DE854A /* LapGateEditorViewController.swift in Sources */,
 				0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */,
 				0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */,
 				09FA1835238387DB00A5D031 /* MapViewController.swift in Sources */,

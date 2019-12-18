@@ -16,8 +16,10 @@ struct TrackModel: Codable {
     var locationCount: Int { return locations.count }
     var color = UIColor.red
     
+    var lapGate: CLLocation?
+    
     private var toCodable: CodableTrackModel {
-        return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color)
+        return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color, lapGate: lapGate)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -33,12 +35,14 @@ struct TrackModel: Codable {
         name = codeableTrackModel.name
         timeStamp = codeableTrackModel.timeStamp
         color = codeableTrackModel.color.uiColor
+        lapGate = codeableTrackModel.lapGate != nil ? codeableTrackModel.lapGate!.toCLLocation() : nil
     }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
         self.locations = cllocationArray
         self.name = name
         self.timeStamp = locations.first!.timestamp
+        self.lapGate = nil
     }
     
     var gpxString: String {
