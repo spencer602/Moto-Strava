@@ -28,7 +28,8 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
     var lapGate = MKPointAnnotation()
     
 
-
+    var rowInModel: Int!
+    var modelController: ModelController!
 
 
 
@@ -57,10 +58,16 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
         slider.minimumValue = 0
         slider.value = 0
         
+        if modelController.trackForRow(at: rowInModel).lapGate != nil {
+            lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate!.coordinate
+        } else {
+            lapGate.coordinate = locationList[0].coordinate
+        }
+        
         
         
         lapGate.title = "Lap Gate"
-        lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
+        //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
         mapKitView.addAnnotation(lapGate)
     }
 
@@ -102,7 +109,6 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
     }
 
 
-
     // delegate method of MKMapView
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
        // ensures that the overlay is an MKPolyLine
@@ -117,6 +123,33 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
        return renderer
     }
 
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        switch newState {
+        case .starting:
+            //view.dragState = .dragging
+            print("drag newstate = starting")
+        case .canceling:
+            //view.dragState = .none
+            print("drag newState = canceling")
+        case .ending:
+            print("drag newState = ending")
+            var location: CLLocation?
+            
+            if view.annotation != nil {
+                location = CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude)
+            }
+            
+            modelController.setLapGateForRow(at: rowInModel, with: location)
+            
+        case .dragging:
+            print("drag newState = dragging")
+        default:
+            print("drag newstate = soemthing else")
+            break
+        }
+    }
+    
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard annotation is MKPointAnnotation else { return nil }
 
@@ -126,9 +159,12 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             annotationView!.canShowCallout = true
+            print("filter annotationView was nil")
         } else {
             annotationView!.annotation = annotation
         }
+        
+        annotationView!.isDraggable = true
 
         return annotationView
     }
