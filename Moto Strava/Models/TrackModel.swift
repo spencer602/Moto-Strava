@@ -16,8 +16,10 @@ struct TrackModel: Codable {
     var locationCount: Int { return locations.count }
     var color = UIColor.red
     
+    var lapGate: LocationGateModel?
+    
     private var toCodable: CodableTrackModel {
-        return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color)
+        return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color, lapGate: lapGate)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -33,11 +35,31 @@ struct TrackModel: Codable {
         name = codeableTrackModel.name
         timeStamp = codeableTrackModel.timeStamp
         color = codeableTrackModel.color.uiColor
+        lapGate = codeableTrackModel.lapGate
     }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
         self.locations = cllocationArray
         self.name = name
         self.timeStamp = locations.first!.timestamp
+        self.lapGate = nil
+    }
+    
+    var gpxString: String {
+        var s = "<?xml version=\"1.0\"?>\n" +
+                "<gpx version=\"1.1\" creator=\"Xcode\">\n"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                
+        for loc in locations {
+            s += "<wpt lat=\"\(loc.coordinate.latitude)\" lon=\"\(loc.coordinate.longitude)\">\n"
+            s += "<time>\(formatter.string(from: loc.timestamp))</time>\n"
+            s += "</wpt>\n"
+        }
+        
+        s += "</gpx>"
+        
+        return s
     }
 }

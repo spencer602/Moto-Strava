@@ -125,4 +125,9 @@ class ModelController {
         motoStravaModel.listOfTracks[index].color = color
         saveJSONToFile()
     }
+    
+    func setLapGateForRow(at index: Int, with lapGate: LocationGateModel?) {
+        motoStravaModel.listOfTracks[index].lapGate = lapGate
+        saveJSONToFile()
+    }
 }
