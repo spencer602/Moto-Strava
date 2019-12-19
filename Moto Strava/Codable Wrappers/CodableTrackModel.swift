@@ -11,33 +11,24 @@ import CoreLocation
 import UIKit
 
 struct CodableTrackModel: Codable {
-    let locations: [CustomCodeableLocation]
+    private var codableLocations: [LocationModel]
     var name: String
-    let timeStamp: Date
-    var locationCount: Int { return locations.count }
-    var color: CustomCodeableColor
+    var timeStamp: Date { return locations.first!.timestamp }
+    private var codableColor: CustomCodeableColor
+    var color: UIColor { return codableColor.uiColor }
     
-    let lapGate: LocationGateModel?
+    var lapGate: GateModel
         
-    var CLLocationArray: [CLLocation] {
-        return locations.map() { $0.toCLLocation() }
+    var locations: [CLLocation] {
+        return codableLocations.map() { $0.toCLLocation() }
     }
     
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        locations = try container.decode([CustomCodeableLocation].self, forKey: .locations)
-//        name = try container.decode(String.self, forKey: .name)
-//        timeStamp = try container.decode(Date.self, forKey: .timeStamp)
-//        color = CustomCodeableColor()
-//    }
-    
-    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String, withColor color: UIColor, lapGate: LocationGateModel?) {
-        self.locations = cllocationArray.map {
-            CustomCodeableLocation.init(fromCLLocation: $0)
+    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String, withColor color: UIColor, lapGate: GateModel) {
+        self.codableLocations = cllocationArray.map {
+            LocationModel.init(fromCLLocation: $0)
         }
         self.name = name
-        self.timeStamp = locations.first!.timestamp
-        self.color = CustomCodeableColor(with: color)
+        self.codableColor = CustomCodeableColor(with: color)
         self.lapGate = lapGate
     }
 }

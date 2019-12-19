@@ -66,11 +66,8 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
        
         //slider.value = 0
         
-        if modelController.trackForRow(at: rowInModel).lapGate != nil {
-            lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate!.location.coordinate
-        } else {
-            lapGate.coordinate = locationList[0].coordinate
-        }
+        lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate.location.coordinate
+       
         
         
         
@@ -105,7 +102,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
         }
         pointsLabel.text = "\(count)"
         
-        modelController.setLapGateForRow(at: rowInModel, with: LocationGateModel(location: CLLocation(latitude: lapGate.coordinate.latitude, longitude: lapGate.coordinate.longitude), radius: CLLocationDistance(gateRadius)))
+        modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: CLLocation(latitude: lapGate.coordinate.latitude, longitude: lapGate.coordinate.longitude), withRadius: CLLocationDistance(gateRadius)))
 
     }
 
@@ -175,10 +172,10 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
             mapKitView.addOverlay(cir)
         case .ending:
             print("drag newState = ending")
-            var location: LocationGateModel?
+            var location: GateModel?
             
             if view.annotation != nil {
-                location = LocationGateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), radius: Double(gateRadius))
+                location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: Double(gateRadius))
                 mapKitView.removeOverlay(cir)
                 cir = MKCircle(center: location!.location.coordinate, radius: Double(gateRadius))
                 mapKitView.addOverlay(cir)

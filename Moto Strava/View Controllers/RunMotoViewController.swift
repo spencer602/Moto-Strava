@@ -65,11 +65,8 @@ class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapV
        
         //slider.value = 0
         
-        if modelController.trackForRow(at: rowInModel).lapGate != nil {
-            lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate!.location.coordinate
-        } else {
-            lapGate.coordinate = locationList[0].coordinate
-        }
+        lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate.location.coordinate
+        
         
         
         
