@@ -56,6 +56,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         titleTextField.delegate = self
         
         trackColorTextField.inputView = colorPicker
@@ -177,6 +178,9 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
             mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
             mapPreview.rowInModel = rowInModel
             mapPreview.modelController = modelController
+            if let gate = modelController.trackForRow(at: rowInModel).lapGate {
+                mapPreview.gateRadius = Float(gate.radius)
+            }
         }
     }
     

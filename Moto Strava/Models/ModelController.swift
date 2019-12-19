@@ -126,7 +126,7 @@ class ModelController {
         saveJSONToFile()
     }
     
-    func setLapGateForRow(at index: Int, with lapGate: CLLocation?) {
+    func setLapGateForRow(at index: Int, with lapGate: LocationGateModel?) {
         motoStravaModel.listOfTracks[index].lapGate = lapGate
         saveJSONToFile()
     }

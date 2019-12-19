@@ -15,12 +15,14 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
     
     @IBOutlet weak var mapKitView: MKMapView!
     
+    var gateRadius: Float = 10.0
+    
     @IBOutlet weak var slider: UISlider!
     
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
 
-    var trackColor = UIColor.red
+    var trackColor: UIColor!
 
     /// the locations we are collecting while recording tracks
     var locationList = [CLLocation]()
@@ -31,12 +33,19 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
     var rowInModel: Int!
     var modelController: ModelController!
 
-
-
+    var cir = MKCircle()
+    
+    
+    @IBOutlet weak var pointsLabel: UILabel!
+    
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        slider.maximumValue = 100
+        slider.minimumValue = 10
+        slider.setValue(gateRadius, animated: false)
 
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -54,12 +63,11 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
 
         zoomMapTo()
 
-        slider.maximumValue = Float(locationList.count - 1)
-        slider.minimumValue = 0
-        slider.value = 0
+       
+        //slider.value = 0
         
         if modelController.trackForRow(at: rowInModel).lapGate != nil {
-            lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate!.coordinate
+            lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate!.location.coordinate
         } else {
             lapGate.coordinate = locationList[0].coordinate
         }
@@ -69,12 +77,36 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
         lapGate.title = "Lap Gate"
         //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
         mapKitView.addAnnotation(lapGate)
+        
+        cir = MKCircle(center: lapGate.coordinate, radius: Double(gateRadius))
+        mapKitView.addOverlay(cir)
+        calculatePointsInGateRadius()
     }
 
 
     @IBAction func sliderValueChanged(_ sender: UISlider) {
-        lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
-        print(Int(sender.value.rounded()))
+        gateRadius = slider.value
+        mapKitView.removeOverlay(cir)
+        cir = MKCircle(center: lapGate.coordinate, radius: Double(gateRadius))
+        mapKitView.addOverlay(cir)
+        calculatePointsInGateRadius()
+        
+        
+//        lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
+//        print(Int(sender.value.rounded()))
+    }
+    
+    private func calculatePointsInGateRadius() {
+        var count = 0
+        for loc in locationList {
+            if loc.distance(from: CLLocation(latitude: cir.coordinate.latitude, longitude: cir.coordinate.longitude)) <= Double(gateRadius) {
+                count+=1
+            }
+        }
+        pointsLabel.text = "\(count)"
+        
+        modelController.setLapGateForRow(at: rowInModel, with: LocationGateModel(location: CLLocation(latitude: lapGate.coordinate.latitude, longitude: lapGate.coordinate.longitude), radius: CLLocationDistance(gateRadius)))
+
     }
 
 
@@ -111,35 +143,49 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
 
     // delegate method of MKMapView
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-       // ensures that the overlay is an MKPolyLine
-       guard let polyline = overlay as? MKPolyline else {
-           return MKOverlayRenderer(overlay: overlay)
-       }
-       
-       // changes a few of the properties of the renderer
-       let renderer = MKPolylineRenderer(polyline: polyline)
-       renderer.strokeColor = trackColor
-       renderer.lineWidth = 2
-       return renderer
+        // ensures that the overlay is an MKPolyLine
+        if let polyline = overlay as? MKPolyline {
+            // changes a few of the properties of the renderer
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = trackColor
+            renderer.lineWidth = 2
+            return renderer
+        }
+        else if let polyline = overlay as? MKCircle {
+            let circleRenderer = MKCircleRenderer(circle: polyline)
+            circleRenderer.strokeColor = .blue
+            circleRenderer.fillColor = .blue
+            circleRenderer.alpha = 0.2
+            return circleRenderer
+        }
+        else {
+            return MKOverlayRenderer(overlay: overlay)
+        }
     }
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
         switch newState {
         case .starting:
             //view.dragState = .dragging
+            mapKitView.removeOverlay(cir)
             print("drag newstate = starting")
         case .canceling:
             //view.dragState = .none
             print("drag newState = canceling")
+            mapKitView.addOverlay(cir)
         case .ending:
             print("drag newState = ending")
-            var location: CLLocation?
+            var location: LocationGateModel?
             
             if view.annotation != nil {
-                location = CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude)
+                location = LocationGateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), radius: Double(gateRadius))
+                mapKitView.removeOverlay(cir)
+                cir = MKCircle(center: location!.location.coordinate, radius: Double(gateRadius))
+                mapKitView.addOverlay(cir)
             }
             
-            modelController.setLapGateForRow(at: rowInModel, with: location)
+            calculatePointsInGateRadius()
+            
             
         case .dragging:
             print("drag newState = dragging")
@@ -158,7 +204,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate, 
 
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView!.canShowCallout = true
+            annotationView!.canShowCallout = false
             print("filter annotationView was nil")
         } else {
             annotationView!.annotation = annotation

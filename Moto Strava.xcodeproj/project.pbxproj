@@ -15,6 +15,7 @@
 		0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F664238C96C800613DEC /* UtilityExtensions.swift */; };
 		0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F666238C9E0200613DEC /* EditDetailViewController.swift */; };
 		0920F669238D9DCE00613DEC /* CustomCodeableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */; };
+		098B968C23AAF812007C4649 /* LocationGateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098B968B23AAF812007C4649 /* LocationGateModel.swift */; };
 		09B86E5A239B657700A718B0 /* TrackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B86E59239B657700A718B0 /* TrackModel.swift */; };
 		09F986F323A967C800DE854A /* 2_laps.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F123A967C800DE854A /* 2_laps.gpx */; };
 		09F986F423A967C800DE854A /* 1_lap.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F223A967C800DE854A /* 1_lap.gpx */; };
@@ -39,6 +40,7 @@
 		0920F664238C96C800613DEC /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
 		0920F666238C9E0200613DEC /* EditDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDetailViewController.swift; sourceTree = "<group>"; };
 		0920F668238D9DCE00613DEC /* CustomCodeableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCodeableColor.swift; sourceTree = "<group>"; };
+		098B968B23AAF812007C4649 /* LocationGateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationGateModel.swift; sourceTree = "<group>"; };
 		09B86E59239B657700A718B0 /* TrackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModel.swift; sourceTree = "<group>"; };
 		09F986F123A967C800DE854A /* 2_laps.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 2_laps.gpx; sourceTree = "<group>"; };
 		09F986F223A967C800DE854A /* 1_lap.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 1_lap.gpx; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
 				09B86E59239B657700A718B0 /* TrackModel.swift */,
 				0920F660238B067600613DEC /* ModelController.swift */,
+				098B968B23AAF812007C4649 /* LocationGateModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */,
 				0920F65B23872B7E00613DEC /* CodableTrackModel.swift in Sources */,
 				0920F663238B439700613DEC /* TrackTableViewCell.swift in Sources */,
+				098B968C23AAF812007C4649 /* LocationGateModel.swift in Sources */,
 				0920F65D23872E3600613DEC /* CustomCodeableLocation.swift in Sources */,
 				0920F661238B067600613DEC /* ModelController.swift in Sources */,
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,

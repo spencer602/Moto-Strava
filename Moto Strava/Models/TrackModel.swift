@@ -16,7 +16,7 @@ struct TrackModel: Codable {
     var locationCount: Int { return locations.count }
     var color = UIColor.red
     
-    var lapGate: CLLocation?
+    var lapGate: LocationGateModel?
     
     private var toCodable: CodableTrackModel {
         return CodableTrackModel(withCLLocationArray: locations, withName: name, withColor: color, lapGate: lapGate)
@@ -35,7 +35,7 @@ struct TrackModel: Codable {
         name = codeableTrackModel.name
         timeStamp = codeableTrackModel.timeStamp
         color = codeableTrackModel.color.uiColor
-        lapGate = codeableTrackModel.lapGate != nil ? codeableTrackModel.lapGate!.toCLLocation() : nil
+        lapGate = codeableTrackModel.lapGate
     }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
