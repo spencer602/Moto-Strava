@@ -178,9 +178,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
             mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
             mapPreview.rowInModel = rowInModel
             mapPreview.modelController = modelController
-            if let gate = modelController.trackForRow(at: rowInModel).lapGate {
-                mapPreview.gateRadius = Float(gate.radius)
-            }
+            mapPreview.gateRadius = Float(modelController.trackForRow(at: rowInModel).lapGate.radius)
         }
         
         if let mapPreview = segue.destination as? RunMotoViewController {
@@ -188,9 +186,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
             mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
             mapPreview.rowInModel = rowInModel
             mapPreview.modelController = modelController
-            if let gate = modelController.trackForRow(at: rowInModel).lapGate {
-                mapPreview.gateRadius = Float(gate.radius)
-            }
+            mapPreview.gateRadius = Float(modelController.trackForRow(at: rowInModel).lapGate.radius)
         }
     }
     

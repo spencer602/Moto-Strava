@@ -44,8 +44,13 @@ class ModelController {
             create: true).appendingPathComponent("motoStravaModelTwo.json")
         {
             if let jsonData = try? Data(contentsOf: url) {
-                print("loaded sucessfully!")
-                motoStravaModel = MotoStravaModel(withJSON: jsonData)!
+                if let msm = MotoStravaModel(withJSON: jsonData) {
+                    motoStravaModel = msm
+                    print("loaded sucessfully!")
+                } else {
+                    motoStravaModel = MotoStravaModel()
+                    print("couldn't load from Data") 
+                }
             } else { print("couldn't load from Data") }
         } else { print("couldn't load from URL") }
     }
@@ -93,7 +98,7 @@ class ModelController {
     }
     
     func averageSpeedForRow(at index: Int) -> Double {
-        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        if trackForRow(at: index).locations.count == 0 { return 0.0 }
         
         let distance = distanceForRow(at: index) / 1609.344
         let duration = durationForRow(at: index) / 3600
@@ -110,7 +115,7 @@ class ModelController {
     }
     
     func maxAltitudeForRow(at index: Int) -> Double {
-        if trackForRow(at: index).locationCount == 0 { return 0.0 }
+        if trackForRow(at: index).locations.count == 0 { return 0.0 }
         
         var maxAltitude = -10000.0
         
@@ -126,7 +131,7 @@ class ModelController {
         saveJSONToFile()
     }
     
-    func setLapGateForRow(at index: Int, with lapGate: LocationGateModel?) {
+    func setLapGateForRow(at index: Int, with lapGate: GateModel) {
         motoStravaModel.listOfTracks[index].lapGate = lapGate
         saveJSONToFile()
     }

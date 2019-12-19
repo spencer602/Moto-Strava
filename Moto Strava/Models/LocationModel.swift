@@ -9,13 +9,15 @@
 import Foundation
 import CoreLocation
 
-struct CustomCodeableLocation: Codable {
-    let latitude: Double
-    let longitude: Double
-    let altitude: Double
-    let horizontalAccuracy: Double
-    let verticalAccuracy: Double
-    let timestamp: Date
+struct LocationModel: Codable {
+    private let latitude: Double
+    private let longitude: Double
+    private let altitude: Double
+    private let horizontalAccuracy: Double
+    private let verticalAccuracy: Double
+    private let timestamp: Date
+    
+    var location: CLLocation { return CLLocation(coordinate: CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude), altitude: self.altitude, horizontalAccuracy: self.horizontalAccuracy, verticalAccuracy: self.verticalAccuracy, timestamp: self.timestamp) }
     
     init(fromCLLocation cllocation: CLLocation) {
         self.altitude = cllocation.altitude
@@ -25,8 +27,6 @@ struct CustomCodeableLocation: Codable {
         self.verticalAccuracy = cllocation.verticalAccuracy
         self.timestamp = cllocation.timestamp
     }
-    
-    func toCLLocation() -> CLLocation {
-        return CLLocation(coordinate: CLLocationCoordinate2D(latitude: self.latitude, longitude: self.longitude), altitude: self.altitude, horizontalAccuracy: self.horizontalAccuracy, verticalAccuracy: self.verticalAccuracy, timestamp: self.timestamp)
-    }
 }
+
+
