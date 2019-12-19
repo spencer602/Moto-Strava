@@ -226,11 +226,18 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="hWe-RY-zVy">
-                        <barButtonItem key="rightBarButtonItem" image="square.and.arrow.up" catalog="system" id="8SG-e0-fp0">
-                            <connections>
-                                <action selector="shareButtonPressed:" destination="fPq-Se-9Aw" id="zho-aa-gxA"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem image="square.and.arrow.up" catalog="system" id="8SG-e0-fp0" userLabel="Create GPX">
+                                <connections>
+                                    <action selector="shareButtonPressed:" destination="fPq-Se-9Aw" id="zho-aa-gxA"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="stopwatch" catalog="system" id="7HO-H0-EEz" userLabel="Start Moto">
+                                <connections>
+                                    <segue destination="AFs-pV-nWP" kind="show" id="Iww-Se-aLZ"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="averageSpeedLabel" destination="lkg-BF-af9" id="TBe-xI-2ie"/>
@@ -245,7 +252,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qn8-s2-8xw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1292.753623188406" y="-50.223214285714285"/>
+            <point key="canvasLocation" x="1316" y="-273"/>
         </scene>
         <!--Track Preview View Controller-->
         <scene sceneID="BdU-Z4-HfF">
@@ -470,7 +477,7 @@
                                     <action selector="sliderValueChanged:" destination="3il-EK-NN0" eventType="valueChanged" id="VEi-FX-tbh"/>
                                 </connections>
                             </slider>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="9b8-fz-Alo">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9b8-fz-Alo">
                                 <rect key="frame" x="0.0" y="88" width="414" height="655"/>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ENI-fh-doH">
@@ -509,8 +516,66 @@
             </objects>
             <point key="canvasLocation" x="2095.6521739130435" y="66.964285714285708"/>
         </scene>
+        <!--Run Moto View Controller-->
+        <scene sceneID="DV1-zd-7jI">
+            <objects>
+                <viewController id="AFs-pV-nWP" customClass="RunMotoViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5LL-UO-bSM">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="satellite" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pNA-KX-m4a">
+                                <rect key="frame" x="0.0" y="227" width="414" height="586"/>
+                            </mapView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ag-qz-zrf">
+                                <rect key="frame" x="72" y="120" width="242" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This Lap: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4y-G4-Zga">
+                                <rect key="frame" x="72" y="159" width="255" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Number: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bE-Uz-QCe">
+                                <rect key="frame" x="72" y="206" width="264" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="9bE-Uz-QCe" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" constant="72" id="0H3-fa-u2l"/>
+                            <constraint firstItem="pNA-KX-m4a" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" id="0Ox-rb-Htp"/>
+                            <constraint firstItem="9bE-Uz-QCe" firstAttribute="top" secondItem="j4y-G4-Zga" secondAttribute="bottom" constant="26" id="25s-Fq-fre"/>
+                            <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="4ag-qz-zrf" secondAttribute="trailing" constant="100" id="6I3-X7-g4d"/>
+                            <constraint firstItem="j4y-G4-Zga" firstAttribute="top" secondItem="4ag-qz-zrf" secondAttribute="bottom" constant="18" id="BDX-ct-lyE"/>
+                            <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="j4y-G4-Zga" secondAttribute="trailing" constant="87" id="TOh-vu-V5L"/>
+                            <constraint firstItem="4ag-qz-zrf" firstAttribute="top" secondItem="5rd-Na-OU6" secondAttribute="top" constant="32" id="ZCc-NQ-5fH"/>
+                            <constraint firstItem="4ag-qz-zrf" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" constant="72" id="fn5-MI-Vv7"/>
+                            <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="9bE-Uz-QCe" secondAttribute="trailing" constant="78" id="p1Z-Jd-fh2"/>
+                            <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="pNA-KX-m4a" secondAttribute="trailing" id="qBs-Cn-E4L"/>
+                            <constraint firstItem="j4y-G4-Zga" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" constant="72" id="rNc-nz-gOA"/>
+                            <constraint firstItem="pNA-KX-m4a" firstAttribute="top" secondItem="9bE-Uz-QCe" secondAttribute="bottom" id="rsf-9K-A7H"/>
+                            <constraint firstItem="5rd-Na-OU6" firstAttribute="bottom" secondItem="pNA-KX-m4a" secondAttribute="bottom" id="suq-Oi-n8I"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="5rd-Na-OU6"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="h0W-9y-EZy"/>
+                    <connections>
+                        <outlet property="mapKitView" destination="pNA-KX-m4a" id="huR-nU-fGK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vcC-4b-KjX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2846.376811594203" y="-234.375"/>
+        </scene>
     </scenes>
     <resources>
         <image name="square.and.arrow.up" catalog="system" width="56" height="64"/>
+        <image name="stopwatch" catalog="system" width="60" height="64"/>
     </resources>
 </document>

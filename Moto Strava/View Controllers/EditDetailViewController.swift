@@ -182,6 +182,16 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
                 mapPreview.gateRadius = Float(gate.radius)
             }
         }
+        
+        if let mapPreview = segue.destination as? RunMotoViewController {
+            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
+            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
+            mapPreview.rowInModel = rowInModel
+            mapPreview.modelController = modelController
+            if let gate = modelController.trackForRow(at: rowInModel).lapGate {
+                mapPreview.gateRadius = Float(gate.radius)
+            }
+        }
     }
     
     
