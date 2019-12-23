@@ -134,5 +134,11 @@ class ModelController {
     func setLapGateForRow(at index: Int, with lapGate: GateModel) {
         motoStravaModel.listOfTracks[index].lapGate = lapGate
         saveJSONToFile()
+//        print("allegedly saved lapgate \(Date().timeIntervalSince1970)")
+    }
+    
+    func addSessionToTrackForRow(at index: Int, with session: TrackModel) {
+        motoStravaModel.listOfTracks[index].sessions.append(session)
+        saveJSONToFile()
     }
 }

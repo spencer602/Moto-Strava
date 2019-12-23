@@ -9,48 +9,37 @@
 import UIKit
 import MapKit
 
-class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
+class EditDetailViewController: UITableViewController {
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Self.allColors.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return Self.allColorNames[row]
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        modelController.editColorForRow(at: rowInModel, with: Self.allColors[row])
-        updateViewFromModel()
-    }
-    
-    
-    static var allColors: [UIColor] {
+    /// default colors for the picker
+    static var defaultColors: [UIColor] {
         return [.black, .blue, .brown, .cyan, .darkGray, .gray, .green, .lightGray, .magenta, .orange, .purple, .red, .white, .yellow]
     }
-   
-    static var allColorNames: [String] {
-        return ["black", "blue", "brown", "cyan", "darkGray", "gray", "green", "lightGray", "magenta", "orange", "purple", "red", "white", "yellow"]
+    
+    /// the names associated with the default colors for the picker
+    static var defaultColorNames: [String] {
+        return ["black", "blue", "brown", "cyan", "dark Gray", "gray", "green", "light Gray", "magenta", "orange", "purple", "red", "white", "yellow"]
     }
     
+    /// these are set when this VC is segued to
     var rowInModel: Int!
     var modelController: ModelController!
     
-    let colorPicker = UIPickerView()
+    /// the color picker for track color
+    private let colorPicker = UIPickerView()
     
-    @IBOutlet weak var titleTextField: UITextField!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var distanceLabel: UILabel!
-    @IBOutlet weak var averageSpeedLabel: UILabel!
-    @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var maxElevationLabel: UILabel!
-    @IBOutlet weak var trackColorTextField: UITextField!
+    // IBOutlets
+    @IBOutlet private weak var titleTextField: UITextField!
+    @IBOutlet private weak var dateLabel: UILabel!
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var distanceLabel: UILabel!
+    @IBOutlet private weak var averageSpeedLabel: UILabel!
+    @IBOutlet private weak var durationLabel: UILabel!
+    @IBOutlet private weak var maxElevationLabel: UILabel!
+    @IBOutlet private weak var trackColorTextField: UITextField!
     
-    @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
+    /// prints out gpx data to console
+    @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
         print(modelController.trackForRow(at: rowInModel).gpxString)
     }
     
@@ -58,7 +47,6 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         super.viewDidLoad()
         
         titleTextField.delegate = self
-        
         trackColorTextField.inputView = colorPicker
         colorPicker.dataSource = self
         colorPicker.delegate = self
@@ -67,9 +55,9 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         let toolBar = UIToolbar()
         toolBar.barStyle = UIBarStyle.default
         toolBar.isTranslucent = true
-        toolBar.tintColor = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
         toolBar.sizeToFit()
 
+        // add buttons to the toolBar
         let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(donePicker))
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donePicker))
@@ -80,7 +68,31 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         trackColorTextField.inputAccessoryView = toolBar
         
         updateViewFromModel()
-        // Do any additional setup after loading the view.
+        
+        
+        print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // track preview
+        if let mapPreview = segue.destination as? TrackPreviewViewController {
+            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
+            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
+        }
+        
+        // LapGate Editor
+        if let mapPreview = segue.destination as? LapGateEditorViewController {
+            mapPreview.rowInModel = rowInModel
+            mapPreview.modelController = modelController
+        }
+        
+        // RunMoto
+        if let mapPreview = segue.destination as? RunMotoViewController {
+            mapPreview.rowInModel = rowInModel
+            mapPreview.modelController = modelController
+        }
     }
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
@@ -88,13 +100,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         trackColorTextField.resignFirstResponder()
     }
     
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        modelController.editNameForTrack(at: rowInModel, with: textField.text!)
-        return true
-    }
-    
+    /// updates the tableview data from the model
     private func updateViewFromModel() {
         // update the track name
         titleTextField.text = modelController.trackForRow(at: rowInModel).name
@@ -108,7 +114,7 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         snapShotter.start() { (snapshot, error) in
             if snapshot != nil {
                 let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                self.imageView.image = self.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: self.rowInModel).color)
+                self.imageView.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: self.rowInModel).color)
             } else {
                 self.imageView.image = snapshot?.image
             }
@@ -136,59 +142,36 @@ class EditDetailViewController: UITableViewController, UITextFieldDelegate, UIPi
         let maxElevation = (modelController.maxAltitudeForRow(at: rowInModel) * 3.281).customRounded(withDecimalPlaces: 0)
         maxElevationLabel.text = "Max Elevation: \(maxElevation)"
     }
-    
-    func drawLines(using points: [CGPoint], on image: UIImage, with color: UIColor) -> UIImage? {
-        let imageSize = image.size
-        let scale: CGFloat = 0
-        
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
-        
-        let path = UIBezierPath()
-        
-        image.draw(at: CGPoint.zero)
-        
-        path.move(to: points[0])
-        
-        for (index, point) in points.enumerated() {
-            if index == 0 { continue }
-            path.addLine(to: point)
-        }
-        
-        color.setStroke()
-        
-        path.stroke()
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return newImage
+}
+
+extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    // number of components
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    // number of rows in component
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return Self.defaultColors.count
     }
     
-
-    
-    // MARK: - Navigation
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
-            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
-        }
-        
-        if let mapPreview = segue.destination as? LapGateEditorViewController {
-            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
-            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
-            mapPreview.rowInModel = rowInModel
-            mapPreview.modelController = modelController
-            mapPreview.gateRadius = Float(modelController.trackForRow(at: rowInModel).lapGate.radius)
-        }
-        
-        if let mapPreview = segue.destination as? RunMotoViewController {
-            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
-            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
-            mapPreview.rowInModel = rowInModel
-            mapPreview.modelController = modelController
-            mapPreview.gateRadius = Float(modelController.trackForRow(at: rowInModel).lapGate.radius)
-        }
+    // title for row
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return Self.defaultColorNames[row].capitalized
     }
     
+    // did select row
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        modelController.editColorForRow(at: rowInModel, with: Self.defaultColors[row])
+        updateViewFromModel()
+    }
+}
+
+extension EditDetailViewController: UITextFieldDelegate {
     
+    // text field should return
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        modelController.editNameForTrack(at: rowInModel, with: textField.text!)
+        return true
+    }
 }

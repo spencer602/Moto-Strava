@@ -9,10 +9,11 @@
 import UIKit
 import MapKit
 
-class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class RunMotoViewController: UIViewController {
     
     var gateRadius: Float = 10.0
     
+    private var motoIsStarted = false
     
     /// the complete list of logged locations from our current track recording
     private var polyLinesFromCurrentRecording = [MKPolyline]()
@@ -20,31 +21,56 @@ class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapV
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
 
-    var trackColor: UIColor!
-
     /// the locations we are collecting while recording tracks
-    var locationList = [CLLocation]()
-    
-    var currentLocationList = [CLLocation]()
+    private var currentLocationList = [CLLocation]()
 
-    var lapGate = MKPointAnnotation()
+    /// the lap gate annotation
+    private var lapGateAnnotation = MKPointAnnotation()
     
-
+    /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
     var rowInModel: Int!
+    
+    /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
 
-    var cir = MKCircle()
+    /// the circle that is an overlay to show the size of the LapGate
+    private var cir = MKCircle()
     
-    var pointsInGate: [CLLocation]?
+    /// the points that have been registered in the gate
+    private var pointsInGate: [CLLocation]?
     
+    /// var to save each location that best represents the location(time) passed through the gate (1 per lap)
+    private var bestLocationPerLapInGate = [CLLocation]()
     
-    
+    /// the map view
     @IBOutlet weak var mapKitView: MKMapView!
+    @IBOutlet weak var startMotoButton: UIButton!
+    @IBOutlet weak var stopMotoButton: UIButton!
     
-
+    @IBOutlet weak var totalTimeLabel: UILabel!
+    @IBOutlet weak var thisLapTimeLabel: UILabel!
+    @IBOutlet weak var lapNumberLabel: UILabel!
+    
+    
+    
+    @IBAction func startMotoButtonPressed(_ sender: UIButton) {
+        startMotoButton.isHidden = true
+        stopMotoButton.isHidden = false
+        motoIsStarted = true
+    }
+    
+    @IBAction func stopMotoButtonPressed(_ sender: UIButton) {
+        startMotoButton.isHidden = false
+        stopMotoButton.isHidden = true
+        motoIsStarted = false
+        
+        let track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        modelController.addSessionToTrackForRow(at: rowInModel, with: track)
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -59,72 +85,153 @@ class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         locationManager.startUpdatingLocation()
 
         addTrackToMap()
-
         zoomMapTo()
 
-       
-        //slider.value = 0
+        lapGateAnnotation.coordinate = modelController.trackForRow(at: rowInModel).lapGate.location.coordinate
         
-        lapGate.coordinate = modelController.trackForRow(at: rowInModel).lapGate.location.coordinate
+        mapKitView.addAnnotation(lapGateAnnotation)
         
-        
-        
-        
-        lapGate.title = "Lap Gate"
-        //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
-        mapKitView.addAnnotation(lapGate)
-        
-        cir = MKCircle(center: lapGate.coordinate, radius: Double(gateRadius))
+        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(gateRadius))
         mapKitView.addOverlay(cir)
         
         locationManager.startUpdatingLocation()
     }
-
-
-   
     
-   
-
-
-    /// adds all of the tracks in the model to the map
-    private func addTrackToMap() {
-           
-       let overlay = createPolyLine(using: locationList)
-       mapKitView.addOverlay(overlay)
-       
+    private func updateViewFromModel() {
+        totalTimeLabel.text = "Total Time: \(currentLocationList.count == 0 ? "" : currentLocationList[0].timestamp.timeIntervalSinceNow.easyToReadTimeNotation(withDecimalPlaces: 2))"
+        thisLapTimeLabel.text = "This Lap: \(bestLocationPerLapInGate.count == 0 ? "" : bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow.easyToReadTimeNotation(withDecimalPlaces: 2))"
+        lapNumberLabel.text = "Lap Number: \(bestLocationPerLapInGate.count)"
     }
 
-
-    /**
-    creates and returns an MKPolyLine following along all of the logged locations
-
-    - Returns: an MKPolyLine following along all of the logged locations
-    */
-    private func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
-       // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
-       let coords: [CLLocationCoordinate2D] = locationData.map { location in
-           CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-       }
-       // create and return an MKPolyLine with the coordinates
-       return MKPolyline(coordinates: coords, count: coords.count)
+    /// adds the track to the map
+    private func addTrackToMap() {
+        let overlay = MKPolyline.createPolyLine(using: modelController.trackForRow(at: rowInModel).locations)
+        mapKitView.addOverlay(overlay)
     }
 
     /// creates a region encompassing all logged locations and adds the overaly to the map
     private func zoomMapTo() {
-       let region = MKCoordinateRegion.mapRegion(using: locationList)
-       mapKitView.setRegion(region, animated: true)
+        let region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: rowInModel).locations)
+        mapKitView.setRegion(region, animated: true)
     }
+    
+    /**
+     calculates and returns the location closest to the given point
+     
+     - Parameter locations: the array of location from which we are searching
+     - Parameter point: the point for which we are searching for the closest location to
+     
+     - Returns: the location that is closest to the point, nil if the array of locations passed in is empty
+     */
+    func getLocationClosestToPoint(locations: [CLLocation], point: CLLocation) -> CLLocation? {
+        if locations.count == 0 { return nil }
+        
+        var closest = (locations.first!, locations.first!.distance(from: point))
+        
+        for loc in locations {
+            if loc.distance(from: point) < closest.1 {
+                closest = (loc, loc.distance(from: point))
+            }
+        }
+        return closest.0
+    }
+    
+    private func updateLabels() {
+        
+    }
+}
 
+// MARK: - Location Management
 
-    // delegate method of MKMapView
+extension RunMotoViewController: CLLocationManagerDelegate {
+    
+    // did update location
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if motoIsStarted {
+            print("route Accuracy: \(locations.first!.horizontalAccuracy)")
+                  
+            // educational purposes:, haven't ever seen a situation where locations.count > 1
+            if locations.count > 1 {
+                print("route #####   Locations.count: \(locations.count)")
+            }
+      
+            // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
+            guard let lastLocation = currentLocationList.last else {
+                currentLocationList.append(locations.first!)
+                return
+            }
+      
+            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
+
+            currentLocationList.append(locations.first!)
+
+            let newLocation = locations.first!
+
+            // create the new 'change in coordinates'
+            let coordinates = [lastLocation.coordinate, newLocation.coordinate]
+            // create an MKPolyline from the two coordinates
+            let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
+            // add the polyline to the list of polylines in current recording
+            polyLinesFromCurrentRecording.append(polyLine)
+            // add an overlay as a MKPolyline
+            mapKitView.addOverlay(polyLine)
+        }
+        
+      
+        
+        // only do this if you want to re-center the region around the most recent location
+    //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+    //        mapKitView.setRegion(region, animated: true)
+        
+        
+        // if the current location is in the gate
+        if locations.first!.distance(from: modelController.trackForRow(at: rowInModel).lapGate.location) <= Double(gateRadius) {
+            print("filter we are in the gate")
+            
+            if pointsInGate == nil { pointsInGate = [CLLocation]() }
+            
+            pointsInGate?.append(locations.first!)
+        } else {
+            if pointsInGate != nil {
+                // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+                print("filter points in gate: \(pointsInGate!.count)")
+                for p in pointsInGate! { print("filter timestamp:\(p.timestamp)") }
+                
+                let closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGateAnnotation.coordinate.latitude, longitude: lapGateAnnotation.coordinate.longitude))
+                
+                print("filter closest calculated: \(closest!.timestamp)")
+                pointsInGate = nil
+                
+                bestLocationPerLapInGate.append(closest!)
+            }
+        }
+        
+        updateViewFromModel()
+    }
+}
+
+// MARK: - MapView Management
+
+extension RunMotoViewController: MKMapViewDelegate {
+    
+    // renderer for overlay
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         // ensures that the overlay is an MKPolyLine
         if let polyline = overlay as? MKPolyline {
-            // changes a few of the properties of the renderer
-            let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = trackColor
-            renderer.lineWidth = 2
-            return renderer
+            
+            if polyLinesFromCurrentRecording.contains(polyline) {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = UIColor.red
+                renderer.lineWidth = 2
+                return renderer
+            } else {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = modelController.trackForRow(at: rowInModel).color
+                renderer.lineWidth = 2
+                return renderer
+            }
+            
         }
         else if let polyline = overlay as? MKCircle {
             let circleRenderer = MKCircleRenderer(circle: polyline)
@@ -138,9 +245,7 @@ class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         }
     }
 
-   
-    
-    
+    // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard annotation is MKPointAnnotation else { return nil }
 
@@ -153,105 +258,11 @@ class RunMotoViewController: UIViewController, CLLocationManagerDelegate, MKMapV
         } else {
             annotationView!.annotation = annotation
         }
-        
+         
         annotationView!.isDraggable = false
         annotationView!.canShowCallout = false
 
         return annotationView
     }
-     
-        
-        
-    
-    
-    // locationManager delegate method
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        print("route Accuracy: \(locations.first!.horizontalAccuracy)")
-        
-        // educational purposes:, haven't ever seen a situation where locations.count > 1
-        if locations.count > 1 {
-            print("route #####   Locations.count: \(locations.count)")
-        }
-        
-        // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
-        guard let lastLocation = currentLocationList.last else {
-            currentLocationList.append(locations.first!)
-            return
-        }
-        
-        print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
-        
-        currentLocationList.append(locations.first!)
-        
-        let newLocation = locations.first!
-        
-        // create the new 'change in coordinates'
-        let coordinates = [lastLocation.coordinate, newLocation.coordinate]
-        // create an MKPolyline from the two coordinates
-        let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
-        // add the polyline to the list of polylines in current recording
-        polyLinesFromCurrentRecording.append(polyLine)
-        // add an overlay as a MKPolyline
-        mapKitView.addOverlay(polyLine)
-        
-        // only do this if yo want to re-center the region around the most recent location
-    //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-    //        mapKitView.setRegion(region, animated: true)
-        
-        
-        
-        if locations.first!.distance(from: CLLocation(latitude: lapGate.coordinate.latitude, longitude: lapGate.coordinate.longitude)) <= Double(gateRadius) {
-            print("filter we are in the gate")
-            
-            if pointsInGate == nil {
-                pointsInGate = [CLLocation]()
-            }
-            
-            pointsInGate?.append(locations.first!)
-        } else {
-            if pointsInGate != nil {
-                print("filter points in gate: \(pointsInGate!.count)")
-                for p in pointsInGate! {
-                    print("filter timestamp:\(p.timestamp)")
-                }
-                
-                var closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGate.coordinate.latitude, longitude: lapGate.coordinate.longitude))
-                
-                print("filter closest calculated: \(closest?.timestamp)")
-                pointsInGate = nil
-                
-            }
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    }
-    
-    
-    func getLocationClosestToPoint(locations: [CLLocation], point: CLLocation) -> CLLocation? {
-        if locations.count == 0 { return nil }
-        
-        var closest = (locations.first!, locations.first!.distance(from: point))
-        
-        for loc in locations {
-            if loc.distance(from: point) < closest.1 {
-                closest = (loc, loc.distance(from: point))
-            }
-        }
-        
-        return closest.0
-    }
-    
-    
+
 }

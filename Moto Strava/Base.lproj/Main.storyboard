@@ -374,7 +374,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HhQ-8U-dhM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1292.753623188406" y="733.92857142857144"/>
+            <point key="canvasLocation" x="1120" y="1104"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="tPB-RR-jY0">
@@ -525,7 +525,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="satellite" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pNA-KX-m4a">
-                                <rect key="frame" x="0.0" y="227" width="414" height="586"/>
+                                <rect key="frame" x="0.0" y="315" width="414" height="498"/>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ag-qz-zrf">
                                 <rect key="frame" x="72" y="120" width="242" height="21"/>
@@ -539,12 +539,34 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Number: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bE-Uz-QCe">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Number: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bE-Uz-QCe">
                                 <rect key="frame" x="72" y="206" width="264" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yf9-tG-ksA">
+                                <rect key="frame" x="161" y="253" width="92" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="Y8v-tZ-kIk"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Start Moto"/>
+                                <connections>
+                                    <action selector="startMotoButtonPressed:" destination="AFs-pV-nWP" eventType="touchUpInside" id="BEt-F2-Le9"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="096-GJ-KdC" userLabel="Stop Moto">
+                                <rect key="frame" x="161.5" y="253" width="91" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="0r6-fb-Toe"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Stop Moto"/>
+                                <connections>
+                                    <action selector="stopMotoButtonPressed:" destination="AFs-pV-nWP" eventType="touchUpInside" id="xMx-oH-1Dl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -553,20 +575,30 @@
                             <constraint firstItem="9bE-Uz-QCe" firstAttribute="top" secondItem="j4y-G4-Zga" secondAttribute="bottom" constant="26" id="25s-Fq-fre"/>
                             <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="4ag-qz-zrf" secondAttribute="trailing" constant="100" id="6I3-X7-g4d"/>
                             <constraint firstItem="j4y-G4-Zga" firstAttribute="top" secondItem="4ag-qz-zrf" secondAttribute="bottom" constant="18" id="BDX-ct-lyE"/>
+                            <constraint firstItem="096-GJ-KdC" firstAttribute="centerX" secondItem="5rd-Na-OU6" secondAttribute="centerX" id="P9X-IB-qsF"/>
                             <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="j4y-G4-Zga" secondAttribute="trailing" constant="87" id="TOh-vu-V5L"/>
+                            <constraint firstItem="096-GJ-KdC" firstAttribute="top" secondItem="9bE-Uz-QCe" secondAttribute="bottom" constant="26" id="WTd-x5-imd"/>
                             <constraint firstItem="4ag-qz-zrf" firstAttribute="top" secondItem="5rd-Na-OU6" secondAttribute="top" constant="32" id="ZCc-NQ-5fH"/>
+                            <constraint firstItem="pNA-KX-m4a" firstAttribute="top" secondItem="Yf9-tG-ksA" secondAttribute="bottom" constant="26" id="bq1-li-2eR"/>
                             <constraint firstItem="4ag-qz-zrf" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" constant="72" id="fn5-MI-Vv7"/>
+                            <constraint firstItem="Yf9-tG-ksA" firstAttribute="top" secondItem="9bE-Uz-QCe" secondAttribute="bottom" constant="26" id="i7y-kp-5Xq"/>
+                            <constraint firstItem="Yf9-tG-ksA" firstAttribute="centerX" secondItem="5rd-Na-OU6" secondAttribute="centerX" id="lGQ-10-F6h"/>
                             <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="9bE-Uz-QCe" secondAttribute="trailing" constant="78" id="p1Z-Jd-fh2"/>
+                            <constraint firstItem="pNA-KX-m4a" firstAttribute="top" secondItem="096-GJ-KdC" secondAttribute="bottom" constant="26" id="pAe-09-TVZ"/>
                             <constraint firstItem="5rd-Na-OU6" firstAttribute="trailing" secondItem="pNA-KX-m4a" secondAttribute="trailing" id="qBs-Cn-E4L"/>
                             <constraint firstItem="j4y-G4-Zga" firstAttribute="leading" secondItem="5rd-Na-OU6" secondAttribute="leading" constant="72" id="rNc-nz-gOA"/>
-                            <constraint firstItem="pNA-KX-m4a" firstAttribute="top" secondItem="9bE-Uz-QCe" secondAttribute="bottom" id="rsf-9K-A7H"/>
                             <constraint firstItem="5rd-Na-OU6" firstAttribute="bottom" secondItem="pNA-KX-m4a" secondAttribute="bottom" id="suq-Oi-n8I"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="5rd-Na-OU6"/>
                     </view>
                     <navigationItem key="navigationItem" id="h0W-9y-EZy"/>
                     <connections>
+                        <outlet property="lapNumberLabel" destination="9bE-Uz-QCe" id="fcQ-bo-ai6"/>
                         <outlet property="mapKitView" destination="pNA-KX-m4a" id="huR-nU-fGK"/>
+                        <outlet property="startMotoButton" destination="Yf9-tG-ksA" id="A6W-Xd-5DK"/>
+                        <outlet property="stopMotoButton" destination="096-GJ-KdC" id="Nv1-gh-dCZ"/>
+                        <outlet property="thisLapTimeLabel" destination="j4y-G4-Zga" id="h36-jP-2EC"/>
+                        <outlet property="totalTimeLabel" destination="4ag-qz-zrf" id="kXg-nb-R7d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vcC-4b-KjX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

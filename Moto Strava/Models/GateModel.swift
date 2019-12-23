@@ -17,7 +17,7 @@ struct GateModel: Codable {
         set { codableLocation = LocationModel(fromCLLocation: newValue) }
     }
     
-    var radius: CLLocationDistance
+    var radius: Double
     
     init(location: CLLocation) {
         self.codableLocation = LocationModel(fromCLLocation: location)

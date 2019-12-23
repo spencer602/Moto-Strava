@@ -9,41 +9,19 @@
 import UIKit
 import MapKit
 
-class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
 
+    /// the MapView we are using as a preview
+    @IBOutlet private weak var mapKitView: MKMapView!
     
-    
-    @IBOutlet weak var mapKitView: MKMapView!
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     
-
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
     
+    /// the track color. NOTE -  this needs to be set from the VC that segues here
     var trackColor = UIColor.red
     
-    /// the locations we are collecting while recording tracks
+    /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
     var locationList = [CLLocation]()
-    
-    
-   
-    
-   
-    
-   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,32 +42,12 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate, M
         
         zoomMapTo()
     }
-    
-   
-    
-    
-    
+  
     /// adds all of the tracks in the model to the map
     private func addTrackToMap() {
-            
-        let overlay = createPolyLine(using: locationList)
+        let overlay = MKPolyline.createPolyLine(using: locationList)
         mapKitView.addOverlay(overlay)
         
-    }
-    
-    
-    /**
-     creates and returns an MKPolyLine following along all of the logged locations
-     
-     - Returns: an MKPolyLine following along all of the logged locations
-     */
-    private func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
-        // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
-        let coords: [CLLocationCoordinate2D] = locationData.map { location in
-            CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-        }
-        // create and return an MKPolyLine with the coordinates
-        return MKPolyline(coordinates: coords, count: coords.count)
     }
     
     /// creates a region encompassing all logged locations and adds the overaly to the map
@@ -97,10 +55,11 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate, M
         let region = MKCoordinateRegion.mapRegion(using: locationList)
         mapKitView.setRegion(region, animated: true)
     }
+}
+
+extension TrackPreviewViewController: MKMapViewDelegate {
     
-    
-    
-    // delegate method of MKMapView
+    // renderer for overlay
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         // ensures that the overlay is an MKPolyLine
         guard let polyline = overlay as? MKPolyline else {
@@ -113,36 +72,4 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate, M
         renderer.lineWidth = 2
         return renderer
     }
-   
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

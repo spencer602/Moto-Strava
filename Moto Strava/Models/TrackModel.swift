@@ -16,6 +16,8 @@ struct TrackModel: Codable {
     var timeStamp: Date { return locations.first!.timestamp }
     var locationCount: Int { return codableLocations.count }
     
+    //private var codableRuns: [[LocationModel]]
+    
     private var codableColor: ColorModel
     var color: UIColor {
         get { return codableColor.color }
@@ -24,12 +26,34 @@ struct TrackModel: Codable {
     
     var lapGate: GateModel
     
+    var sectionGates: [GateModel]
+    
+    var sessions: [TrackModel]
+    
+    enum CodingKeys: CodingKey {
+        case lapGate, sessions, sectionGates, codableColor, name, codableLocations
+    }
+    
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
         self.codableLocations = cllocationArray.map { LocationModel(fromCLLocation: $0) }
         self.name = name
         self.codableColor = ColorModel(with: UIColor.red)
         self.lapGate = GateModel(location: codableLocations.first!.location)
+        //self.codableRuns = [[LocationModel]]()
+        sectionGates = [GateModel]()
+        sessions = [TrackModel]()
     }
+    
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        name = try container.decode(String.self, forKey: .name)
+//        lapGate = try container.decode(GateModel.self, forKey: .lapGate)
+//        sessions = [TrackModel]()
+//        sectionGates = try container.decode([GateModel].self, forKey: .sectionGates)
+//        codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
+//        codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
+//    }
+    
     
     var gpxString: String {
         var s = "<?xml version=\"1.0\"?>\n" +
