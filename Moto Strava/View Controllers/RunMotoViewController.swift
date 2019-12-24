@@ -64,7 +64,8 @@ class RunMotoViewController: UIViewController {
         stopMotoButton.isHidden = true
         motoIsStarted = false
         
-        let track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        var track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        track.lapGate = modelController.trackForRow(at: rowInModel).lapGate
         modelController.addSessionToTrackForRow(at: rowInModel, with: track)
         
     }

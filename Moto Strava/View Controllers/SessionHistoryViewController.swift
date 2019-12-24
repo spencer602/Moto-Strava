@@ -94,6 +94,10 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
         
         if let cell = sessionHistoryTableView.dequeueReusableCell(withIdentifier: "sessionHistoryCell", for: indexPath) as? SessionHistoryTableViewCell {
             
+//            modelController.motoStravaModel.listOfTracks[0].sessions[0].lapGate = modelController.trackForRow(at: 0).lapGate
+//            
+//            modelController.saveJSONToFile()
+            
             let session = modelController.trackForRow(at: rowInModel).sessions[indexPath.row]
             
             //title
@@ -125,6 +129,8 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
                     cell.trackPreviewImage.image = snapshot?.image
                 }
             }
+            
+            cell.lapsLabel.text = "Laps: \(session.numberOfLapsCompleted)"
             
             return cell
         }
