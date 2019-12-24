@@ -72,4 +72,25 @@ struct TrackModel: Codable {
         
         return s
     }
+    
+    var trackDistanceInMeters: Double {
+        var distance = 0.0
+        var previousLocation: CLLocation?
+        for location in self.locations {
+            if previousLocation == nil {
+                previousLocation = location
+                continue
+            }
+            distance += location.distance(from: previousLocation!)
+            previousLocation = location
+        }
+        return distance
+    }
+    
+    var numberOfLapsCompleted: Int {
+        
+        
+        
+        return 0
+    }
 }

@@ -37,6 +37,9 @@ class EditDetailViewController: UITableViewController {
     @IBOutlet private weak var durationLabel: UILabel!
     @IBOutlet private weak var maxElevationLabel: UILabel!
     @IBOutlet private weak var trackColorTextField: UITextField!
+    @IBOutlet weak var sessionsLabel: UILabel!
+    
+    
     
     /// prints out gpx data to console
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
@@ -93,6 +96,12 @@ class EditDetailViewController: UITableViewController {
             mapPreview.rowInModel = rowInModel
             mapPreview.modelController = modelController
         }
+        
+        // Session History
+        if let sessionHistory = segue.destination as? SessionHistoryViewController {
+            sessionHistory.rowInModel = rowInModel
+            sessionHistory.modelController = modelController
+        }
     }
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
@@ -141,6 +150,9 @@ class EditDetailViewController: UITableViewController {
         // update the Max Elevation
         let maxElevation = (modelController.maxAltitudeForRow(at: rowInModel) * 3.281).customRounded(withDecimalPlaces: 0)
         maxElevationLabel.text = "Max Elevation: \(maxElevation)"
+        
+        // update the number of sessions
+        sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
     }
 }
 
