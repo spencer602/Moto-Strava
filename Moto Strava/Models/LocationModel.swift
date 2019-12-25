@@ -29,4 +29,26 @@ struct LocationModel: Codable {
     }
 }
 
+extension CLLocation {
+    /**
+     calculates and returns the location closest to the given point
+     
+     - Parameter locations: the array of location from which we are searching
+     - Parameter point: the point for which we are searching for the closest location to
+     
+     - Returns: the location that is closest to the point, nil if the array of locations passed in is empty
+     */
+    func getLocationClosest(locations: [CLLocation]) -> CLLocation? {
+        if locations.count == 0 { return nil }
+        
+        var closest = (locations.first!, locations.first!.distance(from: self))
+        
+        for loc in locations {
+            if loc.distance(from: self) < closest.1 {
+                closest = (loc, loc.distance(from: self))
+            }
+        }
+        return closest.0
+    }
+}
 

@@ -88,9 +88,29 @@ struct TrackModel: Codable {
     }
     
     var numberOfLapsCompleted: Int {
-        
-        
-        
-        return 0
+        var pointsInGate = [CLLocation]()
+        var bestLapPoints = [CLLocation]()
+        for loc in locations {
+            // if the current location is in the gate
+            if loc.distance(from: lapGate.location) <= Double(lapGate.radius) {
+                print("filter we are in the gate")
+                                
+                pointsInGate.append(loc)
+            } else {
+                if pointsInGate.count > 0 {
+                    // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+                    print("filter points in gate: \(pointsInGate.count)")
+                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
+                    
+                    let closest = lapGate.location.getLocationClosest(locations: pointsInGate)
+                    
+                    print("filter closest calculated: \(closest!.timestamp)")
+                    pointsInGate.removeAll()
+                    
+                    bestLapPoints.append(closest!)
+                }
+            }
+        }
+        return bestLapPoints.count - 1
     }
 }
