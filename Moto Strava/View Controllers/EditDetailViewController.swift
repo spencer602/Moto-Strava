@@ -75,6 +75,9 @@ class EditDetailViewController: UITableViewController {
         
         print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
         
+//        modelController.motoStravaModel.listOfTracks[rowInModel].sessions.removeLast()
+//        modelController.saveJSONToFile()
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
