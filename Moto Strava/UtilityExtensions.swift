@@ -10,15 +10,17 @@ import Foundation
 
 extension Double {
     
-    func timeIntervalToHoursMinutesSeconds() -> (Int, Int, Int) {
+    func timeIntervalToHoursMinutesSeconds() -> (Int, Int, Int, Int) {
         var time = self
         let hours = Int(time)/3600
         time -= 3600.0 * Double(hours)
         let minutes = Int(time)/60
         time -= 60.0 * Double(minutes)
         let seconds = Int(time)/1
+        time -= 1.0 * Double(seconds)
+        let milliseconds = Int(time * 1000.0)
         
-        return(hours, minutes, seconds)
+        return(hours, minutes, seconds, milliseconds)
     }
     
     /**
@@ -67,6 +69,20 @@ extension Double {
         // now move the decimal place back to the left 'decimalPlaces' digits
         s /= Double(10.raisedToPower(decimalPlaces))
         return s
+    }
+    
+    func interpolate(to: Double, numberOfElements: Int) -> [Double] {
+        var newValue = [Double]()
+        let from = self
+        let incrementor = (to - from) / Double(numberOfElements - 1)
+        
+        newValue.append(from)
+        for index in 1..<(numberOfElements-1) {
+            newValue.append(from + incrementor * Double(index))
+        }
+        newValue.append(to)
+        
+        return newValue
     }
 }
 

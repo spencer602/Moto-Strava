@@ -75,6 +75,12 @@ class EditDetailViewController: UITableViewController {
         
         updateViewFromModel()
         
+        let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
+        
+        for (index, time) in lapTimes.enumerated() {
+            print("\(index + 1): \(time.timeIntervalToHoursMinutesSeconds())")
+        }
+        
         
         //print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
         
@@ -150,7 +156,7 @@ class EditDetailViewController: UITableViewController {
         averageSpeedLabel.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
         
         // update the duration
-        let (hours, minutes, seconds) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
+        let (hours, minutes, seconds, milliseconds) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
         durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
         
         // update the Max Elevation

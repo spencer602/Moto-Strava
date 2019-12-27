@@ -88,25 +88,43 @@ struct TrackModel: Codable {
         for loc in locations {
             // if the current location is in the gate
             if loc.distance(from: lapGate.location) <= Double(lapGate.radius) {
-                print("filter we are in the gate")
+//                print("filter we are in the gate")
                                 
                 pointsInGate.append(loc)
             } else {
                 if pointsInGate.count > 0 {
                     // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
-                    print("filter points in gate: \(pointsInGate.count)")
-                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
+//                    print("filter points in gate: \(pointsInGate.count)")
+//                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
                     
-                    let closest = lapGate.location.getLocationClosest(locations: pointsInGate)
+                    let closest = lapGate.location.getLocationClosestAndBothAdjascent(locations: pointsInGate)
+                    let fabricatedClosest = lapGate.location.interpolateToFindClosestPoint(usingPoints: closest, interTrack: 20)
                     
-                    print("filter closest calculated: \(closest!.timestamp)")
+//                    print("filter closest calculated: \(closest!.timestamp)")
                     pointsInGate.removeAll()
                     
-                    bestLapPoints.append(closest!)
+                    bestLapPoints.append(fabricatedClosest!)
                 }
             }
         }
         return bestLapPoints
+    }
+    
+    func getLapTimes(usingLapGate lapGate: GateModel) -> [TimeInterval] {
+        var lapTimes = [TimeInterval]()
+        let lapPoints = getLapPoints(usingLapGate: lapGate)
+        if lapPoints.count == 0 { return lapTimes }
+    
+        var starting = lapPoints[0]
+        
+        for (index, point) in lapPoints.enumerated() {
+            if index == 0 { continue }
+            let time = starting.timestamp.distance(to: point.timestamp)
+            lapTimes.append(time)
+            starting = point
+        }
+        
+        return lapTimes
     }
     
     var averageSpeed: Double {

@@ -60,5 +60,67 @@ extension CLLocation {
         }
         return closest.0
     }
+    
+    func getLocationClosestAndBothAdjascent(locations: [CLLocation]) -> [CLLocation] {
+        if locations.count < 3 { return locations }
+        
+        var closest = (locations.first!, locations.first!.distance(from: self), 0)
+        
+        for (index, loc) in locations.enumerated() {
+            print("distance from gate to location in gate: \(loc.distance(from: self))")
+            if loc.distance(from: self) < closest.1 {
+                closest = (loc, loc.distance(from: self), index)
+            }
+        }
+        
+        if closest.2 == 0 {
+            var cl = [CLLocation]()
+            cl.append(locations[0])
+            cl.append(locations[1])
+            return cl
+        }
+        
+        if closest.2 == locations.count - 1 {
+            var cl = [CLLocation]()
+            cl.append(locations.last!)
+            cl.append(locations[locations.count - 2])
+            return cl
+        }
+        
+        var cl = [CLLocation]()
+        cl.append(locations[(closest.2)-1])
+        cl.append(locations[closest.2])
+        cl.append(locations[(closest.2)+1])
+        return cl
+    }
+    
+    func interpolateToFindClosestPoint(usingPoints locations: [CLLocation], interTrack segments: Int) -> CLLocation? {
+        if locations.count == 0 { return nil }
+        if locations.count == 1 { return locations.first! }
+        
+        var distance = (locations.first!, locations.first!.distance(from: self))
+        let first = locations.first!
+        
+        for (index, second) in locations.enumerated() {
+            if index == 0 { continue }
+            let lats = first.coordinate.latitude.interpolate(to: second.coordinate.latitude, numberOfElements: segments)
+            let lons = first.coordinate.longitude.interpolate(to: second.coordinate.longitude, numberOfElements: segments)
+            let elevs = first.altitude.interpolate(to: second.altitude, numberOfElements: segments)
+            let seconds = first.timestamp.timeIntervalSince1970.interpolate(to: second.timestamp.timeIntervalSince1970, numberOfElements: segments)
+            
+            for interIndex in 0..<segments {
+//                var interLoc = CLLocation(latitude: lats[interIndex], longitude: lons[interIndex])
+                let interLo = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lats[interIndex], longitude: lons[interIndex]), altitude: elevs[interIndex], horizontalAccuracy: first.horizontalAccuracy, verticalAccuracy: first.verticalAccuracy, timestamp: Date(timeIntervalSince1970: seconds[interIndex]))
+                print(distance.1)
+                
+                if interLo.distance(from: self) < distance.1 {
+                    distance = (interLo, interLo.distance(from: self))
+                    print("narrowed: \(distance.1)")
+                }
+            }
+        }
+        
+        return distance.0
+    }
 }
 

@@ -25,6 +25,8 @@ class DataViewController: UIViewController {
         trackTableView.dataSource = self
         
         //importGPX()
+        
+        print(20.0.interpolate(to: 2.0, numberOfElements: 7))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -50,10 +52,12 @@ class DataViewController: UIViewController {
         
         print(gpx.waypoints.count)
         print(gpx.routes.count)
+        print(gpx.tracks.count)
+        
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
         let track = TrackModel(withCoreGPX: gpx, withName: "test")
-        modelController.addSessionToTrackForRow(at: 2, with: track)
+        modelController.addSessionToTrackForRow(at: 1, with: track)
         //modelController.add(session: SessionsModel(usingInitialSession: track))
                 
     }

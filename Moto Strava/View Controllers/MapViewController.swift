@@ -22,7 +22,7 @@ class MapViewController: UIViewController {
     private static let initialZoomSize = 500.0
 
     /// used to manage things relation to gathering location data
-    private let locationManager = CLLocationManager()
+    let locationManager = CLLocationManager()
     
     private let defaultColor = UIColor.red
     
@@ -60,6 +60,9 @@ class MapViewController: UIViewController {
         // setting the activity type, this could be changed for better optimization?
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
+        
+        // this is the best accuracy available, makes the timestamp register in milliseconds also. Commenting this line out causes the timestamp to only report to seconds (in terms of precision)
+        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         locationManager.startUpdatingLocation()
     }
     
@@ -219,6 +222,14 @@ extension MapViewController: CLLocationManagerDelegate {
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        let date = Date()
+//
+//        print("time differenece between: \(locations.first!.timestamp.distance(to: date))")
+//        print("current time: \(date)")
+//
+//        let df = DateFormatter()
+//        df.dateFormat = "HH:mm:ss.SSS"
+//        print("timestamp of first: \(df.string(from: locations.first!.timestamp))")
         
         // if we haven't zoomed in to the first logged location yet, do so here
         if !hasZoomedToFirstLocation {
@@ -227,10 +238,14 @@ extension MapViewController: CLLocationManagerDelegate {
             zoomToCurrentLocation()
         }
         
-        print("route Accuracy: \(locations.first!.horizontalAccuracy)")
+//        print("route Accuracy: \(locations.first!.horizontalAccuracy)")
         
         // educational purposes:, haven't ever seen a situation where locations.count > 1
         if locations.count > 1 {
+            print("route #####   Locations.count: \(locations.count)")
+            print("route #####   Locations.count: \(locations.count)")
+            print("route #####   Locations.count: \(locations.count)")
+            print("route #####   Locations.count: \(locations.count)")
             print("route #####   Locations.count: \(locations.count)")
         }
         
@@ -241,7 +256,9 @@ extension MapViewController: CLLocationManagerDelegate {
                 return
             }
             
-            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
+            
+            
+//            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
             
             locationList.append(locations.first!)
             
