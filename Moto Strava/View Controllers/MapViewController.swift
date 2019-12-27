@@ -6,6 +6,7 @@
 //  Copyright © 2019 Spencer DeBuf. All rights reserved.
 //
 //
+
 /*
  had to check background mode - Location updates
  */
@@ -15,13 +16,15 @@ import MapKit
 import CoreLocation
 
 /// a class for managing a map, displaying tracks, displaying current location, and recording tracks
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class MapViewController: UIViewController {
     
     /// constant to determine how far to zoom in upon opening the map
     private static let initialZoomSize = 500.0
 
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
+    
+    private let defaultColor = UIColor.red
     
     /// the locations we are collecting while recording tracks
     private var locationList = [CLLocation]()
@@ -87,7 +90,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
    
     /**
-      target action from when the 'stop recording track' button is pressed. stops  recording a track
+      target action from when the 'stop recording track' button is pressed. stops recording a track
       
       - Parameter sender: the button that triggered the action
       */
@@ -96,7 +99,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // zoom the map to the recently created track
         zoomMapTo()
         // add the complete track to the map
-        mapKitView.addOverlay(createPolyLine(using: locationList))
+        mapKitView.addOverlay(MKPolyline.createPolyLine(using: locationList))
         
         recordTrackButton.isHidden = false
         stopRecordingButton.isHidden = true
@@ -110,23 +113,30 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         polyLinesFromCurrentRecording.removeAll()
         
         // create the track
-        let track = TrackModel(withCLLocationArray: locationList)
+        let track = TrackModel(withCLLocationArray: locationList, withName: Date().description)
+        let newSessionModel = SessionsModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
-        modelController.add(track: track)
+        modelController.add(session: newSessionModel)
         
         // remove all of the locations from the current list
         locationList.removeAll()
+        
+        let overlay = MKPolyline.createPolyLine(using: track.locations)
+        colorForPolyline[overlay] = track.color
+        mapKitView.addOverlay(overlay)
+        
     }
     
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
-        for track in modelController.listOfTracks {
-            let locationData = track.CLLocationArray
-            
-            let overlay = createPolyLine(using: locationData)
-            colorForPolyline[overlay] = track.color.uiColor
-            mapKitView.addOverlay(overlay)
+        for session in modelController.listOfSessions {
+            for track in session.sessions {
+                let locationData = track.locations
+                let overlay = MKPolyline.createPolyLine(using: locationData)
+                colorForPolyline[overlay] = track.color
+                mapKitView.addOverlay(overlay)
+            }
         }
     }
     
@@ -144,26 +154,68 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             mapKitView.setRegion(region, animated: true)
         }
     }
+}
+
+extension MKCoordinateRegion {
     
     /**
-     creates and returns an MKPolyLine following along all of the logged locations
+     creates and returns a MKCoordinateRegion enclosing all of the logged locations
      
-     - Returns: an MKPolyLine following along all of the logged locations
+     - Parameter locations: the locations of which we will be including in the region
+     
+     - Returns: a MKCoordinateRegion enclosing all of the logged locations
      */
-    private func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
-        // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
-        let coords: [CLLocationCoordinate2D] = locationData.map { location in
-            CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+    static func mapRegion(using locations: [CLLocation]) -> MKCoordinateRegion {
+        // if there are no locations, send a generic region
+        if locations.count == 0 {
+            print("Error, no locations logged yet")
+            return MKCoordinateRegion()
         }
-        // create and return an MKPolyLine with the coordinates
-        return MKPolyline(coordinates: coords, count: coords.count)
+        
+        let latitudes = locations.map { location -> Double in
+            return location.coordinate.latitude
+        }
+
+        let longitudes = locations.map { location -> Double in
+            return location.coordinate.longitude
+        }
+
+        // gather the max and mins of each
+        let maxLat = latitudes.max()!
+        let minLat = latitudes.min()!
+        let maxLong = longitudes.max()!
+        let minLong = longitudes.min()!
+                
+        // center around the middle of the extremes
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
+                                          longitude: (minLong + maxLong) / 2)
+        // span the differences (with a ~1/3 buffer)
+        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
+                                  longitudeDelta: (maxLong - minLong) * 1.3)
+        return MKCoordinateRegion(center: center, span: span)
     }
+}
+
+extension MKPolyline {
     
-    /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: locationList)
-        mapKitView.setRegion(region, animated: true)
-    }
+   /**
+    creates and returns an MKPolyLine following along all of the logged locations
+    
+    - Returns: an MKPolyLine following along all of the logged locations
+    */
+   static func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
+       // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
+       let coords: [CLLocationCoordinate2D] = locationData.map { location in
+           CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+       }
+       // create and return an MKPolyLine with the coordinates
+       return MKPolyline(coordinates: coords, count: coords.count)
+   }
+}
+
+// MARK: - Location Management
+
+extension MapViewController: CLLocationManagerDelegate {
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -199,18 +251,24 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let coordinates = [lastLocation.coordinate, newLocation.coordinate]
             // create an MKPolyline from the two coordinates
             let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
+            colorForPolyline[polyLine] = defaultColor
             // add the polyline to the list of polylines in current recording
             polyLinesFromCurrentRecording.append(polyLine)
             // add an overlay as a MKPolyline
             mapKitView.addOverlay(polyLine)
             
             // only do this if yo want to re-center the region around the most recent location
-    //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-    //        mapKitView.setRegion(region, animated: true)
+            // let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+            // mapKitView.setRegion(region, animated: true)
         }
     }
+}
+
+// MARK: - MapView Management
+
+extension MapViewController: MKMapViewDelegate {
     
-    // delegate method of MKMapView
+    // renderer for overlay
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         // ensures that the overlay is an MKPolyLine
         guard let polyline = overlay as? MKPolyline else {
@@ -220,58 +278,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // changes a few of the properties of the renderer
         let renderer = MKPolylineRenderer(polyline: polyline)
         renderer.strokeColor = colorForPolyline[polyline]
-        renderer.lineWidth = 2 
+        renderer.lineWidth = 2
         return renderer
     }
-   
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-}
-
-extension MKCoordinateRegion {
-    /**
-     creates and returns a MKCoordinateRegion enclosing all of the logged locations
-     
-     - Returns: a MKCoordinateRegion enclosing all of the logged locations
-     */
-    static func mapRegion(using locations: [CLLocation]) -> MKCoordinateRegion {
-        // if there are no locations, send a generic region
-        if locations.count == 0 {
-            print("Error, no locations logged yet")
-            return MKCoordinateRegion()
-        }
-        
-        let latitudes = locations.map { location -> Double in
-            return location.coordinate.latitude
-        }
-
-        let longitudes = locations.map { location -> Double in
-            return location.coordinate.longitude
-        }
-
-        // gather the max and mins of each
-        let maxLat = latitudes.max()!
-        let minLat = latitudes.min()!
-        let maxLong = longitudes.max()!
-        let minLong = longitudes.min()!
-                
-        // center around the middle of the extremes
-        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
-                                          longitude: (minLong + maxLong) / 2)
-        // span the differences (with a ~1/3 buffer)
-        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
-                                  longitudeDelta: (maxLong - minLong) * 1.3)
-        return MKCoordinateRegion(center: center, span: span)
-        
+    
+    /// creates a region encompassing all logged locations and adds the overaly to the map
+    private func zoomMapTo() {
+        let region = MKCoordinateRegion.mapRegion(using: locationList)
+        mapKitView.setRegion(region, animated: true)
     }
 }
-
 

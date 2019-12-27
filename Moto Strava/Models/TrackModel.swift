@@ -1,0 +1,140 @@
+//
+//  TrackModel.swift
+//  Moto Strava
+//
+//  Created by Spencer DeBuf on 12/6/19.
+//  Copyright © 2019 Spencer DeBuf. All rights reserved.
+//
+import Foundation
+import CoreLocation
+import UIKit
+import CoreGPX
+
+struct TrackModel: Codable {
+    
+    private var codableLocations: [LocationModel]
+    var locations: [CLLocation] { return codableLocations.map() { $0.location } }
+    var name: String
+    var timeStamp: Date { return locations.first!.timestamp }
+    var locationCount: Int { return codableLocations.count }
+        
+    private var codableColor: ColorModel
+    
+    var color: UIColor {
+        get { return codableColor.color }
+        set { codableColor.color = newValue }
+    }
+    
+    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
+        self.codableLocations = cllocationArray.map { LocationModel(fromCLLocation: $0) }
+        self.name = name
+        self.codableColor = ColorModel(with: UIColor.red)
+    }
+    
+    init(withCoreGPX gpx: GPXRoot, withName name: String) {
+        codableLocations = [LocationModel]()
+        for waypoint in gpx.tracks.first!.tracksegments.first!.trackpoints {
+            codableLocations.append(LocationModel(fromGPXWaypoint: waypoint))
+        }
+        self.name = name
+        codableColor = ColorModel(with: UIColor.red)
+    }
+    
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        name = try container.decode(String.self, forKey: .name)
+//        lapGate = try container.decode(GateModel.self, forKey: .lapGate)
+//        sessions = [TrackModel]()
+//        sectionGates = try container.decode([GateModel].self, forKey: .sectionGates)
+//        codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
+//        codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
+//    }
+    
+    var gpxString: String {
+        var s = "<?xml version=\"1.0\"?>\n" +
+                "<gpx version=\"1.1\" creator=\"Xcode\">\n"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                
+        for loc in locations {
+            s += "<wpt lat=\"\(loc.coordinate.latitude)\" lon=\"\(loc.coordinate.longitude)\">\n"
+            s += "<time>\(formatter.string(from: loc.timestamp))</time>\n"
+            s += "</wpt>\n"
+        }
+        
+        s += "</gpx>"
+        
+        return s
+    }
+    
+    var trackDistance: Double {
+        var distance = 0.0
+        var previousLocation: CLLocation?
+        for location in self.locations {
+            if previousLocation == nil {
+                previousLocation = location
+                continue
+            }
+            distance += location.distance(from: previousLocation!)
+            previousLocation = location
+        }
+        return distance / 1609.344
+    }
+    
+    func getLapPoints(usingLapGate lapGate: GateModel) -> [CLLocation] {
+        var pointsInGate = [CLLocation]()
+        var bestLapPoints = [CLLocation]()
+        for loc in locations {
+            // if the current location is in the gate
+            if loc.distance(from: lapGate.location) <= Double(lapGate.radius) {
+                print("filter we are in the gate")
+                                
+                pointsInGate.append(loc)
+            } else {
+                if pointsInGate.count > 0 {
+                    // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+                    print("filter points in gate: \(pointsInGate.count)")
+                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
+                    
+                    let closest = lapGate.location.getLocationClosest(locations: pointsInGate)
+                    
+                    print("filter closest calculated: \(closest!.timestamp)")
+                    pointsInGate.removeAll()
+                    
+                    bestLapPoints.append(closest!)
+                }
+            }
+        }
+        return bestLapPoints
+    }
+    
+    var averageSpeed: Double {
+        if locations.count == 0 { return 0.0 }
+
+        let distance = trackDistance
+        let dur = duration / 3600
+
+        return distance/dur
+    }
+    
+    var duration: TimeInterval {
+        let startTime = locations.first!.timestamp
+        let endTime = locations.last!.timestamp
+        let duration = startTime.distance(to: endTime)
+
+        return duration
+    }
+    
+    var maxAltitude: Double {
+        if locations.count == 0 { return 0.0 }
+
+        var maxAltitude = locations.first!.altitude
+
+        for loc in locations {
+            if loc.altitude > maxAltitude { maxAltitude = loc.altitude }
+        }
+
+        return maxAltitude * 3.281
+    }
+}
