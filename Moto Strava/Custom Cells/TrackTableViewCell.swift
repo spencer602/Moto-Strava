@@ -9,26 +9,10 @@
 import UIKit
 
 class TrackTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var imageOutlet: UIImageView!
-    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var sessionsLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    
-    
-    
-    
-    
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
+    @IBOutlet weak var lapsLabel: UILabel!
 }

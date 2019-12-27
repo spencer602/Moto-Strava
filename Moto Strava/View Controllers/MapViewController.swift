@@ -114,9 +114,10 @@ class MapViewController: UIViewController {
         
         // create the track
         let track = TrackModel(withCLLocationArray: locationList, withName: Date().description)
+        let newSessionModel = SessionsModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
-        modelController.add(track: track)
+        modelController.add(session: newSessionModel)
         
         // remove all of the locations from the current list
         locationList.removeAll()
@@ -129,12 +130,13 @@ class MapViewController: UIViewController {
     
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
-        for track in modelController.listOfTracks {
-            let locationData = track.locations
-            
-            let overlay = MKPolyline.createPolyLine(using: locationData)
-            colorForPolyline[overlay] = track.color
-            mapKitView.addOverlay(overlay)
+        for session in modelController.listOfSessions {
+            for track in session.sessions {
+                let locationData = track.locations
+                let overlay = MKPolyline.createPolyLine(using: locationData)
+                colorForPolyline[overlay] = track.color
+                mapKitView.addOverlay(overlay)
+            }
         }
     }
     

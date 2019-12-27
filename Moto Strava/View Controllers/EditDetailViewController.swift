@@ -24,6 +24,9 @@ class EditDetailViewController: UITableViewController {
     /// these are set when this VC is segued to
     var rowInModel: Int!
     var modelController: ModelController!
+    var trackInSessions: Int!
+    
+    var currentTrack: TrackModel { return modelController.listOfSessions[rowInModel].sessions[trackInSessions] }
     
     /// the color picker for track color
     private let colorPicker = UIPickerView()
@@ -37,13 +40,13 @@ class EditDetailViewController: UITableViewController {
     @IBOutlet private weak var durationLabel: UILabel!
     @IBOutlet private weak var maxElevationLabel: UILabel!
     @IBOutlet private weak var trackColorTextField: UITextField!
-    @IBOutlet weak var sessionsLabel: UILabel!
+//    @IBOutlet weak var sessionsLabel: UILabel!
     
     
     
     /// prints out gpx data to console
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
-        print(modelController.trackForRow(at: rowInModel).gpxString)
+        print(currentTrack.gpxString)
     }
     
     override func viewDidLoad() {
@@ -73,7 +76,7 @@ class EditDetailViewController: UITableViewController {
         updateViewFromModel()
         
         
-        print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
+        //print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
         
 //        modelController.motoStravaModel.listOfTracks[rowInModel].sessions.removeLast()
 //        modelController.saveJSONToFile()
@@ -84,27 +87,27 @@ class EditDetailViewController: UITableViewController {
         
         // track preview
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = modelController.trackForRow(at: rowInModel).locations
-            mapPreview.trackColor = modelController.trackForRow(at: rowInModel).color
+            mapPreview.locationList = currentTrack.locations
+            mapPreview.trackColor = currentTrack.color
         }
         
-        // LapGate Editor
-        if let mapPreview = segue.destination as? LapGateEditorViewController {
-            mapPreview.rowInModel = rowInModel
-            mapPreview.modelController = modelController
-        }
+//        // LapGate Editor
+//        if let mapPreview = segue.destination as? LapGateEditorViewController {
+//            mapPreview.rowInModel = rowInModel
+//            mapPreview.modelController = modelController
+//        }
         
-        // RunMoto
-        if let mapPreview = segue.destination as? RunMotoViewController {
-            mapPreview.rowInModel = rowInModel
-            mapPreview.modelController = modelController
-        }
+//        // RunMoto
+//        if let mapPreview = segue.destination as? RunMotoViewController {
+//            mapPreview.rowInModel = rowInModel
+//            mapPreview.modelController = modelController
+//        }
         
-        // Session History
-        if let sessionHistory = segue.destination as? SessionHistoryViewController {
-            sessionHistory.rowInModel = rowInModel
-            sessionHistory.modelController = modelController
-        }
+//        // Session History
+//        if let sessionHistory = segue.destination as? SessionHistoryViewController {
+//            sessionHistory.rowInModel = rowInModel
+//            sessionHistory.modelController = modelController
+//        }
     }
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
@@ -115,25 +118,25 @@ class EditDetailViewController: UITableViewController {
     /// updates the tableview data from the model
     private func updateViewFromModel() {
         // update the track name
-        titleTextField.text = modelController.trackForRow(at: rowInModel).name
+        titleTextField.text = currentTrack.name
         
         // update the track image preview
-        let locationPoints = modelController.trackForRow(at: rowInModel).locations.map() { $0.coordinate }
+        let locationPoints = currentTrack.locations.map() { $0.coordinate }
         let options = MKMapSnapshotter.Options()
-        options.region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: rowInModel).locations)
+        options.region = MKCoordinateRegion.mapRegion(using: currentTrack.locations)
         options.mapType = .satellite
         let snapShotter = MKMapSnapshotter(options: options)
         snapShotter.start() { (snapshot, error) in
             if snapshot != nil {
                 let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                self.imageView.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: self.modelController.trackForRow(at: self.rowInModel).color)
+                self.imageView.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: self.currentTrack.color)
             } else {
                 self.imageView.image = snapshot?.image
             }
         }
         
         // update the date label
-        let date = modelController.dateForRow(at: rowInModel)
+        let date = currentTrack.timeStamp
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .full
         dateFormatter.timeStyle = .short
@@ -141,21 +144,21 @@ class EditDetailViewController: UITableViewController {
         dateLabel.text = dateFormatter.string(from: date)
         
         // update the distance
-        distanceLabel.text = "\((modelController.distanceForRow(at: rowInModel) / 1609.344).easyToReadNotation(withDecimalPlaces: 3)) miles"
+        distanceLabel.text = "\(currentTrack.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
         
         // update the average speed
-        averageSpeedLabel.text = "Avg speed: \(modelController.averageSpeedForRow(at: rowInModel).easyToReadNotation(withDecimalPlaces: 3)) mph"
+        averageSpeedLabel.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
         
         // update the duration
-        let (hours, minutes, seconds) = modelController.durationForRow(at: rowInModel).timeIntervalToHoursMinutesSeconds()
+        let (hours, minutes, seconds) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
         durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
         
         // update the Max Elevation
-        let maxElevation = (modelController.maxAltitudeForRow(at: rowInModel) * 3.281).customRounded(withDecimalPlaces: 0)
+        let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
         maxElevationLabel.text = "Max Elevation: \(maxElevation)"
         
         // update the number of sessions
-        sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
+        //sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
     }
 }
 
@@ -176,7 +179,7 @@ extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     // did select row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        modelController.editColorForRow(at: rowInModel, with: Self.defaultColors[row])
+        modelController.setColorForTrack(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
         updateViewFromModel()
     }
 }
@@ -186,7 +189,7 @@ extension EditDetailViewController: UITextFieldDelegate {
     // text field should return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        modelController.editNameForTrack(at: rowInModel, with: textField.text!)
+        modelController.editNameForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: textField.text!)
         return true
     }
 }

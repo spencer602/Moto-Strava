@@ -27,10 +27,10 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     private var lapGateAnnotation = MKPointAnnotation()
     
     /// for convenience, the up-to-date LapGate
-    private var lapGate: GateModel { return modelController.trackForRow(at: rowInModel).lapGate }
+    private var lapGate: GateModel { return session.lapGate }
     
     /// for convenience, the up-to-date list of locations for the track
-    private var locations: [CLLocation] { return modelController.trackForRow(at: rowInModel).locations }
+    private var locations: [CLLocation] { return session.sessions.first!.locations }
     
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
@@ -40,6 +40,8 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
+    
+    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,7 +124,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
         if let polyline = overlay as? MKPolyline {
             // changes a few of the properties of the renderer
             let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = modelController.trackForRow(at: rowInModel).color
+            renderer.strokeColor = session.sessions.first!.color
             renderer.lineWidth = 2
             return renderer
         }

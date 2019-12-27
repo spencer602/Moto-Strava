@@ -8,40 +8,36 @@
 import Foundation
 import CoreLocation
 import UIKit
+import CoreGPX
 
 struct TrackModel: Codable {
+    
     private var codableLocations: [LocationModel]
     var locations: [CLLocation] { return codableLocations.map() { $0.location } }
     var name: String
     var timeStamp: Date { return locations.first!.timestamp }
     var locationCount: Int { return codableLocations.count }
-    
-    //private var codableRuns: [[LocationModel]]
-    
+        
     private var codableColor: ColorModel
+    
     var color: UIColor {
         get { return codableColor.color }
         set { codableColor.color = newValue }
-    }
-    
-    var lapGate: GateModel
-    
-    var sectionGates: [GateModel]
-    
-    var sessions: [TrackModel]
-    
-    enum CodingKeys: CodingKey {
-        case lapGate, sessions, sectionGates, codableColor, name, codableLocations
     }
     
     init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
         self.codableLocations = cllocationArray.map { LocationModel(fromCLLocation: $0) }
         self.name = name
         self.codableColor = ColorModel(with: UIColor.red)
-        self.lapGate = GateModel(location: codableLocations.first!.location)
-        //self.codableRuns = [[LocationModel]]()
-        sectionGates = [GateModel]()
-        sessions = [TrackModel]()
+    }
+    
+    init(withCoreGPX gpx: GPXRoot, withName name: String) {
+        codableLocations = [LocationModel]()
+        for waypoint in gpx.tracks.first!.tracksegments.first!.trackpoints {
+            codableLocations.append(LocationModel(fromGPXWaypoint: waypoint))
+        }
+        self.name = name
+        codableColor = ColorModel(with: UIColor.red)
     }
     
 //    init(from decoder: Decoder) throws {
@@ -53,7 +49,6 @@ struct TrackModel: Codable {
 //        codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
 //        codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
 //    }
-    
     
     var gpxString: String {
         var s = "<?xml version=\"1.0\"?>\n" +
@@ -73,7 +68,7 @@ struct TrackModel: Codable {
         return s
     }
     
-    var trackDistanceInMeters: Double {
+    var trackDistance: Double {
         var distance = 0.0
         var previousLocation: CLLocation?
         for location in self.locations {
@@ -84,10 +79,10 @@ struct TrackModel: Codable {
             distance += location.distance(from: previousLocation!)
             previousLocation = location
         }
-        return distance
+        return distance / 1609.344
     }
     
-    var numberOfLapsCompleted: Int {
+    func getLapPoints(usingLapGate lapGate: GateModel) -> [CLLocation] {
         var pointsInGate = [CLLocation]()
         var bestLapPoints = [CLLocation]()
         for loc in locations {
@@ -111,6 +106,35 @@ struct TrackModel: Codable {
                 }
             }
         }
-        return bestLapPoints.count - 1
+        return bestLapPoints
+    }
+    
+    var averageSpeed: Double {
+        if locations.count == 0 { return 0.0 }
+
+        let distance = trackDistance
+        let dur = duration / 3600
+
+        return distance/dur
+    }
+    
+    var duration: TimeInterval {
+        let startTime = locations.first!.timestamp
+        let endTime = locations.last!.timestamp
+        let duration = startTime.distance(to: endTime)
+
+        return duration
+    }
+    
+    var maxAltitude: Double {
+        if locations.count == 0 { return 0.0 }
+
+        var maxAltitude = locations.first!.altitude
+
+        for loc in locations {
+            if loc.altitude > maxAltitude { maxAltitude = loc.altitude }
+        }
+
+        return maxAltitude * 3.281
     }
 }
