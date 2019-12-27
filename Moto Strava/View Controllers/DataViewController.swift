@@ -24,7 +24,7 @@ class DataViewController: UIViewController {
         trackTableView.delegate = self
         trackTableView.dataSource = self
         
-        importGPX()
+        //importGPX()
     }
     
     override func viewDidAppear(_ animated: Bool) {
