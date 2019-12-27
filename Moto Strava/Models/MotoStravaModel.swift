@@ -9,7 +9,7 @@
 import Foundation
 
 struct MotoStravaModel: Codable {
-    var listOfTracks = [TrackModel]()
+    var listOfTracks = [SessionsModel]()
     
     init() {
     }

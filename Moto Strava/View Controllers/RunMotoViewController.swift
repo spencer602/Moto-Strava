@@ -11,7 +11,7 @@ import MapKit
 
 class RunMotoViewController: UIViewController {
     
-    var gateRadius: Float = 10.0
+//    var gateRadius: Float = 10.0
     
     private var motoIsStarted = false
     
@@ -32,6 +32,8 @@ class RunMotoViewController: UIViewController {
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
+    
+    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
 
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
@@ -64,8 +66,8 @@ class RunMotoViewController: UIViewController {
         stopMotoButton.isHidden = true
         motoIsStarted = false
         
-        var track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
-        track.lapGate = modelController.trackForRow(at: rowInModel).lapGate
+        let track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        //  track.lapGate = modelController.trackForRow(at: rowInModel).lapGate
         modelController.addSessionToTrackForRow(at: rowInModel, with: track)
         
     }
@@ -88,11 +90,11 @@ class RunMotoViewController: UIViewController {
         addTrackToMap()
         zoomMapTo()
 
-        lapGateAnnotation.coordinate = modelController.trackForRow(at: rowInModel).lapGate.location.coordinate
+        lapGateAnnotation.coordinate = session.lapGate.location.coordinate
         
         mapKitView.addAnnotation(lapGateAnnotation)
         
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(gateRadius))
+        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(session.lapGate.radius))
         mapKitView.addOverlay(cir)
         
         locationManager.startUpdatingLocation()
@@ -106,13 +108,13 @@ class RunMotoViewController: UIViewController {
 
     /// adds the track to the map
     private func addTrackToMap() {
-        let overlay = MKPolyline.createPolyLine(using: modelController.trackForRow(at: rowInModel).locations)
+        let overlay = MKPolyline.createPolyLine(using: session.sessions.first!.locations)
         mapKitView.addOverlay(overlay)
     }
 
     /// creates a region encompassing all logged locations and adds the overaly to the map
     private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: modelController.trackForRow(at: rowInModel).locations)
+        let region = MKCoordinateRegion.mapRegion(using: session.sessions.first!.locations)
         mapKitView.setRegion(region, animated: true)
     }
     
@@ -177,36 +179,41 @@ extension RunMotoViewController: CLLocationManagerDelegate {
             polyLinesFromCurrentRecording.append(polyLine)
             // add an overlay as a MKPolyline
             mapKitView.addOverlay(polyLine)
+            
+            
+            // only do this if you want to re-center the region around the most recent location
+            //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+            //        mapKitView.setRegion(region, animated: true)
+                
+                
+            // if the current location is in the gate
+            if locations.first!.distance(from: session.lapGate.location) <= Double(session.lapGate.radius) {
+                print("filter we are in the gate")
+                
+                if pointsInGate == nil { pointsInGate = [CLLocation]() }
+                
+                pointsInGate?.append(locations.first!)
+            } else {
+                if pointsInGate != nil {
+                    // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+                    print("filter points in gate: \(pointsInGate!.count)")
+                    for p in pointsInGate! { print("filter timestamp:\(p.timestamp)") }
+                    
+                    let closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGateAnnotation.coordinate.latitude, longitude: lapGateAnnotation.coordinate.longitude))
+                    
+                    print("filter closest calculated: \(closest!.timestamp)")
+                    pointsInGate = nil
+                    
+                    bestLocationPerLapInGate.append(closest!)
+                }
+            }
+            
+            
         }
         
       
         
-        // only do this if you want to re-center the region around the most recent location
-    //        let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-    //        mapKitView.setRegion(region, animated: true)
         
-        
-        // if the current location is in the gate
-        if locations.first!.distance(from: modelController.trackForRow(at: rowInModel).lapGate.location) <= Double(gateRadius) {
-            print("filter we are in the gate")
-            
-            if pointsInGate == nil { pointsInGate = [CLLocation]() }
-            
-            pointsInGate?.append(locations.first!)
-        } else {
-            if pointsInGate != nil {
-                // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
-                print("filter points in gate: \(pointsInGate!.count)")
-                for p in pointsInGate! { print("filter timestamp:\(p.timestamp)") }
-                
-                let closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGateAnnotation.coordinate.latitude, longitude: lapGateAnnotation.coordinate.longitude))
-                
-                print("filter closest calculated: \(closest!.timestamp)")
-                pointsInGate = nil
-                
-                bestLocationPerLapInGate.append(closest!)
-            }
-        }
         
         updateViewFromModel()
     }
@@ -228,7 +235,7 @@ extension RunMotoViewController: MKMapViewDelegate {
                 return renderer
             } else {
                 let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = modelController.trackForRow(at: rowInModel).color
+                renderer.strokeColor = session.sessions.first!.color
                 renderer.lineWidth = 2
                 return renderer
             }

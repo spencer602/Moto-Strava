@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import CoreGPX
 
 struct LocationModel: Codable {
     private let latitude: Double
@@ -26,6 +27,15 @@ struct LocationModel: Codable {
         self.longitude = cllocation.coordinate.longitude
         self.verticalAccuracy = cllocation.verticalAccuracy
         self.timestamp = cllocation.timestamp
+    }
+    
+    init(fromGPXWaypoint waypoint: GPXWaypoint) {
+        latitude = waypoint.latitude!
+        longitude = waypoint.longitude!
+        altitude = waypoint.elevation != nil ? waypoint.elevation! : 0.0
+        horizontalAccuracy = waypoint.horizontalDilution != nil ? waypoint.horizontalDilution! : 0.0
+        verticalAccuracy = waypoint.verticalDilution != nil ? waypoint.verticalDilution! : 0.0
+        timestamp = waypoint.time!
     }
 }
 
