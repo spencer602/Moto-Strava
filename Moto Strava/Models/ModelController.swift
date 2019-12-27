@@ -60,6 +60,11 @@ class ModelController {
         saveJSONToFile()
     }
     
+    func removeTrack(fromSessionModelNumber sessionModel: Int, atSession session: Int) {
+        motoStravaModel.listOfTracks[sessionModel].sessions.remove(at: session)
+        saveJSONToFile()
+    }
+    
 //    func trackNameForRow(at index: Int) -> String {
 //        return motoStravaModel.listOfTracks[index].name
 //    }

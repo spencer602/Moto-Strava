@@ -44,12 +44,12 @@ class SessionHistoryViewController: UIViewController {
 
 extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSource {
     // deleting
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//       if editingStyle == .delete {
-//           modelController.removeTrack(at: indexPath.row)
-//           sessionHistoryTableView.reloadData()
-//       }
-//    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+       if editingStyle == .delete {
+        modelController.removeTrack(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
+           sessionHistoryTableView.reloadData()
+       }
+    }
 
     // number of rows in section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
