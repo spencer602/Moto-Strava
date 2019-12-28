@@ -95,6 +95,7 @@ class EditDetailViewController: UITableViewController {
         if let mapPreview = segue.destination as? TrackPreviewViewController {
             mapPreview.locationList = [currentTrack.locations]
             mapPreview.trackColor = [currentTrack.color]
+            mapPreview.lapGate = modelController.listOfSessions[rowInModel].lapGate
         }
         
 //        // LapGate Editor

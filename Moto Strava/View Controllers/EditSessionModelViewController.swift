@@ -62,6 +62,7 @@ class EditSessionModelViewController: UITableViewController {
         if let mapPreview = segue.destination as? TrackPreviewViewController {
             mapPreview.locationList = session.sessions.map { $0.locations }
             mapPreview.trackColor = session.allColorsForTracks
+            mapPreview.lapGate = session.lapGate
         }
     }
     
