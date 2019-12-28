@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct SessionsModel: Codable {
     
@@ -17,6 +18,10 @@ struct SessionsModel: Codable {
     var name: String
     
     var dateCreated: Date
+    
+    var allColorsForTracks: [UIColor] {
+        return sessions.map { $0.color }
+    }
 
     init(usingInitialSession session: TrackModel) {
         lapGate = GateModel(location: session.locations.first!, withRadius: 10)
