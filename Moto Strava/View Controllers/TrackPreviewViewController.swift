@@ -18,10 +18,11 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     
     /// the track color. NOTE -  this needs to be set from the VC that segues here
-    var trackColor = UIColor.red
+    var trackColor = [UIColor]()
+    var colorForPolyline = [MKPolyline:UIColor]()
     
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
-    var locationList = [CLLocation]()
+    var locationList = [[CLLocation]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,21 +39,23 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
         
-        addTrackToMap()
+        addTracksToMap()
         
         zoomMapTo()
     }
   
     /// adds all of the tracks in the model to the map
-    private func addTrackToMap() {
-        let overlay = MKPolyline.createPolyLine(using: locationList)
-        mapKitView.addOverlay(overlay)
-        
+    private func addTracksToMap() {
+        for (index, ll) in locationList.enumerated() {
+            let overlay = MKPolyline.createPolyLine(using: ll)
+            colorForPolyline[overlay] = trackColor[index]
+            mapKitView.addOverlay(overlay)
+        }
     }
     
     /// creates a region encompassing all logged locations and adds the overaly to the map
     private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: locationList)
+        let region = MKCoordinateRegion.mapRegion(using: locationList.first!)
         mapKitView.setRegion(region, animated: true)
     }
 }
@@ -68,7 +71,7 @@ extension TrackPreviewViewController: MKMapViewDelegate {
         
         // changes a few of the properties of the renderer
         let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = trackColor
+        renderer.strokeColor = colorForPolyline[polyline]
         renderer.lineWidth = 2
         return renderer
     }

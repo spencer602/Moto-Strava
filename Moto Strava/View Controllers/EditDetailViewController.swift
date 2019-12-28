@@ -93,8 +93,8 @@ class EditDetailViewController: UITableViewController {
         
         // track preview
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = currentTrack.locations
-            mapPreview.trackColor = currentTrack.color
+            mapPreview.locationList = [currentTrack.locations]
+            mapPreview.trackColor = [currentTrack.color]
         }
         
 //        // LapGate Editor
@@ -156,7 +156,7 @@ class EditDetailViewController: UITableViewController {
         averageSpeedLabel.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
         
         // update the duration
-        let (hours, minutes, seconds, milliseconds) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
+        let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
         durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
         
         // update the Max Elevation
