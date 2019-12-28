@@ -32,6 +32,13 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     /// for convenience, the up-to-date list of locations for the track
     private var locations: [CLLocation] { return session.sessions.first!.locations }
     
+    /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
+    var locationList = [[CLLocation]]()
+    
+    /// the track color. NOTE -  this needs to be set from the VC that segues here
+    var trackColor = [UIColor]()
+    var colorForPolyline = [MKPolyline:UIColor]()
+    
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
     
@@ -64,7 +71,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
 
-        addTrackToMap()
+        addTracksToMap()
         zoomMapTo()
         
         // sets the initial location of the lapgate
@@ -107,10 +114,12 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
        mapKitView.setRegion(region, animated: true)
     }
 
-    /// adds all of the tracks in the model to the map
-    private func addTrackToMap() {
-        let overlay = MKPolyline.createPolyLine(using: locations)
-        mapKitView.addOverlay(overlay)
+    private func addTracksToMap() {
+        for (index, ll) in locationList.enumerated() {
+            let overlay = MKPolyline.createPolyLine(using: ll)
+            colorForPolyline[overlay] = trackColor[index]
+            mapKitView.addOverlay(overlay)
+        }
     }
 }
 
@@ -124,7 +133,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
         if let polyline = overlay as? MKPolyline {
             // changes a few of the properties of the renderer
             let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = session.sessions.first!.color
+            renderer.strokeColor = colorForPolyline[polyline]
             renderer.lineWidth = 2
             return renderer
         }
