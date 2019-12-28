@@ -71,15 +71,22 @@ class EditSessionModelViewController: UITableViewController {
         titleTextField.text = session.name
         
         // update the track image preview
-        let locationPoints = session.sessions.first!.locations.map() { $0.coordinate }
         let options = MKMapSnapshotter.Options()
         options.region = MKCoordinateRegion.mapRegion(using: session.sessions.first!.locations)
         options.mapType = .satellite
         let snapShotter = MKMapSnapshotter(options: options)
         snapShotter.start() { (snapshot, error) in
             if snapshot != nil {
-                let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                self.imageView.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: self.session.sessions.first!.color)
+                var imageWithTracks = snapshot!.image
+
+                for sess in self.session.sessions {
+                    let locationPoints = sess.locations.map() { $0.coordinate }
+                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
+                    imageWithTracks = UIImage.drawLines(using: cgPoints, on: imageWithTracks, with: sess.color)!
+
+                }
+                self.imageView.image = imageWithTracks
+
             } else {
                 self.imageView.image = snapshot?.image
             }
@@ -88,6 +95,7 @@ class EditSessionModelViewController: UITableViewController {
         // update the number of sessions
         sessionsLabel.text = "Sessions: \(session.sessions.count)"
     }
+    
 }
 
 extension EditSessionModelViewController: UITextFieldDelegate {

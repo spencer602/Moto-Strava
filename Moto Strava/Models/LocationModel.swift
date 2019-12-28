@@ -67,7 +67,7 @@ extension CLLocation {
         var closest = (locations.first!, locations.first!.distance(from: self), 0)
         
         for (index, loc) in locations.enumerated() {
-            print("distance from gate to location in gate: \(loc.distance(from: self))")
+//            print("distance from gate to location in gate: \(loc.distance(from: self))")
             if loc.distance(from: self) < closest.1 {
                 closest = (loc, loc.distance(from: self), index)
             }
@@ -111,11 +111,11 @@ extension CLLocation {
             for interIndex in 0..<segments {
 //                var interLoc = CLLocation(latitude: lats[interIndex], longitude: lons[interIndex])
                 let interLo = CLLocation(coordinate: CLLocationCoordinate2D(latitude: lats[interIndex], longitude: lons[interIndex]), altitude: elevs[interIndex], horizontalAccuracy: first.horizontalAccuracy, verticalAccuracy: first.verticalAccuracy, timestamp: Date(timeIntervalSince1970: seconds[interIndex]))
-                print(distance.1)
+//                print(distance.1)
                 
                 if interLo.distance(from: self) < distance.1 {
                     distance = (interLo, interLo.distance(from: self))
-                    print("narrowed: \(distance.1)")
+//                    print("narrowed: \(distance.1)")
                 }
             }
         }
