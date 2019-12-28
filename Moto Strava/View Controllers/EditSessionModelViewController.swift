@@ -45,6 +45,8 @@ class EditSessionModelViewController: UITableViewController {
         if let gateEditor = segue.destination as? LapGateEditorViewController {
             gateEditor.rowInModel = rowInModel
             gateEditor.modelController = modelController
+            gateEditor.locationList = session.sessions.map { $0.locations }
+            gateEditor.trackColor = session.allColorsForTracks
         }
         
         // RunMoto
