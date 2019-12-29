@@ -12,8 +12,6 @@ import CoreGPX
 
 
 class EditSessionModelViewController: UITableViewController {
-
-   
     /// these are set when this VC is segued to
     var rowInModel: Int!
     var modelController: ModelController!
@@ -73,32 +71,11 @@ class EditSessionModelViewController: UITableViewController {
         // update the track name
         titleTextField.text = session.name
         
-        // update the track image preview
-        let options = MKMapSnapshotter.Options()
-        options.region = MKCoordinateRegion.mapRegion(using: session.sessions.first!.locations)
-        options.mapType = .satellite
-        let snapShotter = MKMapSnapshotter(options: options)
-        snapShotter.start() { (snapshot, error) in
-            if snapshot != nil {
-                var imageWithTracks = snapshot!.image
-
-                for sess in self.session.sessions {
-                    let locationPoints = sess.locations.map() { $0.coordinate }
-                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    imageWithTracks = UIImage.drawLines(using: cgPoints, on: imageWithTracks, with: sess.color)!
-
-                }
-                self.imageView.image = imageWithTracks
-
-            } else {
-                self.imageView.image = snapshot?.image
-            }
-        }
-    
+        EditDetailViewController.setPreviewImage(sessions: session.sessions) { image in self.imageView.image = image }
+        
         // update the number of sessions
         sessionsLabel.text = "Sessions: \(session.sessions.count)"
     }
-    
 }
 
 extension EditSessionModelViewController: UITextFieldDelegate {

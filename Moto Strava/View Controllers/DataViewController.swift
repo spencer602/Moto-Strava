@@ -58,8 +58,6 @@ class DataViewController: UIViewController {
         
         let track = TrackModel(withCoreGPX: gpx, withName: "test")
         modelController.addSessionToTrackForRow(at: 1, with: track)
-        //modelController.add(session: SessionsModel(usingInitialSession: track))
-                
     }
 }
 
@@ -96,21 +94,9 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
             dateFormatter.timeStyle = .short
             dateFormatter.locale = Locale(identifier: "en_US")
             cell.dateLabel.text = dateFormatter.string(from: date)
-           
-            let locationPoints = session.sessions.first!.locations.map() { $0.coordinate }
-            let options = MKMapSnapshotter.Options()
-            options.region = MKCoordinateRegion.mapRegion(using: session.sessions.first!.locations)
-            options.mapType = .satellite
-            // snapshot of map
-            let snapShotter = MKMapSnapshotter(options: options)
-            snapShotter.start() { (snapshot, error) in
-                if snapshot != nil {
-                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.imageOutlet.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: session.sessions.first!.color)
-                } else {
-                    cell.imageOutlet.image = snapshot?.image
-                }
-            }
+        
+            EditDetailViewController.setPreviewImage(sessions: session.sessions) { image in cell.imageOutlet.image = image }
+            
             let laps = session.totalLaps
             
             cell.lapsLabel.text = "Laps: \(laps)"

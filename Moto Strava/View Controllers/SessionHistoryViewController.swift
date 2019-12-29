@@ -77,21 +77,7 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
             // distance
             cell.distanceLabel.text = "\((currentSession.trackDistance).easyToReadNotation(withDecimalPlaces: 3)) miles"
             
-            // create, markup, and display track thumbnail
-            let locationPoints = currentSession.locations.map() { $0.coordinate }
-            let options = MKMapSnapshotter.Options()
-            options.region = MKCoordinateRegion.mapRegion(using: currentSession.locations)
-            options.mapType = .satellite
-            // snapshot of map
-            let snapShotter = MKMapSnapshotter(options: options)
-            snapShotter.start() { (snapshot, error) in
-                if snapshot != nil {
-                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                    cell.trackPreviewImage.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: currentSession.color)
-                } else {
-                    cell.trackPreviewImage.image = snapshot?.image
-                }
-            }
+            EditDetailViewController.setPreviewImage(sessions: [currentSession]) { image in cell.trackPreviewImage.image = image }
             
             cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: session.lapGate).count - 1)"
             

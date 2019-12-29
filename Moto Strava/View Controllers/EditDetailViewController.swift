@@ -80,13 +80,6 @@ class EditDetailViewController: UITableViewController {
         for (index, time) in lapTimes.enumerated() {
             print("\(index + 1): \(time.timeIntervalToHoursMinutesSeconds())")
         }
-        
-        
-        //print("session count: \(modelController.trackForRow(at: rowInModel).sessions.first!.locations.count)")
-        
-//        modelController.motoStravaModel.listOfTracks[rowInModel].sessions.removeLast()
-//        modelController.saveJSONToFile()
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -97,24 +90,6 @@ class EditDetailViewController: UITableViewController {
             mapPreview.trackColor = [currentTrack.color]
             mapPreview.lapGate = modelController.listOfSessions[rowInModel].lapGate
         }
-        
-//        // LapGate Editor
-//        if let mapPreview = segue.destination as? LapGateEditorViewController {
-//            mapPreview.rowInModel = rowInModel
-//            mapPreview.modelController = modelController
-//        }
-        
-//        // RunMoto
-//        if let mapPreview = segue.destination as? RunMotoViewController {
-//            mapPreview.rowInModel = rowInModel
-//            mapPreview.modelController = modelController
-//        }
-        
-//        // Session History
-//        if let sessionHistory = segue.destination as? SessionHistoryViewController {
-//            sessionHistory.rowInModel = rowInModel
-//            sessionHistory.modelController = modelController
-//        }
     }
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
@@ -127,19 +102,8 @@ class EditDetailViewController: UITableViewController {
         // update the track name
         titleTextField.text = currentTrack.name
         
-        // update the track image preview
-        let locationPoints = currentTrack.locations.map() { $0.coordinate }
-        let options = MKMapSnapshotter.Options()
-        options.region = MKCoordinateRegion.mapRegion(using: currentTrack.locations)
-        options.mapType = .satellite
-        let snapShotter = MKMapSnapshotter(options: options)
-        snapShotter.start() { (snapshot, error) in
-            if snapshot != nil {
-                let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
-                self.imageView.image = UIImage.drawLines(using: cgPoints, on: snapshot!.image, with: self.currentTrack.color)
-            } else {
-                self.imageView.image = snapshot?.image
-            }
+        Self.setPreviewImage(sessions: [currentTrack]) { image in
+            self.imageView.image = image
         }
         
         // update the date label
@@ -166,6 +130,30 @@ class EditDetailViewController: UITableViewController {
         
         // update the number of sessions
         //sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
+    }
+    
+    static func setPreviewImage(sessions: [TrackModel], completionClosure: @escaping (UIImage) -> Void) {
+        // update the track image preview
+        var previewImage = UIImage()
+        let options = MKMapSnapshotter.Options()
+        options.region = MKCoordinateRegion.mapRegion(using: sessions.first!.locations)
+        options.mapType = .satellite
+        let snapShotter = MKMapSnapshotter(options: options)
+        snapShotter.start() { (snapshot, error) in
+            if snapshot != nil {
+                previewImage = snapshot!.image
+                for sess in sessions {
+                    let locationPoints = sess.locations.map() { $0.coordinate }
+                    let cgPoints = locationPoints.map { snapshot!.point(for: $0) }
+                    previewImage = UIImage.drawLines(using: cgPoints, on: previewImage, with: sess.color)!
+                }
+                completionClosure(previewImage)
+                
+            } else {
+                previewImage = snapshot!.image
+                completionClosure(previewImage)
+            }
+        }
     }
 }
 
