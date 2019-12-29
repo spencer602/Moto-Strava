@@ -71,7 +71,7 @@ class EditSessionModelViewController: UITableViewController {
         // update the track name
         titleTextField.text = session.name
         
-        EditDetailViewController.setPreviewImage(sessions: session.sessions) { image in self.imageView.image = image }
+        EditDetailViewController.setPreviewImage(using: session.sessions) { image in self.imageView.image = image }
         
         // update the number of sessions
         sessionsLabel.text = "Sessions: \(session.sessions.count)"

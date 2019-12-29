@@ -95,7 +95,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
             dateFormatter.locale = Locale(identifier: "en_US")
             cell.dateLabel.text = dateFormatter.string(from: date)
         
-            EditDetailViewController.setPreviewImage(sessions: session.sessions) { image in cell.imageOutlet.image = image }
+            EditDetailViewController.setPreviewImage(using: session.sessions) { image in cell.imageOutlet.image = image }
             
             let laps = session.totalLaps
             

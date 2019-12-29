@@ -102,7 +102,7 @@ class EditDetailViewController: UITableViewController {
         // update the track name
         titleTextField.text = currentTrack.name
         
-        Self.setPreviewImage(sessions: [currentTrack]) { image in
+        Self.setPreviewImage(using: [currentTrack]) { image in
             self.imageView.image = image
         }
         
@@ -132,7 +132,7 @@ class EditDetailViewController: UITableViewController {
         //sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
     }
     
-    static func setPreviewImage(sessions: [TrackModel], completionClosure: @escaping (UIImage) -> Void) {
+    static func setPreviewImage(using sessions: [TrackModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
         // update the track image preview
         var previewImage = UIImage()
         let options = MKMapSnapshotter.Options()

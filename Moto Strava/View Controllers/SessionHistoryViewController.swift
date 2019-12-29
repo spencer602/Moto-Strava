@@ -77,7 +77,7 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
             // distance
             cell.distanceLabel.text = "\((currentSession.trackDistance).easyToReadNotation(withDecimalPlaces: 3)) miles"
             
-            EditDetailViewController.setPreviewImage(sessions: [currentSession]) { image in cell.trackPreviewImage.image = image }
+            EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
             
             cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: session.lapGate).count - 1)"
             
