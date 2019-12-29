@@ -67,9 +67,7 @@ class RunMotoViewController: UIViewController {
         motoIsStarted = false
         
         let track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
-        //  track.lapGate = modelController.trackForRow(at: rowInModel).lapGate
         modelController.addSessionToTrackForRow(at: rowInModel, with: track)
-        
     }
     
     override func viewDidLoad() {
@@ -207,14 +205,7 @@ extension RunMotoViewController: CLLocationManagerDelegate {
                     bestLocationPerLapInGate.append(closest!)
                 }
             }
-            
-            
         }
-        
-      
-        
-        
-        
         updateViewFromModel()
     }
 }
@@ -272,5 +263,4 @@ extension RunMotoViewController: MKMapViewDelegate {
 
         return annotationView
     }
-
 }
