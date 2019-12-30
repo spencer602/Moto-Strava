@@ -37,9 +37,7 @@ class EditDetailViewController: UIViewController {
     
     let toolBar = UIToolbar()
 
-    
     // IBOutlets
-   
     @IBOutlet var editDetailTableView: UITableView!
     
     /// prints out gpx data to console
@@ -158,11 +156,9 @@ extension EditDetailViewController: UITextFieldDelegate {
 
 extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 { return 8 }
+        if section == 0 { return 9 }
         else { return currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).count}
     }
-    
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
@@ -217,10 +213,17 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             case 6:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the Max Elevation
+                let bestTime = currentTrack.getBestLapTime(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
+                let bestTimeString = bestTime != nil ? bestTime!.toStringAppropriateForLapTime(withDecimalPlaces: 2) : "NA"
+                cell.textLabel!.text = "Best Lap Time: \(bestTimeString)"
+                return cell
+            case 7:
+                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                // update the Max Elevation
                 let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
                 cell.textLabel!.text = "Max Elevation: \(maxElevation)"
                 return cell
-            case 7:
+            case 8:
                  if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "editTrackColorCell", for: indexPath) as? EditTrackColorTableViewCell {
                     self.textField = cell.trackColorTextField
                      cell.trackColorTextField.text = "Edit Track Color"

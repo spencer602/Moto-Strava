@@ -29,6 +29,9 @@ class EditSessionModelViewController: UITableViewController {
         
         titleTextField.delegate = self
         updateViewFromModel()
+        
+        let bestTime = session.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+        print("Best time for track: \(bestTime)")
     }
     
     override func viewDidAppear(_ animated: Bool) {

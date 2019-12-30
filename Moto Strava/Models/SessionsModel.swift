@@ -41,5 +41,9 @@ struct SessionsModel: Codable {
         return totalLaps
     }
     
-    
+    var bestLapTime: TimeInterval? {
+        let bestLapTimes = sessions.map { $0.getBestLapTime(usingLapGate: lapGate) }
+        let bestLapTimesExludingNils: [TimeInterval] = bestLapTimes.filter { $0 != nil } as! [TimeInterval]
+        return bestLapTimesExludingNils.sorted().first
+    }
 }
