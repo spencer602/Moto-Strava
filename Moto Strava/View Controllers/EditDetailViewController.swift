@@ -228,13 +228,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
                     // create a toolbar for the pickers (so 'done' can be chosen)
                     cell.trackColorTextField.delegate = self
                     cell.trackColorTextField.inputView = colorPicker
-                    
-
-                    
-
                     cell.trackColorTextField.inputAccessoryView = toolBar
-                    
-                    
                     return cell
                 }
             default:
@@ -246,7 +240,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
            
             let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
             print (indexPath.row)
-            cell.textLabel!.text = "Lap \(indexPath.row): \(lapTimes[indexPath.row])"
+            cell.textLabel!.text = "Lap \(indexPath.row): \(lapTimes[indexPath.row].customRounded(withDecimalPlaces: 2))"
             return cell
         }
         
