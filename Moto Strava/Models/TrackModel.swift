@@ -110,6 +110,10 @@ struct TrackModel: Codable {
         return bestLapPoints
     }
     
+    func getBestLapTime(usingLapGate lapGate: GateModel) -> TimeInterval? {
+        return getLapTimes(usingLapGate: lapGate).sorted().first
+    }
+    
     func getLapTimes(usingLapGate lapGate: GateModel) -> [TimeInterval] {
         var lapTimes = [TimeInterval]()
         let lapPoints = getLapPoints(usingLapGate: lapGate)
