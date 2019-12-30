@@ -26,30 +26,27 @@ extension Double {
     func toStringAppropriateForLapTime(withDecimalPlaces decimalPlaces: Int) -> String {
         let (hours, minutes, seconds, milliseconds) = self.timeIntervalToHoursMinutesSeconds()
         var outputString = ""
-        if hours > 0 {
-            if hours >= 10 { outputString += "\(hours):"}
-            else { outputString += "0\(hours):" }
-            if minutes >= 10 { outputString += "\(minutes):"}
-            else { outputString += "0\(minutes):" }
-            if seconds >= 10 { outputString += "\(seconds):"}
-            else { outputString += "0\(seconds):" }
-            outputString += "\((Double(milliseconds)/1000.0).customRounded(withDecimalPlaces: decimalPlaces))"
-        }
-        else if minutes > 0 {
-            if minutes >= 10 { outputString += "\(minutes):"}
-            else { outputString += "0\(minutes):" }
-            if seconds >= 10 { outputString += "\(seconds):"}
-            else { outputString += "0\(seconds):" }
-            outputString += "\((Double(milliseconds)/1000.0).customRounded(withDecimalPlaces: decimalPlaces))"
-        }
-        else if seconds > 0 {
-            if seconds >= 10 { outputString += "\(seconds):"}
-            else { outputString += "0\(seconds):" }
-            outputString += "\((Double(milliseconds)/1000.0).customRounded(withDecimalPlaces: decimalPlaces))"
-        }
-        else {
-            outputString += "\((Double(milliseconds)/1000.0).customRounded(withDecimalPlaces: decimalPlaces))"
-        }
+        var hoursString = ""
+        var minutesString = ""
+        var secondsString = ""
+        var millisecondsString = ""
+        
+        if hours >= 10 { hoursString = "\(hours):"}
+        else { hoursString = "0\(hours):" }
+        if minutes >= 10 { minutesString = "\(minutes):"}
+        else { minutesString = "0\(minutes):" }
+        if seconds >= 10 { secondsString = "\(seconds)"}
+        else { secondsString = "0\(seconds)" }
+        millisecondsString = "\((Double(milliseconds)/1000.0).customRounded(withDecimalPlaces: decimalPlaces))"
+        millisecondsString.removeFirst()
+
+        if hours > 0 { outputString = hoursString + minutesString + secondsString }
+        else if minutes > 0 { outputString = minutesString + secondsString }
+        else if seconds > 0 { outputString = secondsString }
+        else { outputString += "." }
+        
+        outputString += millisecondsString
+        
         return outputString
     }
     

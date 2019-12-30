@@ -240,7 +240,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
            
             let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
             print (indexPath.row)
-            cell.textLabel!.text = "Lap \(indexPath.row): \(lapTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 3))"
+            cell.textLabel!.text = "Lap \(indexPath.row + 1):    \(lapTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
             return cell
         }
         
