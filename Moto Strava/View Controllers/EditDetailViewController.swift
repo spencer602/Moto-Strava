@@ -37,9 +37,7 @@ class EditDetailViewController: UIViewController {
     
     let toolBar = UIToolbar()
 
-    
     // IBOutlets
-   
     @IBOutlet var editDetailTableView: UITableView!
     
     /// prints out gpx data to console
@@ -73,10 +71,6 @@ class EditDetailViewController: UIViewController {
         toolBar.isUserInteractionEnabled = true
         
         updateViewFromModel()
-        
-//        let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).sorted()
-//
-//        print("Best lap time: \(lapTimes.first?.toStringAppropriateForLapTime(withDecimalPlaces: 2))")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -165,8 +159,6 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
         if section == 0 { return 9 }
         else { return currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).count}
     }
-    
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
