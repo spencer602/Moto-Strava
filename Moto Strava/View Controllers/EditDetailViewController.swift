@@ -15,6 +15,9 @@ class EditDetailViewController: UIViewController {
         return [.black, .blue, .brown, .cyan, .darkGray, .gray, .green, .lightGray, .magenta, .orange, .purple, .red, .white, .yellow]
     }
     
+    private var cell: ImageViewTableViewCell!
+    private var textField: UITextField!
+    
     private var tableViewHasReloadedData = false
     
     /// the names associated with the default colors for the picker
@@ -32,6 +35,9 @@ class EditDetailViewController: UIViewController {
     /// the color picker for track color
     private let colorPicker = UIPickerView()
     
+    let toolBar = UIToolbar()
+
+    
     // IBOutlets
    
     @IBOutlet var editDetailTableView: UITableView!
@@ -44,21 +50,29 @@ class EditDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        editDetailTableView.delegate = self
-        editDetailTableView.dataSource = self
-        
-//        titleTextField.delegate = self
-//        trackColorTextField.inputView = colorPicker
         colorPicker.dataSource = self
         colorPicker.delegate = self
         
+        editDetailTableView.delegate = self
+        editDetailTableView.dataSource = self
         
+        colorPicker.dataSource = self
+        colorPicker.delegate = self
         
-//        trackColorTextField.inputAccessoryView = toolBar
+        // create a toolbar for the pickers (so 'done' can be chosen)
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        toolBar.sizeToFit()
+
+        // add buttons to the toolBar
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(donePicker))
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donePicker))
+
+        toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
         
         updateViewFromModel()
-        
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -73,42 +87,12 @@ class EditDetailViewController: UIViewController {
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
     @objc func donePicker() {
-//        trackColorTextField.resignFirstResponder()
+        textField.resignFirstResponder()
     }
     
     /// updates the tableview data from the model
     private func updateViewFromModel() {
-        // update the track name
-//        titleTextField.text = currentTrack.name
-        
-//        Self.setPreviewImage(using: [currentTrack]) { image in
-//            self.imageView.image = image
-//        }
-        
-        // update the date label
-        let date = currentTrack.timeStamp
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .full
-        dateFormatter.timeStyle = .short
-        dateFormatter.locale = Locale(identifier: "en_US")
-//        dateLabel.text = dateFormatter.string(from: date)
-        
-        // update the distance
-//        distanceLabel.text = "\(currentTrack.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
-        
-        // update the average speed
-//        averageSpeedLabel.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
-        
-        // update the duration
-        let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
-//        durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
-        
-        // update the Max Elevation
-        let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
-//        maxElevationLabel.text = "Max Elevation: \(maxElevation)"
-        
-        // update the number of sessions
-        //sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
+        editDetailTableView.reloadData()
     }
     
     static func setPreviewImage(using sessions: [TrackModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
@@ -155,7 +139,10 @@ extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource
     // did select row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         modelController.setColorForTrack(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
-        updateViewFromModel()
+//        updateViewFromModel()
+        EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
+            self.cell.customImageView.image = image
+        }
     }
 }
 
@@ -183,10 +170,12 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "sessionNameCell", for: indexPath) as? EditNameTableViewCell {
                     cell.titleTextField.text = currentTrack.name
+                    cell.titleTextField.delegate = self
                     return cell
                 }
             case 1:
                 if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
+                    self.cell = cell
                     
                     EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
                         cell.customImageView.image = image
@@ -233,23 +222,17 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
                 return cell
             case 7:
                  if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "editTrackColorCell", for: indexPath) as? EditTrackColorTableViewCell {
+                    self.textField = cell.trackColorTextField
                      cell.trackColorTextField.text = "Edit Track Color"
                     
                     // create a toolbar for the pickers (so 'done' can be chosen)
-                    let toolBar = UIToolbar()
-                    toolBar.barStyle = UIBarStyle.default
-                    toolBar.isTranslucent = true
-                    toolBar.sizeToFit()
-
-                    // add buttons to the toolBar
-                    let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(donePicker))
-                    let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-                    let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donePicker))
-
-                    toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
-                    toolBar.isUserInteractionEnabled = true
+                    cell.trackColorTextField.delegate = self
+                    cell.trackColorTextField.inputView = colorPicker
                     
-                    cell.trackColorTextField.inputView = toolBar
+
+                    
+
+                    cell.trackColorTextField.inputAccessoryView = toolBar
                     
                     
                     return cell
