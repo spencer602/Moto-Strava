@@ -52,19 +52,7 @@ class EditDetailViewController: UIViewController {
         colorPicker.dataSource = self
         colorPicker.delegate = self
         
-        // create a toolbar for the pickers (so 'done' can be chosen)
-        let toolBar = UIToolbar()
-        toolBar.barStyle = UIBarStyle.default
-        toolBar.isTranslucent = true
-        toolBar.sizeToFit()
-
-        // add buttons to the toolBar
-        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(donePicker))
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donePicker))
-
-        toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
-        toolBar.isUserInteractionEnabled = true
+        
         
 //        trackColorTextField.inputAccessoryView = toolBar
         
@@ -246,6 +234,24 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             case 7:
                  if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "editTrackColorCell", for: indexPath) as? EditTrackColorTableViewCell {
                      cell.trackColorTextField.text = "Edit Track Color"
+                    
+                    // create a toolbar for the pickers (so 'done' can be chosen)
+                    let toolBar = UIToolbar()
+                    toolBar.barStyle = UIBarStyle.default
+                    toolBar.isTranslucent = true
+                    toolBar.sizeToFit()
+
+                    // add buttons to the toolBar
+                    let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(donePicker))
+                    let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+                    let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donePicker))
+
+                    toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
+                    toolBar.isUserInteractionEnabled = true
+                    
+                    cell.trackColorTextField.inputView = toolBar
+                    
+                    
                     return cell
                 }
             default:
