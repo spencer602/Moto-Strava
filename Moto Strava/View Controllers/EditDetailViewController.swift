@@ -9,12 +9,16 @@
 import UIKit
 import MapKit
 
-class EditDetailViewController: UITableViewController {
-    
+class EditDetailViewController: UIViewController {
     /// default colors for the picker
     static var defaultColors: [UIColor] {
         return [.black, .blue, .brown, .cyan, .darkGray, .gray, .green, .lightGray, .magenta, .orange, .purple, .red, .white, .yellow]
     }
+    
+    private var cell: ImageViewTableViewCell!
+    private var textField: UITextField!
+    
+    private var tableViewHasReloadedData = false
     
     /// the names associated with the default colors for the picker
     static var defaultColorNames: [String] {
@@ -31,18 +35,12 @@ class EditDetailViewController: UITableViewController {
     /// the color picker for track color
     private let colorPicker = UIPickerView()
     
+    let toolBar = UIToolbar()
+
+    
     // IBOutlets
-    @IBOutlet private weak var titleTextField: UITextField!
-    @IBOutlet private weak var dateLabel: UILabel!
-    @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var distanceLabel: UILabel!
-    @IBOutlet private weak var averageSpeedLabel: UILabel!
-    @IBOutlet private weak var durationLabel: UILabel!
-    @IBOutlet private weak var maxElevationLabel: UILabel!
-    @IBOutlet private weak var trackColorTextField: UITextField!
-//    @IBOutlet weak var sessionsLabel: UILabel!
-    
-    
+   
+    @IBOutlet var editDetailTableView: UITableView!
     
     /// prints out gpx data to console
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
@@ -52,13 +50,16 @@ class EditDetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        titleTextField.delegate = self
-        trackColorTextField.inputView = colorPicker
+        colorPicker.dataSource = self
+        colorPicker.delegate = self
+        
+        editDetailTableView.delegate = self
+        editDetailTableView.dataSource = self
+        
         colorPicker.dataSource = self
         colorPicker.delegate = self
         
         // create a toolbar for the pickers (so 'done' can be chosen)
-        let toolBar = UIToolbar()
         toolBar.barStyle = UIBarStyle.default
         toolBar.isTranslucent = true
         toolBar.sizeToFit()
@@ -71,15 +72,7 @@ class EditDetailViewController: UITableViewController {
         toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
         
-        trackColorTextField.inputAccessoryView = toolBar
-        
         updateViewFromModel()
-        
-        let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
-        
-        for (index, time) in lapTimes.enumerated() {
-            print("\(index + 1): \(time.timeIntervalToHoursMinutesSeconds())")
-        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -94,42 +87,12 @@ class EditDetailViewController: UITableViewController {
     
     /// actions to be taken when the 'done' button in the picker toolbar is pressed, just resign the picker as firstResponder
     @objc func donePicker() {
-        trackColorTextField.resignFirstResponder()
+        textField.resignFirstResponder()
     }
     
     /// updates the tableview data from the model
     private func updateViewFromModel() {
-        // update the track name
-        titleTextField.text = currentTrack.name
-        
-        Self.setPreviewImage(using: [currentTrack]) { image in
-            self.imageView.image = image
-        }
-        
-        // update the date label
-        let date = currentTrack.timeStamp
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .full
-        dateFormatter.timeStyle = .short
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateLabel.text = dateFormatter.string(from: date)
-        
-        // update the distance
-        distanceLabel.text = "\(currentTrack.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
-        
-        // update the average speed
-        averageSpeedLabel.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
-        
-        // update the duration
-        let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
-        durationLabel.text = "Duration: \(hours):\(minutes):\(seconds)"
-        
-        // update the Max Elevation
-        let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
-        maxElevationLabel.text = "Max Elevation: \(maxElevation)"
-        
-        // update the number of sessions
-        //sessionsLabel.text = "Sessions: \(modelController.trackForRow(at: rowInModel).sessions.count)"
+        editDetailTableView.reloadData()
     }
     
     static func setPreviewImage(using sessions: [TrackModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
@@ -150,6 +113,7 @@ class EditDetailViewController: UITableViewController {
                 completionClosure(previewImage)
                 
             } else {
+                print("Snapshot == nil")
                 previewImage = snapshot!.image
                 completionClosure(previewImage)
             }
@@ -175,7 +139,10 @@ extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource
     // did select row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         modelController.setColorForTrack(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
-        updateViewFromModel()
+//        updateViewFromModel()
+        EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
+            self.cell.customImageView.image = image
+        }
     }
 }
 
@@ -186,5 +153,107 @@ extension EditDetailViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         modelController.editNameForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: textField.text!)
         return true
+    }
+}
+
+extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 { return 8 }
+        else { return currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).count}
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            switch indexPath.row {
+            case 0:
+                if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "sessionNameCell", for: indexPath) as? EditNameTableViewCell {
+                    cell.titleTextField.text = currentTrack.name
+                    cell.titleTextField.delegate = self
+                    return cell
+                }
+            case 1:
+                if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
+                    self.cell = cell
+                    
+                    EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
+                        cell.customImageView.image = image
+                        
+                        if !self.tableViewHasReloadedData {
+                            self.tableViewHasReloadedData = true
+                            self.editDetailTableView.reloadData()
+                        }
+                    }
+                    return cell
+                }
+            case 2:
+                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                // update the date label
+                let date = currentTrack.timeStamp
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = .full
+                dateFormatter.timeStyle = .short
+                dateFormatter.locale = Locale(identifier: "en_US")
+                cell.textLabel!.text = dateFormatter.string(from: date)
+                return cell
+            case 3:
+                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                // update the distance label
+                cell.textLabel!.text = "\(currentTrack.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
+                return cell
+            case 4:
+                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                // update the average speed label
+                cell.textLabel!.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
+                return cell
+            case 5:
+               let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+               // update the duration label
+               // update the duration
+               let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
+               cell.textLabel!.text = "Duration: \(hours):\(minutes):\(seconds)"
+                return cell
+            case 6:
+                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                // update the Max Elevation
+                let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
+                cell.textLabel!.text = "Max Elevation: \(maxElevation)"
+                return cell
+            case 7:
+                 if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "editTrackColorCell", for: indexPath) as? EditTrackColorTableViewCell {
+                    self.textField = cell.trackColorTextField
+                     cell.trackColorTextField.text = "Edit Track Color"
+                    
+                    // create a toolbar for the pickers (so 'done' can be chosen)
+                    cell.trackColorTextField.delegate = self
+                    cell.trackColorTextField.inputView = colorPicker
+                    cell.trackColorTextField.inputAccessoryView = toolBar
+                    return cell
+                }
+            default:
+                return UITableViewCell()
+            }
+        }
+        else if indexPath.section == 1 {
+            let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+           
+            let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate)
+            print (indexPath.row)
+            cell.textLabel!.text = "Lap \(indexPath.row): \(lapTimes[indexPath.row].customRounded(withDecimalPlaces: 2))"
+            return cell
+        }
+        
+        return UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 1 { return "Laps" }
+        else if section == 0 { return "Session Data" }
+        else { return "error" }
     }
 }
