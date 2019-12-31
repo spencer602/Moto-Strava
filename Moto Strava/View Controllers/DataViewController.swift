@@ -24,7 +24,7 @@ class DataViewController: UIViewController {
         trackTableView.delegate = self
         trackTableView.dataSource = self
         
-        //importGPX()
+//        importGPX()
         
         print(20.0.interpolate(to: 2.0, numberOfElements: 7))
     }
@@ -57,7 +57,7 @@ class DataViewController: UIViewController {
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
         let track = TrackModel(withCoreGPX: gpx, withName: "test")
-        modelController.addSessionToTrackForRow(at: 1, with: track)
+        modelController.addSessionToTrackForRow(at: 7, with: track)
     }
 }
 
