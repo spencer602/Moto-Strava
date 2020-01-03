@@ -60,12 +60,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        
+        if let vc = window?.rootViewController as? UITabBarController {
+            if let mvc = vc.selectedViewController as? MapViewController {
+                print("started updating location")
+
+                mvc.locationManager.startUpdatingLocation()
+            }
+            
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        print("did enter background")
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        
+        
+        if let vc = window?.rootViewController as? UITabBarController {
+            if let mvc = vc.selectedViewController as? MapViewController {
+                if !mvc.isRecordingTracks {
+                    print("stopped updating location")
+
+                    mvc.locationManager.stopUpdatingLocation()
+                }
+            }
+            
+        }
     }
 
 

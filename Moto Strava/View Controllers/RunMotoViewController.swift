@@ -95,7 +95,20 @@ class RunMotoViewController: UIViewController {
         cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(session.lapGate.radius))
         mapKitView.addOverlay(cir)
         
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         locationManager.startUpdatingLocation()
+    }
+    
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if !motoIsStarted { locationManager.stopUpdatingLocation() }
     }
     
     private func updateViewFromModel() {

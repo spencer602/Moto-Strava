@@ -33,7 +33,8 @@ class MapViewController: UIViewController {
     private var hasZoomedToFirstLocation = false
     
     /// keeps track of whether or not we are currently recording tracks
-    private var isRecordingTracks = false
+    var isRecordingTracks = false
+    
     /// the complete list of logged locations from our current track recording
     private var polyLinesFromCurrentRecording = [MKPolyline]()
     
@@ -63,7 +64,12 @@ class MapViewController: UIViewController {
         
         // this is the best accuracy available, makes the timestamp register in milliseconds also. Commenting this line out causes the timestamp to only report to seconds (in terms of precision)
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        locationManager.startUpdatingLocation()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        print("view will disappear!")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,6 +85,14 @@ class MapViewController: UIViewController {
     
         // adds the rest of the tracks from the model
         addAllTracksToMap()
+        
+        locationManager.startUpdatingLocation()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if !isRecordingTracks { locationManager.stopUpdatingLocation() }
     }
     
     /**
@@ -222,6 +236,7 @@ extension MapViewController: CLLocationManagerDelegate {
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("\(Date()): did update location")
 //        let date = Date()
 //
 //        print("time differenece between: \(locations.first!.timestamp.distance(to: date))")
