@@ -12,7 +12,7 @@ import UIKit
 struct SessionsModel: Codable {
     
     var lapGate: GateModel
-    var sectionGates: [GateModel]
+    var sectionGates: [GateModel:GateModel]
     var sessions: [TrackModel]
 
     var name: String
@@ -22,10 +22,10 @@ struct SessionsModel: Codable {
     var allColorsForTracks: [UIColor] {
         return sessions.map { $0.color }
     }
-
+    
     init(usingInitialSession session: TrackModel) {
         lapGate = GateModel(location: session.locations.first!, withRadius: 10)
-        sectionGates = [GateModel]()
+        sectionGates = [GateModel:GateModel]()
         sessions = [TrackModel]()
         sessions.append(session)
         dateCreated = Date()

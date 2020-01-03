@@ -25,6 +25,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
 
     /// the lap gate annotation on the map
     private var lapGateAnnotation = MKPointAnnotation()
+    private var sectionAnnotations: (MKPointAnnotation, MKPointAnnotation)?
     
     /// for convenience, the up-to-date LapGate
     private var lapGate: GateModel { return session.lapGate }
@@ -40,7 +41,13 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     var colorForPolyline = [MKPolyline:UIColor]()
     
     /// the circle that is an overlay to show the size of the LapGate
-    private var cir = MKCircle()
+//    private var cir = MKCircle()
+//    private var sectionCircles: (MKCircle, MKCircle)?
+    
+    private var circleForAnnotation = [MKPointAnnotation:MKCircle]()
+    
+    
+    private var sectionGates = [GateModel:GateModel]()
     
     /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
     var rowInModel: Int!
@@ -81,20 +88,53 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         mapKitView.addAnnotation(lapGateAnnotation)
         
         // sets the original circle representing the lap gate
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
+        let cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
         mapKitView.addOverlay(cir)
         calculatePointsInGateRadius()
+        circleForAnnotation[lapGateAnnotation] = cir
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        print("Edit lap gate view will disappear")
+        if sectionAnnotations != nil {
+            let startLocation = CLLocation(latitude: sectionAnnotations!.0.coordinate.latitude, longitude: sectionAnnotations!.0.coordinate.longitude)
+            let stopLocation = CLLocation(latitude: sectionAnnotations!.1.coordinate.latitude, longitude: sectionAnnotations!.1.coordinate.longitude)
+            
+            modelController.setSectionGate(sessoinModelIndex: rowInModel, startGate: GateModel(location: startLocation, withRadius: lapGate.radius), endGate: GateModel(location: stopLocation, withRadius: lapGate.radius))
+        }
+        
     }
 
     @IBAction func sliderValueChanged(_ sender: UISlider) {
         modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
-        mapKitView.removeOverlay(cir)
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
-        mapKitView.addOverlay(cir)
+        mapKitView.removeOverlay(circleForAnnotation[lapGateAnnotation]!)
+        circleForAnnotation[lapGateAnnotation] = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
+        mapKitView.addOverlay(circleForAnnotation[lapGateAnnotation]!)
         calculatePointsInGateRadius()
         
 //        // update the model
 //        modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: lapGate.radius))
+    }
+    
+    @IBAction func addSection(_ sender: Any) {
+        sectionAnnotations = (MKPointAnnotation(), MKPointAnnotation())
+        sectionAnnotations!.0.coordinate = locations.first!.coordinate
+        sectionAnnotations!.1.coordinate = locations.last!.coordinate
+        mapKitView.addAnnotation(sectionAnnotations!.0)
+        mapKitView.addAnnotation(sectionAnnotations!.1)
+        
+        let sectionCircles = (MKCircle(center: sectionAnnotations!.0.coordinate, radius: 10.0), MKCircle(center: sectionAnnotations!.1.coordinate, radius: 10.0))
+        
+        
+        circleForAnnotation[sectionAnnotations!.0] = sectionCircles.0
+        circleForAnnotation[sectionAnnotations!.1] = sectionCircles.1
+        
+        mapKitView.addOverlay(circleForAnnotation[sectionAnnotations!.0]!)
+        mapKitView.addOverlay(circleForAnnotation[sectionAnnotations!.1]!)
+
+        
     }
     
     /// calculates the number of points on the track that fall within the gate radius
@@ -159,29 +199,54 @@ extension LapGateEditorViewController: MKMapViewDelegate {
 
     // annotation view did change drag state
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        
         switch newState {
         case .starting:
             //view.dragState = .dragging
-            mapKitView.removeOverlay(cir)
+            mapKitView.removeOverlay(circleForAnnotation[view.annotation as! MKPointAnnotation]!)
             print("drag newstate = starting")
         case .canceling:
             //view.dragState = .none
             print("drag newState = canceling")
-            mapKitView.addOverlay(cir)
+            mapKitView.addOverlay(circleForAnnotation[view.annotation as! MKPointAnnotation]!)
         case .ending:
             print("drag newState = ending")
             var location: GateModel?
             
-            if view.annotation != nil {
-                location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
-                mapKitView.removeOverlay(cir)
-                cir = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
-                mapKitView.addOverlay(cir)
-            }
+           
             calculatePointsInGateRadius()
             
-            // update the model
-            modelController.setLapGateForRow(at: rowInModel, with: location!)
+            location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+            mapKitView.removeOverlay(circleForAnnotation[view.annotation as! MKPointAnnotation]!)
+            circleForAnnotation[view.annotation as! MKPointAnnotation] = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
+            mapKitView.addOverlay(circleForAnnotation[view.annotation as! MKPointAnnotation]!)
+            
+           
+            
+            if view.annotation as! MKPointAnnotation == lapGateAnnotation {
+                print("moved lap gate annotation")
+                
+                
+//                location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+//                mapKitView.removeOverlay(circleForAnnotation[lapGateAnnotation]!)
+//                circleForAnnotation[lapGateAnnotation] = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
+//                mapKitView.addOverlay(circleForAnnotation[lapGateAnnotation]!)
+                
+                // update the model
+                modelController.setLapGateForRow(at: rowInModel, with: location!)
+                
+            }
+            else if view.annotation as! MKPointAnnotation  == sectionAnnotations!.0 {
+                print("moved start section annotation")
+                
+               
+                
+                
+            }
+            else if view.annotation as! MKPointAnnotation == sectionAnnotations!.1 {
+                print("moved stop section annotation")
+                
+            }
                    
         case .dragging:
             print("drag newState = dragging")

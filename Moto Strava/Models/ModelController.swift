@@ -127,4 +127,13 @@ class ModelController {
         motoStravaModel.listOfTracks[sessionModelIndex].sessions[sessionIndex].name = newName
         saveJSONToFile()
     }
+    
+    func setSectionGate(sessoinModelIndex: Int, startGate: GateModel, endGate: GateModel) {
+        motoStravaModel.listOfTracks[sessoinModelIndex].sectionGates[startGate] = endGate
+        saveJSONToFile()
+    }
+    
+    func removeSectionGate(sessionModelIndex: Int, withStartGate startGate: GateModel) {
+        motoStravaModel.listOfTracks[sessionModelIndex].sectionGates.removeValue(forKey: startGate)
+    }
 }
