@@ -73,6 +73,12 @@ class EditDetailViewController: UIViewController {
         updateViewFromModel()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        editDetailTableView.reloadData()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         // track preview
