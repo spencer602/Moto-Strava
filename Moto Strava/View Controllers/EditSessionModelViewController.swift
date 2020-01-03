@@ -31,7 +31,6 @@ class EditSessionModelViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        titleTextField.delegate = self
         sessionDetailTableView.delegate = self
         sessionDetailTableView.dataSource = self
         
