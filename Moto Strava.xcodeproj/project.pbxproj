@@ -496,7 +496,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com-SpencerDeBuf-Stanford.Moto-Strava";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Moto Strava";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -516,7 +516,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com-SpencerDeBuf-Stanford.Moto-Strava";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Moto Strava";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
