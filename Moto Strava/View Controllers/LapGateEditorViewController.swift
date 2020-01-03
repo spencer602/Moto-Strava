@@ -150,6 +150,12 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             return MKOverlayRenderer(overlay: overlay)
         }
     }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        print("annotation view selected")
+        view.isHighlighted = true
+        view.isSelected = true
+    }
 
     // annotation view did change drag state
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
@@ -201,6 +207,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
         }
         
         annotationView!.isDraggable = true
+        annotationView!.isSelected = true
 
         return annotationView
     }
