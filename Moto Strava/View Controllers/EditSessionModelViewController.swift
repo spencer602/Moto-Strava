@@ -108,6 +108,14 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
         else { return session.sessions.count }
     }
     
+    // deleting, but only if there is more than 1 session at the track
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete && session.sessions.count > 1 {
+        modelController.removeTrack(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
+           sessionDetailTableView.reloadData()
+       }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
