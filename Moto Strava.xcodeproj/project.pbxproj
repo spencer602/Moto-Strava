@@ -67,7 +67,7 @@
 		09F986F223A967C800DE854A /* 1_lap.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 1_lap.gpx; sourceTree = "<group>"; };
 		09F986F723A9958500DE854A /* TrackPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackPreviewViewController.swift; sourceTree = "<group>"; };
 		09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LapGateEditorViewController.swift; sourceTree = "<group>"; };
-		09FA181923834D8000A5D031 /* Moto Strava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Moto Strava.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		09FA181923834D8000A5D031 /* Motos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Motos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09FA181C23834D8000A5D031 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09FA181E23834D8000A5D031 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		09FA182323834D8000A5D031 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -161,7 +161,7 @@
 		09FA181A23834D8000A5D031 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				09FA181923834D8000A5D031 /* Moto Strava.app */,
+				09FA181923834D8000A5D031 /* Motos.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -220,7 +220,7 @@
 			);
 			name = "Moto Strava";
 			productName = "Moto Strava";
-			productReference = 09FA181923834D8000A5D031 /* Moto Strava.app */;
+			productReference = 09FA181923834D8000A5D031 /* Motos.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -496,7 +496,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com-SpencerDeBuf-Stanford.Moto-Strava";
-				PRODUCT_NAME = "Moto Strava";
+				PRODUCT_NAME = Motos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -516,7 +516,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com-SpencerDeBuf-Stanford.Moto-Strava";
-				PRODUCT_NAME = "Moto Strava";
+				PRODUCT_NAME = Motos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
