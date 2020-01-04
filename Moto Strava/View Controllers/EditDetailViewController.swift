@@ -71,6 +71,14 @@ class EditDetailViewController: UIViewController {
         toolBar.isUserInteractionEnabled = true
         
         updateViewFromModel()
+        
+        let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates.first!
+        
+        let (startingPoint, stoppingPoint) = currentTrack.getSectionPoints(usingStartGate: start, usingStopGate: stop)!
+        
+        let duration = startingPoint.timestamp.distance(to: stoppingPoint.timestamp)
+        print("section gate duration: \(duration)")
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
