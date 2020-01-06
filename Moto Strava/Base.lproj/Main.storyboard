@@ -388,11 +388,18 @@
                         <viewLayoutGuide key="safeArea" id="dQn-Hs-dR1"/>
                     </view>
                     <navigationItem key="navigationItem" id="Lxx-fy-spS">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="GUj-Ei-jiI">
-                            <connections>
-                                <action selector="addSection:" destination="3il-EK-NN0" id="w91-an-Nfk"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" image="plus" catalog="system" id="GUj-Ei-jiI">
+                                <connections>
+                                    <action selector="addSection:" destination="3il-EK-NN0" id="w91-an-Nfk"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="trash" catalog="system" id="M1J-x1-4FO">
+                                <connections>
+                                    <action selector="deleteButtonPressed:" destination="3il-EK-NN0" id="Exz-ue-SiS"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="mapKitView" destination="9b8-fz-Alo" id="ShC-Vq-6cL"/>
@@ -699,6 +706,7 @@
         <image name="clock" catalog="system" width="64" height="60"/>
         <image name="plus" catalog="system" width="64" height="56"/>
         <image name="square.and.arrow.up" catalog="system" width="56" height="64"/>
+        <image name="trash" catalog="system" width="60" height="64"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="irD-X6-6hF"/>

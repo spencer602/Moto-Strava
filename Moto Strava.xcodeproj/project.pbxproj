@@ -14,6 +14,7 @@
 		0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F664238C96C800613DEC /* UtilityExtensions.swift */; };
 		0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F666238C9E0200613DEC /* EditDetailViewController.swift */; };
 		0920F669238D9DCE00613DEC /* ColorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F668238D9DCE00613DEC /* ColorModel.swift */; };
+		09405E7023C11AC80093200B /* GateModelAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09405E6F23C11AC80093200B /* GateModelAnnotation.swift */; };
 		098B968C23AAF812007C4649 /* GateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098B968B23AAF812007C4649 /* GateModel.swift */; };
 		098B968E23ABFBC4007C4649 /* RunMotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098B968D23ABFBC3007C4649 /* RunMotoViewController.swift */; };
 		09B5181223B55FE300CF24CD /* GPX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5181123B55FE300CF24CD /* GPX.swift */; };
@@ -49,6 +50,7 @@
 		0920F664238C96C800613DEC /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
 		0920F666238C9E0200613DEC /* EditDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDetailViewController.swift; sourceTree = "<group>"; };
 		0920F668238D9DCE00613DEC /* ColorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorModel.swift; sourceTree = "<group>"; };
+		09405E6F23C11AC80093200B /* GateModelAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateModelAnnotation.swift; sourceTree = "<group>"; };
 		098B968B23AAF812007C4649 /* GateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateModel.swift; sourceTree = "<group>"; };
 		098B968D23ABFBC3007C4649 /* RunMotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunMotoViewController.swift; sourceTree = "<group>"; };
 		09B5181123B55FE300CF24CD /* GPX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPX.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		09F986FB23A9E74C00DE854A /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				09405E6F23C11AC80093200B /* GateModelAnnotation.swift */,
 				09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */,
 				09F986F723A9958500DE854A /* TrackPreviewViewController.swift */,
 				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
@@ -331,6 +334,7 @@
 				0920F65D23872E3600613DEC /* LocationModel.swift in Sources */,
 				098B968E23ABFBC4007C4649 /* RunMotoViewController.swift in Sources */,
 				09B5182B23B9712E00CF24CD /* ImageViewTableViewCell.swift in Sources */,
+				09405E7023C11AC80093200B /* GateModelAnnotation.swift in Sources */,
 				0920F661238B067600613DEC /* ModelController.swift in Sources */,
 				09F3A51923B1871700242B9B /* SessionHistoryViewController.swift in Sources */,
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,

@@ -72,12 +72,10 @@ class EditDetailViewController: UIViewController {
         
         updateViewFromModel()
         
-        let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates.first!
+//        let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates.last!
+//        let times = currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop)
+//        print(times)
         
-        let (startingPoint, stoppingPoint) = currentTrack.getSectionPoints(usingStartGate: start, usingStopGate: stop)!
-        
-        let duration = startingPoint.timestamp.distance(to: stoppingPoint.timestamp)
-        print("section gate duration: \(duration)")
         
     }
     

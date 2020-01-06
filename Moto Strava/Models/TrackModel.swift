@@ -82,10 +82,9 @@ struct TrackModel: Codable {
         return distance / 1609.344
     }
     
-    func getSectionPoints(usingStartGate startGate: GateModel, usingStopGate stopGate: GateModel) -> (CLLocation, CLLocation)? {
+    func getSectionPoints(usingStartGate startGate: GateModel, usingStopGate stopGate: GateModel) -> [(CLLocation, CLLocation)] {
         
-        
-        
+        var sectionPoints = [(CLLocation, CLLocation)]()
         var pointsInStartGate = [CLLocation]()
         var pointsInStopGate = [CLLocation]()
 
@@ -137,16 +136,13 @@ struct TrackModel: Codable {
                         bestStopPoint = fabricatedClosest!
                         startGateFound = true
                         
-                        return (bestStartPoint, bestStopPoint)
+                        sectionPoints.append((bestStartPoint, bestStopPoint))
+                        startGateFound = false
                     }
                 }
             }
         }
-        
-        
-        
-        
-        return nil
+        return sectionPoints
     }
     
     func getLapPoints(usingLapGate lapGate: GateModel) -> [CLLocation] {
@@ -196,6 +192,18 @@ struct TrackModel: Codable {
         }
         
         return lapTimes
+    }
+    
+    func getSectionTimes(usingStartGate startGate: GateModel, stopGate: GateModel) -> [TimeInterval] {
+        var sectionTimes = [TimeInterval]()
+        let sectionPoints = getSectionPoints(usingStartGate: startGate, usingStopGate: stopGate)
+        if sectionPoints.count == 0 { return sectionTimes }
+    
+        for section in sectionPoints {
+            sectionTimes.append(section.0.timestamp.distance(to: section.1.timestamp))
+        }
+        
+        return sectionTimes
     }
     
     var averageSpeed: Double {
