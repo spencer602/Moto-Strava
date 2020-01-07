@@ -71,6 +71,8 @@ class EditSessionModelViewController: UIViewController {
             mapPreview.locationList = session.sessions.map { $0.locations }
             mapPreview.trackColor = session.allColorsForTracks
             mapPreview.lapGate = session.lapGate
+            mapPreview.modelController = modelController
+            mapPreview.rowInModel = rowInModel
         }
         
         if let editDetail = segue.destination as? EditDetailViewController {

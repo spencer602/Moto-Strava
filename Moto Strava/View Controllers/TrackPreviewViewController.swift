@@ -23,15 +23,23 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
     var locationList = [[CLLocation]]()
+    var modelController: ModelController!
+    var rowInModel: Int!
+    
+    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
     
     /// the lap gate annotation on the map
-    private var lapGateAnnotation = MKPointAnnotation()
+    private var lapGateAnnotation = GateModelAnnotation()
     
     var lapGate: GateModel?
     
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
     
+    
+    var startPoints = [GateModelAnnotation]()
+    var endPoints = [GateModelAnnotation]()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,6 +63,8 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
             // sets the initial location of the lapgate
              lapGateAnnotation.coordinate = lapGate!.location.coordinate
             
+            lapGateAnnotation.title = "Lap"
+            
              //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
              mapKitView.addAnnotation(lapGateAnnotation)
              
@@ -63,6 +73,8 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
              mapKitView.addOverlay(cir)
              //calculatePointsInGateRadius()
         }
+        
+        addAnnotationsToMap()
     }
   
     /// adds all of the tracks in the model to the map
@@ -71,6 +83,23 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
             let overlay = MKPolyline.createPolyLine(using: ll)
             colorForPolyline[overlay] = trackColor[index]
             mapKitView.addOverlay(overlay)
+        }
+    }
+    
+    private func addAnnotationsToMap() {
+        for (index, section) in session.sectionGates.enumerated() {
+            let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
+            let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
+            mapKitView.addAnnotation(start)
+            mapKitView.addAnnotation(stop)
+            startPoints.append(start)
+            endPoints.append(stop)
+
+            let startCircle = MKCircle(center: start.coordinate, radius: section.0.radius)
+            let stopCircle = MKCircle(center: stop.coordinate, radius: section.1.radius)
+
+            mapKitView.addOverlay(startCircle)
+            mapKitView.addOverlay(stopCircle)
         }
     }
     
@@ -111,21 +140,49 @@ extension TrackPreviewViewController: MKMapViewDelegate {
     
     // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is MKPointAnnotation else { return nil }
+        guard annotation is GateModelAnnotation else { return nil }
 
-        let identifier = "Annotation"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-        if annotationView == nil {
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView!.canShowCallout = false
-            print("filter annotationView was nil")
-        } else {
-            annotationView!.annotation = annotation
-        }
+        let annotationView = MKPinAnnotationView()
+        annotationView.annotation = annotation
         
-        annotationView!.isDraggable = true
-
+        annotationView.isDraggable = false
+        annotationView.canShowCallout = true
+        
+        if startPoints.contains(annotation as! GateModelAnnotation) {
+            annotationView.pinTintColor = UIColor.green
+        }
+        else if endPoints.contains(annotation as! GateModelAnnotation ) {
+            annotationView.pinTintColor = UIColor.red
+        }
+        else if lapGateAnnotation == (annotation as! GateModelAnnotation) {
+            annotationView.pinTintColor = UIColor.blue
+        }
+                
         return annotationView
+
+        
+        
+        
+        
+        
+        
+        
+        
+//        guard annotation is MKPointAnnotation else { return nil }
+//
+//        let identifier = "Annotation"
+//        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+//
+//        if annotationView == nil {
+//            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+//            annotationView!.canShowCallout = false
+//            print("filter annotationView was nil")
+//        } else {
+//            annotationView!.annotation = annotation
+//        }
+//
+//        annotationView!.isDraggable = true
+//
+//        return annotationView
     }
 }
