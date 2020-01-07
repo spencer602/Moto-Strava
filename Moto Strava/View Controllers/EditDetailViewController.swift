@@ -71,6 +71,12 @@ class EditDetailViewController: UIViewController {
         toolBar.isUserInteractionEnabled = true
         
         updateViewFromModel()
+        
+//        let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates.last!
+//        let times = currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop)
+//        print(times)
+        
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -163,7 +169,14 @@ extension EditDetailViewController: UITextFieldDelegate {
 extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 9 }
-        else { return currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).count}
+        else if section == 1 { return currentTrack.getLapTimes(usingLapGate: modelController.listOfSessions[rowInModel].lapGate).count}
+        else if section > 1 {
+            let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates[section - 2]
+            return currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop).count
+        }
+        
+        print("error in number of rows in section of edit detail")
+        return -1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -253,16 +266,29 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             return cell
         }
         
+        else if indexPath.section > 1 {
+            let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+            
+            let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates[indexPath.section - 2]
+            let segmentTimes = currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop)
+            //print (indexPath.row)
+            cell.textLabel!.text = "Run \(indexPath.row + 1): \(segmentTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
+            return cell
+        }
+        
         return UITableViewCell()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 2 + modelController.listOfSessions[rowInModel].sectionGates.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 { return "Laps" }
         else if section == 0 { return "Session Data" }
+        else if section >= 2 && section < 2 + modelController.listOfSessions[rowInModel].sectionGates.count {
+            return "Section \(section - 1)"
+        }
         else { return "error" }
     }
 }

@@ -82,6 +82,69 @@ struct TrackModel: Codable {
         return distance / 1609.344
     }
     
+    func getSectionPoints(usingStartGate startGate: GateModel, usingStopGate stopGate: GateModel) -> [(CLLocation, CLLocation)] {
+        
+        var sectionPoints = [(CLLocation, CLLocation)]()
+        var pointsInStartGate = [CLLocation]()
+        var pointsInStopGate = [CLLocation]()
+
+        var bestStartPoint = CLLocation()
+        var bestStopPoint = CLLocation()
+        var startGateFound = false
+
+        for loc in locations {
+            // if the current location is in the gate
+            if loc.distance(from: startGate.location) <= Double(startGate.radius) {
+//                print("filter we are in the gate")
+                                
+                pointsInStartGate.append(loc)
+            } else {
+                if pointsInStartGate.count > 0 {
+                    // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+//                    print("filter points in gate: \(pointsInGate.count)")
+//                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
+                    
+                    let closest = startGate.location.getLocationClosestAndBothAdjascent(locations: pointsInStartGate)
+                    let fabricatedClosest = startGate.location.interpolateToFindClosestPoint(usingPoints: closest, interTrack: 20)
+                    
+//                    print("filter closest calculated: \(closest!.timestamp)")
+                    pointsInStartGate.removeAll()
+                    
+                    bestStartPoint = fabricatedClosest!
+                    startGateFound = true
+                }
+            }
+            
+            if startGateFound {
+                // if the current location is in the gate
+                if loc.distance(from: stopGate.location) <= Double(stopGate.radius) {
+    //                print("filter we are in the gate")
+                                    
+                    pointsInStopGate.append(loc)
+                } else {
+                    if pointsInStopGate.count > 0 {
+                        // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+    //                    print("filter points in gate: \(pointsInGate.count)")
+    //                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
+                        
+                        let closest = startGate.location.getLocationClosestAndBothAdjascent(locations: pointsInStopGate)
+                        let fabricatedClosest = startGate.location.interpolateToFindClosestPoint(usingPoints: closest, interTrack: 20)
+                        
+    //                    print("filter closest calculated: \(closest!.timestamp)")
+                        pointsInStopGate.removeAll()
+                        
+                        bestStopPoint = fabricatedClosest!
+                        startGateFound = true
+                        
+                        sectionPoints.append((bestStartPoint, bestStopPoint))
+                        startGateFound = false
+                    }
+                }
+            }
+        }
+        return sectionPoints
+    }
+    
     func getLapPoints(usingLapGate lapGate: GateModel) -> [CLLocation] {
         var pointsInGate = [CLLocation]()
         var bestLapPoints = [CLLocation]()
@@ -129,6 +192,18 @@ struct TrackModel: Codable {
         }
         
         return lapTimes
+    }
+    
+    func getSectionTimes(usingStartGate startGate: GateModel, stopGate: GateModel) -> [TimeInterval] {
+        var sectionTimes = [TimeInterval]()
+        let sectionPoints = getSectionPoints(usingStartGate: startGate, usingStopGate: stopGate)
+        if sectionPoints.count == 0 { return sectionTimes }
+    
+        for section in sectionPoints {
+            sectionTimes.append(section.0.timestamp.distance(to: section.1.timestamp))
+        }
+        
+        return sectionTimes
     }
     
     var averageSpeed: Double {

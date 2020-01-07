@@ -24,13 +24,15 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
 
     /// the lap gate annotation on the map
-    private var lapGateAnnotation = MKPointAnnotation()
+    private var lapGateAnnotation = GateModelAnnotation()
     
     /// for convenience, the up-to-date LapGate
     private var lapGate: GateModel { return session.lapGate }
     
     /// for convenience, the up-to-date list of locations for the track
     private var locations: [CLLocation] { return session.sessions.first!.locations }
+    
+    private var sectionGates: [(GateModel, GateModel)] { return session.sectionGates }
     
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
     var locationList = [[CLLocation]]()
@@ -40,7 +42,30 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     var colorForPolyline = [MKPolyline:UIColor]()
     
     /// the circle that is an overlay to show the size of the LapGate
-    private var cir = MKCircle()
+//    private var cir = MKCircle()
+//    private var sectionCircles: (MKCircle, MKCircle)?
+    
+    private var circleForAnnotation = [GateModelAnnotation:MKCircle]()
+    
+    private var startPoints = [GateModelAnnotation]()
+    private var endPoints = [GateModelAnnotation]()
+    
+    private var selectedAnnotation: GateModelAnnotation? {
+        if mapKitView.selectedAnnotations.count == 1 {
+            if let gma = mapKitView.selectedAnnotations.first! as? GateModelAnnotation { return gma }
+        }
+        return nil
+    }
+    
+    private var selectedAnnotationIndex: Int? {
+        if selectedAnnotation == nil { return nil }
+        if selectedAnnotation! == lapGateAnnotation { return nil }
+        if startPoints.contains(selectedAnnotation!) { return startPoints.firstIndex(of: selectedAnnotation!)! }
+        if endPoints.contains(selectedAnnotation!) { return endPoints.firstIndex(of: selectedAnnotation!)! }
+        return nil
+    }
+
+//    private var sectionGates = [GateModel:GateModel]()
     
     /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
     var rowInModel: Int!
@@ -50,9 +75,10 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     
     var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
 
+   
     override func viewDidLoad() {
         super.viewDidLoad()
-                      
+        
         slider.maximumValue = 100
         slider.minimumValue = 10
         
@@ -74,34 +100,146 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         addTracksToMap()
         zoomMapTo()
         
+        slider.isContinuous = false
+        
+        populateAnnotationsFromModel()
+    }
+    
+    private func populateAnnotationsFromModel() {
+        startPoints.removeAll()
+        endPoints.removeAll()
+        mapKitView.removeOverlays(circleForAnnotation.values.reversed())
+        circleForAnnotation.removeAll()
+        mapKitView.removeAnnotations(mapKitView.annotations)
+        
+        for (index, section) in session.sectionGates.enumerated() {
+            
+            let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
+            let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
+            mapKitView.addAnnotation(start)
+            mapKitView.addAnnotation(stop)
+            startPoints.append(start)
+            endPoints.append(stop)
+            
+            let startCircle = MKCircle(center: start.coordinate, radius: section.0.radius)
+            let stopCircle = MKCircle(center: stop.coordinate, radius: section.1.radius)
+
+            circleForAnnotation[start] = startCircle
+            circleForAnnotation[stop] = stopCircle
+            
+            mapKitView.addOverlay(circleForAnnotation[start]!)
+            mapKitView.addOverlay(circleForAnnotation[stop]!)
+        }
+        
         // sets the initial location of the lapgate
         lapGateAnnotation.coordinate = lapGate.location.coordinate
-       
+        
         //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
         mapKitView.addAnnotation(lapGateAnnotation)
         
         // sets the original circle representing the lap gate
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
+        let cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
         mapKitView.addOverlay(cir)
-        calculatePointsInGateRadius()
+        calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
+        circleForAnnotation[lapGateAnnotation] = cir
+        
+        lapGateAnnotation.title = "Lap Gate"
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        print("Edit lap gate view will disappear")
+//        if sectionAnnotations != nil {
+//            let startLocation = CLLocation(latitude: sectionAnnotations!.0.coordinate.latitude, longitude: sectionAnnotations!.0.coordinate.longitude)
+//            let stopLocation = CLLocation(latitude: sectionAnnotations!.1.coordinate.latitude, longitude: sectionAnnotations!.1.coordinate.longitude)
+//
+//            modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: startLocation, withRadius: lapGate.radius), endGate: GateModel(location: stopLocation, withRadius: lapGate.radius))
+//        }
+        
+    }
+    
+    func gateModelFor(annotation: GateModelAnnotation?) -> GateModel? {
+        if annotation == nil { return nil }
+        if annotation! == lapGateAnnotation { return lapGate }
+        if startPoints.contains(annotation!) { return sectionGates[startPoints.firstIndex(of: annotation!)!].0 }
+        if endPoints.contains(annotation!) { return sectionGates[endPoints.firstIndex(of: annotation!)!].1 }
+        
+        return nil
+    }
+    
 
     @IBAction func sliderValueChanged(_ sender: UISlider) {
-        modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
-        mapKitView.removeOverlay(cir)
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
-        mapKitView.addOverlay(cir)
-        calculatePointsInGateRadius()
+        print(mapKitView.selectedAnnotations.count)
         
-//        // update the model
-//        modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: lapGate.radius))
+        if selectedAnnotation == nil {
+            print("Nothing Changing!!!!, nothing (or multiple) selected")
+            return
+        }
+
+        if selectedAnnotation! == lapGateAnnotation {
+            modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
+        }
+        
+        else if startPoints.contains(selectedAnnotation!) {
+            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: GateModel(location: sectionGates[selectedAnnotationIndex!].0.location, withRadius: Double(slider.value)), endGate: sectionGates[selectedAnnotationIndex!].1)
+        }
+        
+        else if endPoints.contains(selectedAnnotation!) {
+            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: sectionGates[selectedAnnotationIndex!].0, endGate: GateModel(location: sectionGates[selectedAnnotationIndex!].1.location, withRadius: Double(slider.value)))
+        }
+        
+        mapKitView.removeOverlay(circleForAnnotation[selectedAnnotation!]!)
+        circleForAnnotation[selectedAnnotation!] = MKCircle(center: selectedAnnotation!.coordinate, radius: Double(sender.value))
+        mapKitView.addOverlay(circleForAnnotation[selectedAnnotation!]!)
+        calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation)!)
+        
+        
+        
+        
+        
+        
+        
+//        modelController.setLapGateForRow(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
+//        mapKitView.removeOverlay(circleForAnnotation[lapGateAnnotation]!)
+//        circleForAnnotation[lapGateAnnotation] = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate.radius)
+//        mapKitView.addOverlay(circleForAnnotation[lapGateAnnotation]!)
+//        calculatePointsInGateRadius()
+    }
+    
+    @IBAction func addSection(_ sender: Any) {
+        modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
+        
+        populateAnnotationsFromModel()
+    }
+    
+    @IBAction func deleteButtonPressed(_ sender: Any) {
+        if let currentlySelected = selectedAnnotation, currentlySelected != lapGateAnnotation {
+            let index = (startPoints.contains(currentlySelected) ? startPoints.firstIndex(of: currentlySelected)! : endPoints.firstIndex(of: currentlySelected)!)
+            
+            mapKitView.removeOverlay(circleForAnnotation[startPoints[index]]!)
+            mapKitView.removeOverlay(circleForAnnotation[endPoints[index]]!)
+            
+            circleForAnnotation[startPoints.remove(at: index)] = nil
+            circleForAnnotation[endPoints.remove(at: index)] = nil
+            
+            modelController.removeSectionGate(sessionModelIndex: rowInModel, sectionIndex: index)
+            populateAnnotationsFromModel()
+        }
     }
     
     /// calculates the number of points on the track that fall within the gate radius
-    private func calculatePointsInGateRadius() {
+    private func calculatePointsInGateRadius(using gate: GateModel?) {
+        if gate == nil {
+            pointsLabel.text = "NA"
+            slider.setValue(slider.minimumValue, animated: true)
+            return
+        }
+        
+        slider.setValue(Float(gate!.radius), animated: true)
         var count = 0
         for loc in locations {
-            if loc.distance(from: lapGate.location) <= lapGate.radius {
+            if loc.distance(from: gate!.location) <= gate!.radius {
                 count+=1
             }
         }
@@ -150,32 +288,70 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             return MKOverlayRenderer(overlay: overlay)
         }
     }
+    
+    func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
+        print("did deselect view")
+        calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        print("annotation view selected")
+        print("annotation view selected = \(view.isSelected)")
+        print("annotation view highlighted = \(view.isHighlighted)")
+        deselectAllAnnotations()
+        print("deselect all annotations")
+        print("annotation view selected = \(view.isSelected)")
+        print("annotation view highlighted = \(view.isHighlighted)")
+        view.isHighlighted = true
+        calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
+
+    }
+    
+    
 
     // annotation view did change drag state
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        
         switch newState {
         case .starting:
             //view.dragState = .dragging
-            mapKitView.removeOverlay(cir)
+            mapKitView.removeOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
             print("drag newstate = starting")
         case .canceling:
             //view.dragState = .none
             print("drag newState = canceling")
-            mapKitView.addOverlay(cir)
+            mapKitView.addOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
         case .ending:
             print("drag newState = ending")
             var location: GateModel?
             
-            if view.annotation != nil {
-                location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
-                mapKitView.removeOverlay(cir)
-                cir = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
-                mapKitView.addOverlay(cir)
-            }
-            calculatePointsInGateRadius()
+           
+            calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
             
-            // update the model
-            modelController.setLapGateForRow(at: rowInModel, with: location!)
+            location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+            mapKitView.removeOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
+            circleForAnnotation[view.annotation as! GateModelAnnotation] = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
+            mapKitView.addOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
+            
+            let dragAnnotation = view.annotation as! GateModelAnnotation
+            
+            if dragAnnotation == lapGateAnnotation {
+                print("moved lap gate annotation")
+                let location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+                modelController.setLapGateForRow(at: rowInModel, with: location)
+            }
+            else if startPoints.contains(dragAnnotation) {
+                print("moved start section annotation")
+                
+                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
+                
+            }
+            else if endPoints.contains(dragAnnotation) {
+                print("moved stop section annotation")
+                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
+            }
+            
+            populateAnnotationsFromModel()
                    
         case .dragging:
             print("drag newState = dragging")
@@ -184,24 +360,49 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             break
         }
     }
-    
+        
     // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is MKPointAnnotation else { return nil }
+        guard annotation is GateModelAnnotation else { return nil }
 
-        let identifier = "Annotation"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-        if annotationView == nil {
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView!.canShowCallout = false
-            print("filter annotationView was nil")
-        } else {
-            annotationView!.annotation = annotation
+//        let identifier = "Annotation"
+//        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+//
+//        if annotationView == nil {
+//            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+//
+//            annotationView!.canShowCallout = true
+//            print("filter annotationView was nil")
+//        } else {
+//            annotationView!.annotation = annotation
+//        }
+//
+        
+        let annotationView = MKPinAnnotationView()
+        annotationView.annotation = annotation
+        
+        
+        annotationView.isDraggable = true
+        annotationView.canShowCallout = true
+        
+        if startPoints.contains(annotation as! GateModelAnnotation) {
+            annotationView.pinTintColor = UIColor.green
+        }
+        else if endPoints.contains(annotation as! GateModelAnnotation ) {
+            annotationView.pinTintColor = UIColor.red
+        }
+        else if lapGateAnnotation == (annotation as! GateModelAnnotation) {
+            annotationView.pinTintColor = UIColor.blue
         }
         
-        annotationView!.isDraggable = true
-
+        //annotationView.pinTintColor = UIColor.blue
+        
         return annotationView
+    }
+    
+    private func deselectAllAnnotations() {
+        for ann in mapKitView.annotations {
+            mapKitView.view(for: ann)?.isHighlighted = false
+        }
     }
 }

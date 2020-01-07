@@ -10,13 +10,13 @@
         <!--Edit Detail View Controller-->
         <scene sceneID="K9c-ll-6Kb">
             <objects>
-                <tableViewController id="fPq-Se-9Aw" customClass="EditDetailViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="fPq-Se-9Aw" customClass="EditDetailViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r27-br-DL6">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionNameCell" rowHeight="60" id="EvC-w4-egb" userLabel="Session Name Cell" customClass="EditNameTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionNameCell" rowHeight="60" id="EvC-w4-egb" userLabel="Session Name Cell" customClass="EditNameTableViewCell" customModule="Motos" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EvC-w4-egb" id="6ex-oz-14i">
@@ -40,7 +40,7 @@
                                     <outlet property="titleTextField" destination="Ug8-4b-ZnP" id="M7r-wg-2N2"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="mapPreviewCell" rowHeight="370" id="gEy-1i-pmM" userLabel="Map Preview Cell" customClass="ImageViewTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="mapPreviewCell" rowHeight="370" id="gEy-1i-pmM" userLabel="Map Preview Cell" customClass="ImageViewTableViewCell" customModule="Motos" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="88" width="414" height="370"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gEy-1i-pmM" id="eWH-UP-Pf2">
@@ -80,7 +80,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="editTrackColorCell" id="X0K-Zb-Rh2" userLabel="Track Color" customClass="EditTrackColorTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="editTrackColorCell" id="X0K-Zb-Rh2" userLabel="Track Color" customClass="EditTrackColorTableViewCell" customModule="Motos" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="501.5" width="414" height="44.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="X0K-Zb-Rh2" id="unL-Pp-lBe">
@@ -129,7 +129,7 @@
         <!--Track Preview View Controller-->
         <scene sceneID="BdU-Z4-HfF">
             <objects>
-                <viewController id="cto-ms-L0Z" customClass="TrackPreviewViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="cto-ms-L0Z" customClass="TrackPreviewViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fWc-nl-Ck9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -159,7 +159,7 @@
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
             <objects>
-                <viewController id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KBT-wB-QKw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -168,7 +168,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="complexTrackCell" rowHeight="164" id="HbD-2W-Hn7" customClass="TrackTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="complexTrackCell" rowHeight="164" id="HbD-2W-Hn7" customClass="TrackTableViewCell" customModule="Motos" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="164"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HbD-2W-Hn7" id="MGi-Qd-M7h">
@@ -279,7 +279,7 @@
         <!--Map-->
         <scene sceneID="q6r-q3-Nei">
             <objects>
-                <viewController id="O7z-Cx-2jx" customClass="MapViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="O7z-Cx-2jx" customClass="MapViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ygx-9X-1eY">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -348,7 +348,7 @@
         <!--Lap Gate Editor View Controller-->
         <scene sceneID="CnH-De-CXQ">
             <objects>
-                <viewController id="3il-EK-NN0" customClass="LapGateEditorViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="3il-EK-NN0" customClass="LapGateEditorViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ClV-iZ-8lK">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -387,7 +387,20 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dQn-Hs-dR1"/>
                     </view>
-                    <navigationItem key="navigationItem" id="Lxx-fy-spS"/>
+                    <navigationItem key="navigationItem" id="Lxx-fy-spS">
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" image="plus" catalog="system" id="GUj-Ei-jiI">
+                                <connections>
+                                    <action selector="addSection:" destination="3il-EK-NN0" id="w91-an-Nfk"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="trash" catalog="system" id="M1J-x1-4FO">
+                                <connections>
+                                    <action selector="deleteButtonPressed:" destination="3il-EK-NN0" id="Exz-ue-SiS"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                     <connections>
                         <outlet property="mapKitView" destination="9b8-fz-Alo" id="ShC-Vq-6cL"/>
                         <outlet property="pointsLabel" destination="ENI-fh-doH" id="ceU-lt-fxN"/>
@@ -401,7 +414,7 @@
         <!--Run Moto View Controller-->
         <scene sceneID="DV1-zd-7jI">
             <objects>
-                <viewController id="AFs-pV-nWP" customClass="RunMotoViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="AFs-pV-nWP" customClass="RunMotoViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5LL-UO-bSM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -490,7 +503,7 @@
         <!--Edit Session Model View Controller-->
         <scene sceneID="CqV-Pc-ZyT">
             <objects>
-                <viewController id="94e-Px-SPx" customClass="EditSessionModelViewController" customModule="Moto_Strava" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="94e-Px-SPx" customClass="EditSessionModelViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Mi8-JX-1NJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -499,7 +512,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionNameCell" rowHeight="60" id="cva-iY-VM3" userLabel="Session Name Cell" customClass="EditNameTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionNameCell" rowHeight="60" id="cva-iY-VM3" userLabel="Session Name Cell" customClass="EditNameTableViewCell" customModule="Motos" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cva-iY-VM3" id="ath-90-pr7">
@@ -523,7 +536,7 @@
                                             <outlet property="titleTextField" destination="10k-ew-iaT" id="fsA-ks-9et"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="mapPreviewCell" rowHeight="370" id="Iwe-0m-rK3" userLabel="Map Preview Cell" customClass="ImageViewTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="mapPreviewCell" rowHeight="370" id="Iwe-0m-rK3" userLabel="Map Preview Cell" customClass="ImageViewTableViewCell" customModule="Motos" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="88" width="414" height="370"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Iwe-0m-rK3" id="bBN-VA-EAt">
@@ -583,7 +596,7 @@
                                             <segue destination="3il-EK-NN0" kind="show" id="OK4-f3-DRe"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionHistoryCell" rowHeight="164" id="T2J-hP-CGp" customClass="SessionHistoryTableViewCell" customModule="Moto_Strava" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionHistoryCell" rowHeight="164" id="T2J-hP-CGp" customClass="SessionHistoryTableViewCell" customModule="Motos" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="545" width="414" height="164"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="T2J-hP-CGp" id="DRI-yb-2wt">
@@ -691,7 +704,9 @@
     </scenes>
     <resources>
         <image name="clock" catalog="system" width="64" height="60"/>
+        <image name="plus" catalog="system" width="64" height="56"/>
         <image name="square.and.arrow.up" catalog="system" width="56" height="64"/>
+        <image name="trash" catalog="system" width="60" height="64"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="irD-X6-6hF"/>
