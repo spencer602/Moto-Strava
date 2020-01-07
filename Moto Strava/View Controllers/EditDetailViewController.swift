@@ -92,6 +92,8 @@ class EditDetailViewController: UIViewController {
             mapPreview.locationList = [currentTrack.locations]
             mapPreview.trackColor = [currentTrack.color]
             mapPreview.lapGate = modelController.listOfSessions[rowInModel].lapGate
+            mapPreview.modelController = modelController
+            mapPreview.rowInModel = rowInModel
         }
     }
     

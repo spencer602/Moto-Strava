@@ -95,7 +95,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		09F3A51C23B1889C00242B9B /* Custom Cells */ = {
+		09F3A51C23B1889C00242B9B /* Custom Cells and Views */ = {
 			isa = PBXGroup;
 			children = (
 				0920F662238B439700613DEC /* TrackTableViewCell.swift */,
@@ -103,8 +103,9 @@
 				09B5182823B9701200CF24CD /* EditNameTableViewCell.swift */,
 				09B5182A23B9712E00CF24CD /* ImageViewTableViewCell.swift */,
 				09B5182C23B9754C00CF24CD /* EditTrackColorTableViewCell.swift */,
+				09405E6F23C11AC80093200B /* GateModelAnnotation.swift */,
 			);
-			path = "Custom Cells";
+			path = "Custom Cells and Views";
 			sourceTree = "<group>";
 		};
 		09F986F023A967A200DE854A /* Tracks */ = {
@@ -124,7 +125,6 @@
 		09F986FB23A9E74C00DE854A /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				09405E6F23C11AC80093200B /* GateModelAnnotation.swift */,
 				09F986F923A9E73700DE854A /* LapGateEditorViewController.swift */,
 				09F986F723A9958500DE854A /* TrackPreviewViewController.swift */,
 				0920F666238C9E0200613DEC /* EditDetailViewController.swift */,
@@ -176,7 +176,7 @@
 				09FA181C23834D8000A5D031 /* AppDelegate.swift */,
 				09FA181E23834D8000A5D031 /* SceneDelegate.swift */,
 				09FA182223834D8000A5D031 /* Main.storyboard */,
-				09F3A51C23B1889C00242B9B /* Custom Cells */,
+				09F3A51C23B1889C00242B9B /* Custom Cells and Views */,
 				09F986FB23A9E74C00DE854A /* View Controllers */,
 				09F986FD23A9E79300DE854A /* Models */,
 				09FA182723834D8200A5D031 /* LaunchScreen.storyboard */,
