@@ -42,7 +42,7 @@ class EditSessionModelViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        updateViewFromModel()
+        sessionDetailTableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
