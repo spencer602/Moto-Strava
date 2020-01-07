@@ -70,7 +70,7 @@ class EditDetailViewController: UIViewController {
         toolBar.setItems([cancelButton, spaceButton, doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
         
-        updateViewFromModel()
+        //updateViewFromModel()
         
 //        let (start, stop) = modelController.listOfSessions[rowInModel].sectionGates.last!
 //        let times = currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop)
@@ -102,10 +102,10 @@ class EditDetailViewController: UIViewController {
         textField.resignFirstResponder()
     }
     
-    /// updates the tableview data from the model
-    private func updateViewFromModel() {
-        editDetailTableView.reloadData()
-    }
+//    /// updates the tableview data from the model
+//    private func updateViewFromModel() {
+//        editDetailTableView.reloadData()
+//    }
     
     static func setPreviewImage(using sessions: [TrackModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
         // update the track image preview
