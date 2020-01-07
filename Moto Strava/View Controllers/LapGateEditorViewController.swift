@@ -32,6 +32,16 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     /// for convenience, the up-to-date list of locations for the track
     private var locations: [CLLocation] { return session.sessions.first!.locations }
     
+    private var allLocations: [CLLocation] {
+        var locs = [CLLocation]()
+        
+        for track in session.sessions {
+            locs.append(contentsOf: track.locations)
+        }
+        
+        return locs
+    }
+    
     private var sectionGates: [(GateModel, GateModel)] { return session.sectionGates }
     
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
@@ -102,6 +112,8 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         
         slider.isContinuous = false
         
+        slider.isEnabled = false
+        
         populateAnnotationsFromModel()
     }
     
@@ -144,19 +156,6 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         circleForAnnotation[lapGateAnnotation] = cir
         
         lapGateAnnotation.title = "Lap Gate"
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        print("Edit lap gate view will disappear")
-//        if sectionAnnotations != nil {
-//            let startLocation = CLLocation(latitude: sectionAnnotations!.0.coordinate.latitude, longitude: sectionAnnotations!.0.coordinate.longitude)
-//            let stopLocation = CLLocation(latitude: sectionAnnotations!.1.coordinate.latitude, longitude: sectionAnnotations!.1.coordinate.longitude)
-//
-//            modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: startLocation, withRadius: lapGate.radius), endGate: GateModel(location: stopLocation, withRadius: lapGate.radius))
-//        }
-        
     }
     
     func gateModelFor(annotation: GateModelAnnotation?) -> GateModel? {
@@ -238,7 +237,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         
         slider.setValue(Float(gate!.radius), animated: true)
         var count = 0
-        for loc in locations {
+        for loc in allLocations {
             if loc.distance(from: gate!.location) <= gate!.radius {
                 count+=1
             }
@@ -292,9 +291,11 @@ extension LapGateEditorViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
         print("did deselect view")
         calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
+        slider.isEnabled = false
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        slider.isEnabled = true
         print("annotation view selected")
         print("annotation view selected = \(view.isSelected)")
         print("annotation view highlighted = \(view.isHighlighted)")
