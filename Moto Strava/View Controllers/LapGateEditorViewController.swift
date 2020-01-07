@@ -67,6 +67,22 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         return nil
     }
     
+    private var selectedGate: GateModel? {
+       if let selAnno = selectedAnnotation {
+           if selAnno == lapGateAnnotation { return lapGate }
+           
+           let index = selectedAnnotationIndex!
+           if startPoints.contains(selAnno) {
+               return sectionGates[index].0
+           }
+           if endPoints.contains(selAnno) {
+               return sectionGates[index].1
+           }
+       }
+       
+       return nil
+   }
+    
     private var selectedAnnotationIndex: Int? {
         if selectedAnnotation == nil { return nil }
         if selectedAnnotation! == lapGateAnnotation { return nil }
@@ -324,35 +340,48 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             mapKitView.addOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
         case .ending:
             print("drag newState = ending")
-            var location: GateModel?
             
            
             calculatePointsInGateRadius(using: gateModelFor(annotation: selectedAnnotation))
             
-            location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+            
             mapKitView.removeOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
-            circleForAnnotation[view.annotation as! GateModelAnnotation] = MKCircle(center: location!.location.coordinate, radius: lapGate.radius)
-            mapKitView.addOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
+            
             
             let dragAnnotation = view.annotation as! GateModelAnnotation
+            
+            var newCircle: MKCircle!
+            
             
             if dragAnnotation == lapGateAnnotation {
                 print("moved lap gate annotation")
                 let location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
                 modelController.setLapGateForRow(at: rowInModel, with: location)
+                
+                newCircle = MKCircle(center: location.location.coordinate, radius: location.radius)
             }
             else if startPoints.contains(dragAnnotation) {
                 print("moved start section annotation")
                 
                 modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
                 
+                newCircle = MKCircle(center: gateModelFor(annotation: dragAnnotation)!.location.coordinate, radius: gateModelFor(annotation: dragAnnotation)!.radius)
+                
             }
             else if endPoints.contains(dragAnnotation) {
                 print("moved stop section annotation")
                 modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
+                
+                newCircle = MKCircle(center: gateModelFor(annotation: dragAnnotation)!.location.coordinate, radius: gateModelFor(annotation: dragAnnotation)!.radius)
+
             }
             
-            populateAnnotationsFromModel()
+            
+            circleForAnnotation[view.annotation as! GateModelAnnotation] = newCircle
+            mapKitView.addOverlay(circleForAnnotation[view.annotation as! GateModelAnnotation]!)
+            
+            
+//            populateAnnotationsFromModel()
                    
         case .dragging:
             print("drag newState = dragging")
