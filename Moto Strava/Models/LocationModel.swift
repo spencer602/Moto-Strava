@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 import CoreGPX
 
-struct LocationModel: Codable {
+struct LocationModel: Codable, Equatable {
     private let latitude: Double
     private let longitude: Double
     private let altitude: Double

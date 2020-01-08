@@ -10,7 +10,7 @@ import CoreLocation
 import UIKit
 import CoreGPX
 
-struct TrackModel: Codable {
+struct TrackModel: Codable, Equatable {
     
     private var codableLocations: [LocationModel]
     var locations: [CLLocation] { return codableLocations.map() { $0.location } }

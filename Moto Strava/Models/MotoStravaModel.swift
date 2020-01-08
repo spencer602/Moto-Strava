@@ -11,10 +11,8 @@ import Foundation
 struct MotoStravaModel: Codable {
     var listOfTracks = [SessionsModel]()
     
-    init() {
-    }
+    init() {}
     
-    // this isn't the best code, this will need to be changed when we change to using a model controller
     init?(withJSON json: Data) {
         if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) {
             self = newValue

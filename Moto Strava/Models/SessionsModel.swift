@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct SessionsModel: Codable {
+struct SessionsModel: Codable, Equatable {
     
     var lapGate: GateModel
     
@@ -93,5 +93,13 @@ struct SessionsModel: Codable {
     mutating func removeSection(at index: Int) {
         startGates.remove(at: index)
         stopGates.remove(at: index)
+    }
+    
+    func firstIndexOf(startGate: GateModel, stopGate: GateModel) -> Int? {
+        for (index, start) in startGates.enumerated() {
+            if start == startGate && stopGate == stopGates[index] { return index }
+        }
+        
+        return nil
     }
 }

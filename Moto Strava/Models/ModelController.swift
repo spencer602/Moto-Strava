@@ -143,6 +143,15 @@ class ModelController {
         saveJSONToFile()
     }
     
+    func removeSectionGate(sessionModel: SessionsModel, section: (GateModel, GateModel)) {
+        if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: sessionModel) {
+            if let sectionIndex = motoStravaModel.listOfTracks[sessionModelIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
+                removeSectionGate(sessionModelIndex: sessionModelIndex, sectionIndex: sectionIndex)
+            }
+        }
+        saveJSONToFile()
+    }
+    
 //    func removeSectionGate(sessionModelIndex: Int, withStartGate startGate: GateModel) {
 //        motoStravaModel.listOfTracks[sessionModelIndex].sectionGates.removeValue(forKey: startGate)
 //    }

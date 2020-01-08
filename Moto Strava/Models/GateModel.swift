@@ -10,10 +10,6 @@ import Foundation
 import MapKit
 
 struct GateModel: Codable, Hashable, Equatable {
-    static func == (lhs: GateModel, rhs: GateModel) -> Bool {
-        if lhs.location == rhs.location && lhs.radius == rhs.radius { return true }
-        else { return false }
-    }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(location)
@@ -21,6 +17,7 @@ struct GateModel: Codable, Hashable, Equatable {
     }
     
     private var codableLocation: LocationModel
+    
     var location: CLLocation {
         get { return codableLocation.location }
         set { codableLocation = LocationModel(fromCLLocation: newValue) }

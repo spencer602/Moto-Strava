@@ -131,6 +131,9 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         slider.isEnabled = false
         
         populateAnnotationsFromModel()
+        
+        print(startPoints.count)
+        print(endPoints.count)
     }
     
     private func populateAnnotationsFromModel() {
@@ -235,10 +238,12 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
             mapKitView.removeOverlay(circleForAnnotation[startPoints[index]]!)
             mapKitView.removeOverlay(circleForAnnotation[endPoints[index]]!)
             
+            let section = (gateModelFor(annotation: startPoints[index])!, gateModelFor(annotation: endPoints[index])!)
+            modelController.removeSectionGate(sessionModel: session, section: section)
+            
             circleForAnnotation[startPoints.remove(at: index)] = nil
             circleForAnnotation[endPoints.remove(at: index)] = nil
             
-            modelController.removeSectionGate(sessionModelIndex: rowInModel, sectionIndex: index)
             populateAnnotationsFromModel()
         }
     }
