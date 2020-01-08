@@ -44,8 +44,8 @@ extension Double {
         else if minutes > 0 { outputString = minutesString + secondsString }
         else if seconds > 0 { outputString = secondsString }
         else { outputString += "." }
-        
-        outputString += millisecondsString
+
+        if decimalPlaces > 0 { outputString += millisecondsString }
         
         return outputString
     }

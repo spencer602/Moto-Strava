@@ -228,8 +228,8 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                // update the duration label
                // update the duration
-               let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
-               cell.textLabel!.text = "Duration: \(hours):\(minutes):\(seconds)"
+//               let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
+               cell.textLabel!.text = "Duration: \(currentTrack.duration.toStringAppropriateForLapTime(withDecimalPlaces: 0))"
                 return cell
             case 6:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
