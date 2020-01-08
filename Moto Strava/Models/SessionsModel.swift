@@ -68,9 +68,9 @@ struct SessionsModel: Codable {
     var totalLaps: Int {
         var totalLaps = 0
         for sesh in sessions {
-            totalLaps += sesh.getLapPoints(usingLapGate: lapGate).count - 1
+            let newLaps = sesh.getTotalLaps(using: lapGate)
+            totalLaps += newLaps
         }
-        
         return totalLaps
     }
     
