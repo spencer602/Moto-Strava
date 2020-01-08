@@ -68,6 +68,12 @@ struct TrackModel: Codable {
         return s
     }
     
+    func getTotalLaps(using lapGate: GateModel) -> Int {
+        let laps = getLapPoints(usingLapGate: lapGate).count - 1
+        if laps < 0 { return 0 }
+        return laps
+    }
+    
     var trackDistance: Double {
         var distance = 0.0
         var previousLocation: CLLocation?

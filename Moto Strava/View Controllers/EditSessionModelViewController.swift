@@ -190,7 +190,7 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
                 
                 EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
                 
-                cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: session.lapGate).count - 1)"
+                cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: session.lapGate))"
                 
                 return cell
             }
