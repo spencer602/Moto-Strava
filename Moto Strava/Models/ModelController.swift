@@ -128,10 +128,18 @@ class ModelController {
         saveJSONToFile()
     }
     
-    func addSectionGate(sessionModelIndex: Int, startGate: GateModel, endGate: GateModel) {
-        motoStravaModel.listOfTracks[sessionModelIndex].addSectionGates(startGate: startGate, stopGate: endGate)
-        saveJSONToFile()
+    func addSectionGate(to session: SessionsModel, startGate: GateModel, endGate: GateModel) {
+        if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: session) {
+            motoStravaModel.listOfTracks[sessionModelIndex].addSectionGates(startGate: startGate, stopGate: endGate)
+            saveJSONToFile()
+        }
+        print("Error deleting section from session")
     }
+    
+//    func addSectionGate(sessionModelIndex: Int, startGate: GateModel, endGate: GateModel) {
+//        motoStravaModel.listOfTracks[sessionModelIndex].addSectionGates(startGate: startGate, stopGate: endGate)
+//        saveJSONToFile()
+//    }
     
     func replaceSectionGate(in sessionModel: SessionsModel, section: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
         if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: sessionModel) {
@@ -140,6 +148,7 @@ class ModelController {
                 saveJSONToFile()
             }
         }
+        print("error replacing section")
     }
     
 //    func replaceSectionGate(sessionModelIndex: Int, sectionIndex: Int, startGate: GateModel, endGate: GateModel) {

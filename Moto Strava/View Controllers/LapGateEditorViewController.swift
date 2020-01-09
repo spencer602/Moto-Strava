@@ -243,7 +243,10 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func addSection(_ sender: Any) {
-        modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
+        
+        modelController.addSectionGate(to: session, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
+        
+//        modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
         
         populateAnnotationsFromModel()
     }
