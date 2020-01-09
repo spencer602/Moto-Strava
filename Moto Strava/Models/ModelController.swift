@@ -11,16 +11,16 @@ import CoreLocation
 import UIKit
 
 class ModelController {
-    private var motoStravaModel = MotoStravaModel()
+    private var model = MotosModel()
 
-    var courses: [CourseModel] { return motoStravaModel.courses }
+    var courses: [CourseModel] { return model.courses }
     
     init() {
         loadModelFromJSON()
     }
     
     private func saveJSONToFile() {
-        if let json = motoStravaModel.json {
+        if let json = model.json {
             if let url = try? FileManager.default.url(
                 for: .applicationSupportDirectory,
                 in: .userDomainMask,
@@ -44,33 +44,44 @@ class ModelController {
             create: true).appendingPathComponent("motoStravaModelThree.json")
         {
             if let jsonData = try? Data(contentsOf: url) {
-                if let msm = MotoStravaModel(withJSON: jsonData) {
-                    motoStravaModel = msm
+                if let msm = MotosModel(withJSON: jsonData) {
+                    model = msm
                     print("loaded sucessfully!")
                 } else {
-                    motoStravaModel = MotoStravaModel()
+                    model = MotosModel()
                     print("couldn't load from Data") 
                 }
             } else { print("couldn't load from Data") }
         } else { print("couldn't load from URL") }
     }
     
-    func removeTrack(at index: Int) {
-        motoStravaModel.courses.remove(at: index)
-        saveJSONToFile()
+    func remove(course: CourseModel) {
+        if let courseIndex = courses.firstIndex(of: course) {
+            model.courses.remove(at: courseIndex)
+            saveJSONToFile()
+        } else { print("error removing course, course not found") }
     }
     
-    func removeTrack(fromSessionModelNumber sessionModel: Int, atSession session: Int) {
-        motoStravaModel.courses[sessionModel].sessions.remove(at: session)
-        saveJSONToFile()
+    func remove(session: SessionModel, from course: CourseModel) {
+        if let courseIndex = courses.firstIndex(of: course) {
+            if let sessionIndex = courses[courseIndex].sessions.firstIndex(of: session) {
+                model.courses[courseIndex].sessions.remove(at: sessionIndex)
+                saveJSONToFile()
+            } else { print("error removing session, session not found") }
+        } else { print("error removing session, course not found") }
     }
+    
+//    func removeSession(fromSessionModelNumber sessionModel: Int, atSession session: Int) {
+//        motoStravaModel.courses[sessionModel].sessions.remove(at: session)
+//        saveJSONToFile()
+//    }
     
 //    func trackNameForRow(at index: Int) -> String {
 //        return motoStravaModel.listOfTracks[index].name
 //    }
     
     func add(session: CourseModel) {
-        motoStravaModel.courses.append(session)
+        model.courses.append(session)
         saveJSONToFile()
     }
     
@@ -97,45 +108,71 @@ class ModelController {
 //        return distance
 //    }
     
-    func editNameForSessionModel(at index: Int, with name: String) {
-        motoStravaModel.courses[index].name = name
-        saveJSONToFile()
+    func editName(for course: CourseModel, with name: String) {
+        if let courseIndex = courses.firstIndex(of: course) {
+            model.courses[courseIndex].name = name
+        } else { print("error changing name, course not found") }
     }
+    
+//    func editName(at index: Int, with name: String) {
+//        motoStravaModel.courses[index].name = name
+//        saveJSONToFile()
+//    }
     
 //    func editColorForRow(at index: Int, with color: UIColor) {
 //        motoStravaModel.listOfTracks[index].color = color
 //        saveJSONToFile()
 //    }
     
-    func setLapGateForRow(at index: Int, with lapGate: GateModel) {
-        motoStravaModel.courses[index].lapGate = lapGate
-        saveJSONToFile()
-//        print("allegedly saved lapgate \(Date().timeIntervalSince1970)")
+    func setLapGate(for course: CourseModel, with lapGate: GateModel) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            model.courses[courseIndex].lapGate = lapGate
+            saveJSONToFile()
+        } else { print("error setting lap gate, course not found") }
     }
     
-    func addSessionToTrackForRow(at index: Int, with session: SessionModel) {
-        motoStravaModel.courses[index].sessions.append(session)
-        saveJSONToFile()
-    }
+//    func setLapGate(at index: Int, with lapGate: GateModel) {
+//        motoStravaModel.courses[index].lapGate = lapGate
+//        saveJSONToFile()
+////        print("allegedly saved lapgate \(Date().timeIntervalSince1970)")
+//    }
     
-    
-    
-    
-    func setColorForSession(sessionModelIndex: Int, sessionIndex: Int, with color: UIColor) {
-        motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].color = color
-        saveJSONToFile()
-    }
-    
-    
-    func editNameForSession(in course: CourseModel, session: SessionModel, with newName: String) {
-        if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
-            if let sessionIndex = motoStravaModel.courses[courseIndex].sessions.firstIndex(of: session) {
-                motoStravaModel.courses[courseIndex].sessions[sessionIndex].name = newName
-                saveJSONToFile()
-            }
+    func add(session: SessionModel, to course: CourseModel) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            model.courses[courseIndex].sessions.append(session)
+            saveJSONToFile()
         }
     }
     
+//    func add(at index: Int, with session: SessionModel) {
+//        motoStravaModel.courses[index].sessions.append(session)
+//        saveJSONToFile()
+//    }
+//
+    
+    func setColorForSession(in course: CourseModel, for session: SessionModel, with color: UIColor) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
+                model.courses[courseIndex].sessions[sessionIndex].color = color
+            } else { print("error setting session color, session not found") }
+        } else { print("error setting session color, course not found") }
+    }
+    
+    
+//    func setColorForSession(sessionModelIndex: Int, sessionIndex: Int, with color: UIColor) {
+//        motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].color = color
+//        saveJSONToFile()
+//    }
+    
+    
+    func editNameForSession(in course: CourseModel, session: SessionModel, with newName: String) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
+                model.courses[courseIndex].sessions[sessionIndex].name = newName
+                saveJSONToFile()
+            } else { print("error editing session name, session not found") }
+        } else { print("error editing session name, course not found") }
+    }
     
 //    func editNameForSession(sessionModelIndex: Int, sessionIndex: Int, with newName: String) {
 //        motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].name = newName
@@ -143,8 +180,8 @@ class ModelController {
 //    }
     
     func addSectionGate(to course: CourseModel, startGate: GateModel, endGate: GateModel) {
-        if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
-            motoStravaModel.courses[courseIndex].addSectionGates(startGate: startGate, stopGate: endGate)
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            model.courses[courseIndex].addSectionGates(startGate: startGate, stopGate: endGate)
             saveJSONToFile()
         } else {
             print("Error deleting section from course, course not found")
@@ -157,9 +194,9 @@ class ModelController {
 //    }
     
     func replaceSectionGate(in course: CourseModel, replace original: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
-        if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
-            if let sectionIndex = motoStravaModel.courses[courseIndex].firstIndexOf(startGate: original.0, stopGate: original.1) {
-                motoStravaModel.courses[courseIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: replacement.0, stopGate: replacement.1)
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sectionIndex = model.courses[courseIndex].firstIndexOf(startGate: original.0, stopGate: original.1) {
+                model.courses[courseIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: replacement.0, stopGate: replacement.1)
                 saveJSONToFile()
             } else {
                 print("error replacing section, section index not found")
@@ -176,9 +213,9 @@ class ModelController {
 //    }
     
     func removeSectionGate(from course: CourseModel, section: (GateModel, GateModel)) {
-        if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
-            if let sectionIndex = motoStravaModel.courses[courseIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
-                motoStravaModel.courses[courseIndex].removeSection(at: sectionIndex)
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sectionIndex = model.courses[courseIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
+                model.courses[courseIndex].removeSection(at: sectionIndex)
                 saveJSONToFile()
             } else {
                 print("error deleting section from course, section not in course ")

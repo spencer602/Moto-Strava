@@ -153,7 +153,8 @@ extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     // did select row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        modelController.setColorForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
+        modelController.setColorForSession(in: course, for: session, with: Self.defaultColors[row])
+//        modelController.setColorForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
 //        updateViewFromModel()
         EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
             self.cell.customImageView.image = image

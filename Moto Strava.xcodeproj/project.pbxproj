@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0920F65D23872E3600613DEC /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65C23872E3600613DEC /* LocationModel.swift */; };
-		0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65E23888D2400613DEC /* MotoStravaModel.swift */; };
+		0920F65F23888D2400613DEC /* MotosModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65E23888D2400613DEC /* MotosModel.swift */; };
 		0920F661238B067600613DEC /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F660238B067600613DEC /* ModelController.swift */; };
 		0920F663238B439700613DEC /* TrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F662238B439700613DEC /* TrackTableViewCell.swift */; };
 		0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F664238C96C800613DEC /* UtilityExtensions.swift */; };
@@ -44,7 +44,7 @@
 /* Begin PBXFileReference section */
 		02B449089FDDE869B85D060C /* Pods-Moto Strava.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Moto Strava.debug.xcconfig"; path = "Target Support Files/Pods-Moto Strava/Pods-Moto Strava.debug.xcconfig"; sourceTree = "<group>"; };
 		0920F65C23872E3600613DEC /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
-		0920F65E23888D2400613DEC /* MotoStravaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotoStravaModel.swift; sourceTree = "<group>"; };
+		0920F65E23888D2400613DEC /* MotosModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotosModel.swift; sourceTree = "<group>"; };
 		0920F660238B067600613DEC /* ModelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		0920F662238B439700613DEC /* TrackTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell.swift; sourceTree = "<group>"; };
 		0920F664238C96C800613DEC /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 			children = (
 				0920F668238D9DCE00613DEC /* ColorModel.swift */,
 				0920F65C23872E3600613DEC /* LocationModel.swift */,
-				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
+				0920F65E23888D2400613DEC /* MotosModel.swift */,
 				09B86E59239B657700A718B0 /* SessionModel.swift */,
 				0920F660238B067600613DEC /* ModelController.swift */,
 				098B968B23AAF812007C4649 /* GateModel.swift */,
@@ -340,7 +340,7 @@
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,
 				09F986F823A9958500DE854A /* TrackPreviewViewController.swift in Sources */,
 				09F986FA23A9E73700DE854A /* LapGateEditorViewController.swift in Sources */,
-				0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */,
+				0920F65F23888D2400613DEC /* MotosModel.swift in Sources */,
 				0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */,
 				09B5182D23B9754C00CF24CD /* EditTrackColorTableViewCell.swift in Sources */,
 				09B5181223B55FE300CF24CD /* GPX.swift in Sources */,

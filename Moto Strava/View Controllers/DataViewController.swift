@@ -25,8 +25,6 @@ class DataViewController: UIViewController {
         courseTableView.dataSource = self
         
 //        importGPX()
-        
-        print(20.0.interpolate(to: 2.0, numberOfElements: 7))
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -57,7 +55,9 @@ class DataViewController: UIViewController {
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
         let track = SessionModel(withCoreGPX: gpx, withName: "test")
-        modelController.addSessionToTrackForRow(at: 7, with: track)
+        modelController.add(session: track, to: modelController.courses.first!)
+        
+//        modelController.add(at: 7, with: track)
     }
 }
 
@@ -67,7 +67,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
     // deleting
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
        if editingStyle == .delete {
-           modelController.removeTrack(at: indexPath.row)
+        modelController.remove(course: modelController.courses[indexPath.row])
            courseTableView.reloadData()
        }
     }

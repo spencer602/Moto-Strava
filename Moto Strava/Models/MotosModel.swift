@@ -8,13 +8,13 @@
 
 import Foundation
 
-struct MotoStravaModel: Codable {
+struct MotosModel: Codable {
     var courses = [CourseModel]()
     
     init() {}
     
     init?(withJSON json: Data) {
-        if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) { self = newValue }
+        if let newValue = try? JSONDecoder().decode(MotosModel.self, from: json) { self = newValue }
         else { return nil }
     }
     

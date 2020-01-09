@@ -33,7 +33,7 @@ class RunMotoViewController: UIViewController {
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var session: CourseModel { return modelController.courses[rowInModel] }
+    var course: CourseModel { return modelController.courses[rowInModel] }
 
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
@@ -67,7 +67,10 @@ class RunMotoViewController: UIViewController {
         motoIsStarted = false
         
         let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
-        modelController.addSessionToTrackForRow(at: rowInModel, with: track)
+        
+        modelController.add(session: track, to: course)
+        
+//        modelController.add(at: rowInModel, with: track)
     }
     
     override func viewDidLoad() {
@@ -88,11 +91,11 @@ class RunMotoViewController: UIViewController {
         addTrackToMap()
         zoomMapTo()
 
-        lapGateAnnotation.coordinate = session.lapGate.location.coordinate
+        lapGateAnnotation.coordinate = course.lapGate.location.coordinate
         
         mapKitView.addAnnotation(lapGateAnnotation)
         
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(session.lapGate.radius))
+        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(course.lapGate.radius))
         mapKitView.addOverlay(cir)
         
     }
@@ -119,13 +122,13 @@ class RunMotoViewController: UIViewController {
 
     /// adds the track to the map
     private func addTrackToMap() {
-        let overlay = MKPolyline.createPolyLine(using: session.sessions.first!.locations)
+        let overlay = MKPolyline.createPolyLine(using: course.sessions.first!.locations)
         mapKitView.addOverlay(overlay)
     }
 
     /// creates a region encompassing all logged locations and adds the overaly to the map
     private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: session.sessions.first!.locations)
+        let region = MKCoordinateRegion.mapRegion(using: course.sessions.first!.locations)
         mapKitView.setRegion(region, animated: true)
     }
     
@@ -198,7 +201,7 @@ extension RunMotoViewController: CLLocationManagerDelegate {
                 
                 
             // if the current location is in the gate
-            if locations.first!.distance(from: session.lapGate.location) <= Double(session.lapGate.radius) {
+            if locations.first!.distance(from: course.lapGate.location) <= Double(course.lapGate.radius) {
                 print("filter we are in the gate")
                 
                 if pointsInGate == nil { pointsInGate = [CLLocation]() }
@@ -239,7 +242,7 @@ extension RunMotoViewController: MKMapViewDelegate {
                 return renderer
             } else {
                 let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = session.sessions.first!.color
+                renderer.strokeColor = course.sessions.first!.color
                 renderer.lineWidth = 2
                 return renderer
             }

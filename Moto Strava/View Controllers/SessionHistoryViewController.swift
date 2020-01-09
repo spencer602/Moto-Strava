@@ -46,7 +46,8 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
     // deleting
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
        if editingStyle == .delete {
-        modelController.removeTrack(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
+        modelController.remove(session: modelController.courses[rowInModel].sessions[indexPath.row], from: modelController.courses[rowInModel])
+//        modelController.removeSession(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
            sessionHistoryTableView.reloadData()
        }
     }
