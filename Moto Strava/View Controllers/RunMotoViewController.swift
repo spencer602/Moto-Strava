@@ -33,7 +33,7 @@ class RunMotoViewController: UIViewController {
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel { return modelController.listOfSessions[rowInModel] }
 
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
@@ -66,7 +66,7 @@ class RunMotoViewController: UIViewController {
         stopMotoButton.isHidden = true
         motoIsStarted = false
         
-        let track = TrackModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
         modelController.addSessionToTrackForRow(at: rowInModel, with: track)
     }
     

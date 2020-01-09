@@ -108,7 +108,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel { return modelController.listOfSessions[rowInModel] }
 
    
     override func viewDidLoad() {
@@ -259,7 +259,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
             mapKitView.removeOverlay(circleForAnnotation[endPoints[index]]!)
             
             let section = (gateModelFor(annotation: startPoints[index])!, gateModelFor(annotation: endPoints[index])!)
-            modelController.removeSectionGate(sessionModel: session, section: section)
+            modelController.removeSectionGate(from: session, section: section)
             
             circleForAnnotation[startPoints.remove(at: index)] = nil
             circleForAnnotation[endPoints.remove(at: index)] = nil

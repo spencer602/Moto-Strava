@@ -30,7 +30,7 @@ class EditDetailViewController: UIViewController {
     var modelController: ModelController!
     var trackInSessions: Int!
     
-    var currentTrack: TrackModel { return modelController.listOfSessions[rowInModel].sessions[trackInSessions] }
+    var currentTrack: SessionModel { return modelController.listOfSessions[rowInModel].sessions[trackInSessions] }
     
     /// the color picker for track color
     private let colorPicker = UIPickerView()
@@ -107,7 +107,7 @@ class EditDetailViewController: UIViewController {
 //        editDetailTableView.reloadData()
 //    }
     
-    static func setPreviewImage(using sessions: [TrackModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
+    static func setPreviewImage(using sessions: [SessionModel], onCompletionExecute completionClosure: @escaping (UIImage) -> Void) {
         // update the track image preview
         var previewImage = UIImage()
         let options = MKMapSnapshotter.Options()

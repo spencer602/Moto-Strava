@@ -17,12 +17,12 @@ class DataViewController: UIViewController {
     var modelController: ModelController!
     
     /// the table view displaying all the tracks and the relevant information
-    @IBOutlet private weak var trackTableView: UITableView!
+    @IBOutlet private weak var courseTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        trackTableView.delegate = self
-        trackTableView.dataSource = self
+        courseTableView.delegate = self
+        courseTableView.dataSource = self
         
 //        importGPX()
         
@@ -31,13 +31,13 @@ class DataViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        trackTableView.reloadData()
+        courseTableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let dest = segue.destination as? EditSessionModelViewController {
+        if let dest = segue.destination as? EditCourseModelViewController {
             print("Destination as edit detail view controller")
-            dest.rowInModel = trackTableView.indexPathForSelectedRow!.row
+            dest.rowInModel = courseTableView.indexPathForSelectedRow!.row
             dest.modelController = modelController
         }
     }
@@ -56,7 +56,7 @@ class DataViewController: UIViewController {
         
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
-        let track = TrackModel(withCoreGPX: gpx, withName: "test")
+        let track = SessionModel(withCoreGPX: gpx, withName: "test")
         modelController.addSessionToTrackForRow(at: 7, with: track)
     }
 }
@@ -68,7 +68,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
        if editingStyle == .delete {
            modelController.removeTrack(at: indexPath.row)
-           trackTableView.reloadData()
+           courseTableView.reloadData()
        }
     }
 
@@ -79,29 +79,29 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
 
     // cell for row at
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = trackTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
+        if let cell = courseTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
             
             //for convenience, we will be using this frequently in this function
-            let session = modelController.listOfSessions[indexPath.row]
+            let thisCourse = modelController.listOfSessions[indexPath.row]
         
             //title
-            cell.titleLabel.text = session.name
+            cell.titleLabel.text = thisCourse.name
 
             // format and display the date
-            let date = session.dateCreated
+            let date = thisCourse.dateCreated
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .short
             dateFormatter.timeStyle = .short
             dateFormatter.locale = Locale(identifier: "en_US")
             cell.dateLabel.text = dateFormatter.string(from: date)
         
-            EditDetailViewController.setPreviewImage(using: session.sessions) { image in cell.imageOutlet.image = image }
+            EditDetailViewController.setPreviewImage(using: thisCourse.sessions) { image in cell.imageOutlet.image = image }
             
-            let laps = session.totalLaps
+            let laps = thisCourse.totalLaps
             
             cell.lapsLabel.text = "Laps: \(laps)"
             
-            cell.sessionsLabel.text = "Sessions: \(session.sessions.count)"
+            cell.sessionsLabel.text = "Sessions: \(thisCourse.sessions.count)"
            
             return cell
        }

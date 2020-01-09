@@ -9,30 +9,30 @@
 import Foundation
 import UIKit
 
-struct SessionsModel: Codable, Equatable {
+struct CourseModel: Codable, Equatable {
     
     var lapGate: GateModel
     
-    private var startGates: [GateModel]
-    private var stopGates: [GateModel]
+    private var entryGates: [GateModel]
+    private var exitGates: [GateModel]
     
     var sectionGates: [(GateModel, GateModel)] {
         var sg = [(GateModel, GateModel)]()
         
-        for index in 0..<startGates.count {
-            sg.append((startGates[index], stopGates[index]))
+        for index in 0..<entryGates.count {
+            sg.append((entryGates[index], exitGates[index]))
         }
         
         return sg
     }
     
-    var sessions: [TrackModel]
+    var sessions: [SessionModel]
 
     var name: String
     
     var dateCreated: Date
     
-    var allColorsForTracks: [UIColor] {
+    var allColorsForSessions: [UIColor] {
         return sessions.map { $0.color }
     }
     
@@ -41,15 +41,16 @@ struct SessionsModel: Codable, Equatable {
         case lapGate
         case sessions
         case dateCreated
-        case startGates
-        case stopGates
+        case entryGates
+        case exitGates
+       
     }
     
-    init(usingInitialSession session: TrackModel) {
+    init(usingInitialSession session: SessionModel) {
         lapGate = GateModel(location: session.locations.first!, withRadius: 10)
-        startGates = [GateModel]()
-        stopGates = [GateModel]()
-        sessions = [TrackModel]()
+        entryGates = [GateModel]()
+        exitGates = [GateModel]()
+        sessions = [SessionModel]()
         sessions.append(session)
         dateCreated = Date()
         name = session.name
@@ -59,10 +60,10 @@ struct SessionsModel: Codable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
         lapGate = try container.decode(GateModel.self, forKey: .lapGate)
-        startGates = try container.decode([GateModel].self, forKey: .startGates)
-        stopGates = try container.decode([GateModel].self, forKey: .stopGates)
+        entryGates = try container.decode([GateModel].self, forKey: .entryGates)
+        exitGates = try container.decode([GateModel].self, forKey: .exitGates)
         dateCreated = try container.decode(Date.self, forKey: .dateCreated)
-        sessions = try container.decode([TrackModel].self, forKey: .sessions)
+        sessions = try container.decode([SessionModel].self, forKey: .sessions)
     }
     
     var totalLaps: Int {
@@ -81,23 +82,23 @@ struct SessionsModel: Codable, Equatable {
     }
     
     mutating func addSectionGates(startGate: GateModel, stopGate: GateModel) {
-        startGates.append(startGate)
-        stopGates.append(stopGate)
+        entryGates.append(startGate)
+        exitGates.append(stopGate)
     }
     
     mutating func replaceSectionGates(sectionIndex: Int, startGate: GateModel, stopGate: GateModel) {
-        startGates[sectionIndex] = startGate
-        stopGates[sectionIndex] = stopGate
+        entryGates[sectionIndex] = startGate
+        exitGates[sectionIndex] = stopGate
     }
     
     mutating func removeSection(at index: Int) {
-        startGates.remove(at: index)
-        stopGates.remove(at: index)
+        entryGates.remove(at: index)
+        exitGates.remove(at: index)
     }
     
     func firstIndexOf(startGate: GateModel, stopGate: GateModel) -> Int? {
-        for (index, start) in startGates.enumerated() {
-            if start == startGate && stopGate == stopGates[index] { return index }
+        for (index, start) in entryGates.enumerated() {
+            if start == startGate && stopGate == exitGates[index] { return index }
         }
         
         return nil

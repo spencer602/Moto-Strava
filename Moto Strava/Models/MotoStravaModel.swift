@@ -9,19 +9,14 @@
 import Foundation
 
 struct MotoStravaModel: Codable {
-    var listOfTracks = [SessionsModel]()
+    var courses = [CourseModel]()
     
     init() {}
     
     init?(withJSON json: Data) {
-        if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) {
-            self = newValue
-        } else {
-            return nil
-        }
+        if let newValue = try? JSONDecoder().decode(MotoStravaModel.self, from: json) { self = newValue }
+        else { return nil }
     }
     
-    var json: Data? {
-        return try? JSONEncoder().encode(self)
-    }
+    var json: Data? { return try? JSONEncoder().encode(self) }
 }
