@@ -16,7 +16,7 @@ class EditCourseModelViewController: UIViewController {
     var rowInModel: Int!
     var modelController: ModelController!
     
-    var thisCourse: CourseModel { return modelController.listOfSessions[rowInModel] }
+    var thisCourse: CourseModel { return modelController.courses[rowInModel] }
     
     // IBOutlets
 //    @IBOutlet weak var titleTextField: UITextField!

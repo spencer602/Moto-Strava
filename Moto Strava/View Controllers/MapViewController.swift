@@ -147,7 +147,7 @@ class MapViewController: UIViewController {
     
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
-        for session in modelController.listOfSessions {
+        for session in modelController.courses {
             for track in session.sessions {
                 let locationData = track.locations
                 let overlay = MKPolyline.createPolyLine(using: locationData)

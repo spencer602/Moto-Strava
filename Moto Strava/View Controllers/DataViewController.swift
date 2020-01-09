@@ -74,7 +74,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
 
     // number of rows in section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return modelController.listOfSessions.count
+        return modelController.courses.count
     }
 
     // cell for row at
@@ -82,7 +82,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
         if let cell = courseTableView.dequeueReusableCell(withIdentifier: "complexTrackCell", for: indexPath) as? TrackTableViewCell {
             
             //for convenience, we will be using this frequently in this function
-            let thisCourse = modelController.listOfSessions[indexPath.row]
+            let thisCourse = modelController.courses[indexPath.row]
         
             //title
             cell.titleLabel.text = thisCourse.name

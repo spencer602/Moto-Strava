@@ -26,7 +26,7 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     var modelController: ModelController!
     var rowInModel: Int!
     
-    var session: CourseModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel { return modelController.courses[rowInModel] }
     
     /// the lap gate annotation on the map
     private var lapGateAnnotation = GateModelAnnotation()

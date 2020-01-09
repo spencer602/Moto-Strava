@@ -15,7 +15,7 @@ class SessionHistoryViewController: UIViewController {
     var modelController: ModelController!
     var rowInModel: Int!
     //var trackInSessions: Int!
-    var session: CourseModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel { return modelController.courses[rowInModel] }
     
     @IBOutlet private var sessionHistoryTableView: UITableView!
     

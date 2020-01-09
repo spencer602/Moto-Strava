@@ -13,7 +13,7 @@ import UIKit
 class ModelController {
     private var motoStravaModel = MotoStravaModel()
 
-    var listOfSessions: [CourseModel] { return motoStravaModel.courses }
+    var courses: [CourseModel] { return motoStravaModel.courses }
     
     init() {
         loadModelFromJSON()
@@ -118,24 +118,29 @@ class ModelController {
         saveJSONToFile()
     }
     
-    func setColorForTrack(sessionModelIndex: Int, sessionIndex: Int, with color: UIColor) {
+    
+    
+    
+    func setColorForSession(sessionModelIndex: Int, sessionIndex: Int, with color: UIColor) {
         motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].color = color
         saveJSONToFile()
     }
     
     
-//    func editSessionName(session: SessionsModel, with newName: String) {
-//        if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: session) {
-//            motoStravaModel.listOfTracks[sessionModelIndex].sessions[sessionIndex].name = newName
-//            saveJSONToFile()
-//        }
-//        
-//    }
-    
-    func editNameForSession(sessionModelIndex: Int, sessionIndex: Int, with newName: String) {
-        motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].name = newName
-        saveJSONToFile()
+    func editNameForSession(in course: CourseModel, session: SessionModel, with newName: String) {
+        if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
+            if let sessionIndex = motoStravaModel.courses[courseIndex].sessions.firstIndex(of: session) {
+                motoStravaModel.courses[courseIndex].sessions[sessionIndex].name = newName
+                saveJSONToFile()
+            }
+        }
     }
+    
+    
+//    func editNameForSession(sessionModelIndex: Int, sessionIndex: Int, with newName: String) {
+//        motoStravaModel.courses[sessionModelIndex].sessions[sessionIndex].name = newName
+//        saveJSONToFile()
+//    }
     
     func addSectionGate(to course: CourseModel, startGate: GateModel, endGate: GateModel) {
         if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
@@ -151,9 +156,9 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func replaceSectionGate(in course: CourseModel, section: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
+    func replaceSectionGate(in course: CourseModel, replace original: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
         if let courseIndex = motoStravaModel.courses.firstIndex(of: course) {
-            if let sectionIndex = motoStravaModel.courses[courseIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
+            if let sectionIndex = motoStravaModel.courses[courseIndex].firstIndexOf(startGate: original.0, stopGate: original.1) {
                 motoStravaModel.courses[courseIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: replacement.0, stopGate: replacement.1)
                 saveJSONToFile()
             } else {

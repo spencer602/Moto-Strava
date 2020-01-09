@@ -108,7 +108,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var session: CourseModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel { return modelController.courses[rowInModel] }
 
    
     override func viewDidLoad() {
@@ -211,7 +211,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         else if startPoints.contains(selectedAnnotation!) {
             let section = selectedGateModelPair!
             let replacement = (GateModel(location: section.0.location, withRadius: Double(slider.value)), section.1)
-            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+            modelController.replaceSectionGate(in: session, replace: section, with: replacement)
             
 //            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: GateModel(location: sectionGates[selectedAnnotationIndex!].0.location, withRadius: Double(slider.value)), endGate: sectionGates[selectedAnnotationIndex!].1)
         }
@@ -219,7 +219,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         else if endPoints.contains(selectedAnnotation!) {
             let section = selectedGateModelPair!
             let replacement = (section.0, GateModel(location: section.1.location, withRadius: Double(slider.value)))
-            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+            modelController.replaceSectionGate(in: session, replace: section, with: replacement)
             
 //            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: sectionGates[selectedAnnotationIndex!].0, endGate: GateModel(location: sectionGates[selectedAnnotationIndex!].1.location, withRadius: Double(slider.value)))
         }
@@ -394,7 +394,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
                 
                 let replacement = (GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.0.radius), section.1)
                 
-                modelController.replaceSectionGate(in: session, section: section, with: replacement)
+                modelController.replaceSectionGate(in: session, replace: section, with: replacement)
                 
 //                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
                 
@@ -410,7 +410,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
                 
                 let replacement = (section.0, GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.1.radius))
                 
-            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+            modelController.replaceSectionGate(in: session, replace: section, with: replacement)
                 
 //                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
                 
