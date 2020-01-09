@@ -81,7 +81,16 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
        }
        
        return nil
-   }
+    }
+    
+    private var selectedGateModelPair: (GateModel, GateModel)? {
+        if let index = selectedAnnotationIndex {
+            if let start = gateModelFor(annotation: startPoints[index]), let stop = gateModelFor(annotation: endPoints[index]) {
+                return (start, stop)
+            }
+        }
+        return nil
+    }
     
     private var selectedAnnotationIndex: Int? {
         if selectedAnnotation == nil { return nil }
@@ -200,11 +209,19 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         else if startPoints.contains(selectedAnnotation!) {
-            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: GateModel(location: sectionGates[selectedAnnotationIndex!].0.location, withRadius: Double(slider.value)), endGate: sectionGates[selectedAnnotationIndex!].1)
+            let section = selectedGateModelPair!
+            let replacement = (GateModel(location: section.0.location, withRadius: Double(slider.value)), section.1)
+            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+            
+//            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: GateModel(location: sectionGates[selectedAnnotationIndex!].0.location, withRadius: Double(slider.value)), endGate: sectionGates[selectedAnnotationIndex!].1)
         }
         
         else if endPoints.contains(selectedAnnotation!) {
-            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: sectionGates[selectedAnnotationIndex!].0, endGate: GateModel(location: sectionGates[selectedAnnotationIndex!].1.location, withRadius: Double(slider.value)))
+            let section = selectedGateModelPair!
+            let replacement = (section.0, GateModel(location: section.1.location, withRadius: Double(slider.value)))
+            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+            
+//            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: sectionGates[selectedAnnotationIndex!].0, endGate: GateModel(location: sectionGates[selectedAnnotationIndex!].1.location, withRadius: Double(slider.value)))
         }
         
         mapKitView.removeOverlay(circleForAnnotation[selectedAnnotation!]!)
@@ -368,14 +385,31 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             else if startPoints.contains(dragAnnotation) {
                 print("moved start section annotation")
                 
-                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
+                let sectionIndex = startPoints.firstIndex(of: dragAnnotation)!
+                
+                let section = (gateModelFor(annotation: startPoints[sectionIndex])!, gateModelFor(annotation: endPoints[sectionIndex])!)
+                
+                let replacement = (GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.0.radius), section.1)
+                
+                modelController.replaceSectionGate(in: session, section: section, with: replacement)
+                
+//                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
                 
                 newCircle = MKCircle(center: gateModelFor(annotation: dragAnnotation)!.location.coordinate, radius: gateModelFor(annotation: dragAnnotation)!.radius)
                 
             }
             else if endPoints.contains(dragAnnotation) {
                 print("moved stop section annotation")
-                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
+                
+                let sectionIndex = endPoints.firstIndex(of: dragAnnotation)!
+                
+                let section = (gateModelFor(annotation: startPoints[sectionIndex])!, gateModelFor(annotation: endPoints[sectionIndex])!)
+                
+                let replacement = (section.0, GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.1.radius))
+                
+            modelController.replaceSectionGate(in: session, section: section, with: replacement)
+                
+//                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
                 
                 newCircle = MKCircle(center: gateModelFor(annotation: dragAnnotation)!.location.coordinate, radius: gateModelFor(annotation: dragAnnotation)!.radius)
 

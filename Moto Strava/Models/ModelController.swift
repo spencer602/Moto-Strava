@@ -133,26 +133,28 @@ class ModelController {
         saveJSONToFile()
     }
     
-    func replaceSectionGate(sessionModelIndex: Int, sectionIndex: Int, startGate: GateModel, endGate: GateModel) {
-        motoStravaModel.listOfTracks[sessionModelIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: startGate, stopGate: endGate)
-        saveJSONToFile()
+    func replaceSectionGate(in sessionModel: SessionsModel, section: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
+        if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: sessionModel) {
+            if let sectionIndex = motoStravaModel.listOfTracks[sessionModelIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
+                motoStravaModel.listOfTracks[sessionModelIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: replacement.0, stopGate: replacement.1)
+                saveJSONToFile()
+            }
+        }
     }
     
-    func removeSectionGate(sessionModelIndex: Int, sectionIndex: Int) {
-        motoStravaModel.listOfTracks[sessionModelIndex].removeSection(at: sectionIndex)
-        saveJSONToFile()
-    }
+//    func replaceSectionGate(sessionModelIndex: Int, sectionIndex: Int, startGate: GateModel, endGate: GateModel) {
+//        motoStravaModel.listOfTracks[sessionModelIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: startGate, stopGate: endGate)
+//        saveJSONToFile()
+//    }
     
     func removeSectionGate(sessionModel: SessionsModel, section: (GateModel, GateModel)) {
         if let sessionModelIndex = motoStravaModel.listOfTracks.firstIndex(of: sessionModel) {
             if let sectionIndex = motoStravaModel.listOfTracks[sessionModelIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
-                removeSectionGate(sessionModelIndex: sessionModelIndex, sectionIndex: sectionIndex)
+                motoStravaModel.listOfTracks[sessionModelIndex].removeSection(at: sectionIndex)
+                saveJSONToFile()
+                return
             }
         }
-        saveJSONToFile()
+        print("Error deleting section from session")
     }
-    
-//    func removeSectionGate(sessionModelIndex: Int, withStartGate startGate: GateModel) {
-//        motoStravaModel.listOfTracks[sessionModelIndex].sectionGates.removeValue(forKey: startGate)
-//    }
 }
