@@ -103,12 +103,13 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
 //    private var sectionGates = [GateModel:GateModel]()
     
     /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
-    var rowInModel: Int!
+//    var rowInModel: Int!
+    var courseID: Int!
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var currentCourse: CourseModel { return modelController.courses[rowInModel] }
+    var currentCourse: CourseModel! { return modelController.course(with: courseID) }
 
    
     override func viewDidLoad() {

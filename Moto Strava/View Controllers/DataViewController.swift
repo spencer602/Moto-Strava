@@ -35,7 +35,8 @@ class DataViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let dest = segue.destination as? EditCourseModelViewController {
             print("Destination as edit detail view controller")
-            dest.rowInModel = courseTableView.indexPathForSelectedRow!.row
+            dest.courseID = modelController.courses[courseTableView.indexPathForSelectedRow!.row].uniqueIdentifier
+//            dest.rowInModel = courseTableView.indexPathForSelectedRow!.row
             dest.modelController = modelController
         }
     }

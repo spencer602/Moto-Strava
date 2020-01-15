@@ -13,10 +13,11 @@ import CoreGPX
 
 class EditCourseModelViewController: UIViewController {
     /// these are set when this VC is segued to
-    var rowInModel: Int!
+//    var rowInModel: Int!
     var modelController: ModelController!
+    var courseID: Int!
     
-    var currentCourse: CourseModel { return modelController.courses[rowInModel] }
+    var course: CourseModel! { return modelController.course(with: courseID) }
     
     // IBOutlets
 //    @IBOutlet weak var titleTextField: UITextField!
@@ -47,36 +48,42 @@ class EditCourseModelViewController: UIViewController {
         
         // LapGate Editor
         if let gateEditor = segue.destination as? LapGateEditorViewController {
-            gateEditor.rowInModel = rowInModel
+            gateEditor.courseID = courseID
+//            gateEditor.rowInModel = rowInModel
             gateEditor.modelController = modelController
-            gateEditor.locationList = currentCourse.sessions.map { $0.locations }
-            gateEditor.trackColor = currentCourse.allColorsForSessions
+            gateEditor.locationList = course.sessions.map { $0.locations }
+            gateEditor.trackColor = course.allColorsForSessions
         }
         
         // RunMoto
         if let runMotoVC = segue.destination as? RunMotoViewController {
-            runMotoVC.rowInModel = rowInModel
+//            runMotoVC.rowInModel = rowInModel
+            runMotoVC.courseID = courseID
             runMotoVC.modelController = modelController
         }
         
         // Session History
-        if let sessionHistory = segue.destination as? SessionHistoryViewController {
-            sessionHistory.rowInModel = rowInModel
-            sessionHistory.modelController = modelController
-        }
+//        if let sessionHistory = segue.destination as? SessionHistoryViewController {
+//            sessionHistory.rowInModel = rowInModel
+//            sessionHistory.modelController = modelController
+//        }
         
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = currentCourse.sessions.map { $0.locations }
-            mapPreview.trackColor = currentCourse.allColorsForSessions
-            mapPreview.lapGate = currentCourse.lapGate
+            mapPreview.locationList = course.sessions.map { $0.locations }
+            mapPreview.trackColor = course.allColorsForSessions
+            mapPreview.lapGate = course.lapGate
             mapPreview.modelController = modelController
-            mapPreview.rowInModel = rowInModel
+            mapPreview.courseID = courseID
+//            mapPreview.rowInModel = rowInModel
         }
         
         if let editDetail = segue.destination as? EditDetailViewController {
             editDetail.modelController = modelController
-            editDetail.rowInModel = rowInModel
-            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
+            editDetail.courseID = courseID
+//            editDetail.rowInModel = rowInModel
+//            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
+            editDetail.sessionID = course.sessions[courseDetailTableView.indexPathForSelectedRow!.row].uniqueIdentifier
+
         }
     }
     
@@ -97,7 +104,7 @@ extension EditCourseModelViewController: UITextFieldDelegate {
     // text field should return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        modelController.editName(for: currentCourse, with: textField.text!)
+        modelController.editName(for: course, with: textField.text!)
 //        modelController.editName(at: rowInModel, with: textField.text!)
         return true
     }
@@ -106,13 +113,13 @@ extension EditCourseModelViewController: UITextFieldDelegate {
 extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 5 }
-        else { return currentCourse.sessions.count }
+        else { return course.sessions.count }
     }
     
     // deleting, but only if there is more than 1 session at the track
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete && currentCourse.sessions.count > 1 {
-            modelController.remove(session: currentCourse.sessions[indexPath.row], from: currentCourse)
+        if editingStyle == .delete && course.sessions.count > 1 {
+            modelController.remove(session: course.sessions[indexPath.row], from: course)
 //            modelController.removeSession(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
             courseDetailTableView.reloadData()
        }
@@ -127,7 +134,7 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
             switch indexPath.row {
             case 0:
                 if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "courseNameCell", for: indexPath) as? EditNameTableViewCell {
-                    cell.titleTextField.text = currentCourse.name
+                    cell.titleTextField.text = course.name
                     cell.titleTextField.delegate = self
                     return cell
                 }
@@ -136,7 +143,7 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
                 if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
                     self.cell = cell
                     
-                    EditDetailViewController.setPreviewImage(using: currentCourse.sessions) { image in
+                    EditDetailViewController.setPreviewImage(using: course.sessions) { image in
                         cell.customImageView.image = image
                         
                         if !self.tableViewHasReloadedData {
@@ -155,13 +162,13 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
             case 3:
                 let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the number of sessions
-                cell.textLabel!.text = "Sessions: \(currentCourse.sessions.count)"
+                cell.textLabel!.text = "Sessions: \(course.sessions.count)"
                 return cell
                 
             case 4:
                 let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the best Lap Time
-                let bestTime = currentCourse.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+                let bestTime = course.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
                 cell.textLabel!.text = "Best Lap Time: \(bestTime)"
                 return cell
     
@@ -172,7 +179,7 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
         else if indexPath.section == 1 {
             if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "sessionHistoryCell", for: indexPath) as? SessionHistoryTableViewCell {
                 
-                let currentSession = currentCourse.sessions[indexPath.row]
+                let currentSession = course.sessions[indexPath.row]
                 
                 //title
                 cell.nameLabel.text = currentSession.name
@@ -190,7 +197,7 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
                 
                 EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
                 
-                cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: currentCourse.lapGate))"
+                cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: course.lapGate))"
                 
                 return cell
             }

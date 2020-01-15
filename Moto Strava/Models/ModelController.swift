@@ -55,6 +55,14 @@ class ModelController {
         } else { print("couldn't load from URL") }
     }
     
+    func course(with id: Int) -> CourseModel? {
+        return courses.first(where: { $0.uniqueIdentifier == id } )
+    }
+    
+    func session(inCourse: CourseModel, withSessionID: Int) -> SessionModel? {
+        return inCourse.sessions.first(where: { $0.uniqueIdentifier == withSessionID })
+    }
+    
 //     let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
     
     func createSession(withCLLocationArray: [CLLocation], withName: String) -> SessionModel {
