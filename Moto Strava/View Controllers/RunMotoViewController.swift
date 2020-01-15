@@ -66,7 +66,9 @@ class RunMotoViewController: UIViewController {
         stopMotoButton.isHidden = true
         motoIsStarted = false
         
-        let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        let track = modelController.createSession(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+        
+//        let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
         
         modelController.add(session: track, to: course)
         

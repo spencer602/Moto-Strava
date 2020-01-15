@@ -54,8 +54,8 @@ class DataViewController: UIViewController {
         
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
-        let track = SessionModel(withCoreGPX: gpx, withName: "test")
-        modelController.add(session: track, to: modelController.courses.first!)
+//        let track = SessionModel(withCoreGPX: gpx, withName: "test")
+//        modelController.add(session: track, to: modelController.courses.first!)
         
 //        modelController.add(at: 7, with: track)
     }

@@ -11,10 +11,16 @@ import UIKit
 
 struct CourseModel: Codable, Equatable {
     
-    var lapGate: GateModel
-    
     private var entryGates: [GateModel]
     private var exitGates: [GateModel]
+    
+    var lapGate: GateModel
+    var sessions: [SessionModel]
+    var name: String
+    var dateCreated: Date
+    var uniqueIdentifier: Int
+    
+    static var id = 1
     
     var sectionGates: [(GateModel, GateModel)] {
         var sg = [(GateModel, GateModel)]()
@@ -25,12 +31,6 @@ struct CourseModel: Codable, Equatable {
         
         return sg
     }
-    
-    var sessions: [SessionModel]
-
-    var name: String
-    
-    var dateCreated: Date
     
     var allColorsForSessions: [UIColor] {
         return sessions.map { $0.color }
@@ -43,10 +43,10 @@ struct CourseModel: Codable, Equatable {
         case dateCreated
         case entryGates
         case exitGates
-       
+        case uniqueIdentifier
     }
     
-    init(usingInitialSession session: SessionModel) {
+    init(usingInitialSession session: SessionModel, with id: Int) {
         lapGate = GateModel(location: session.locations.first!, withRadius: 10)
         entryGates = [GateModel]()
         exitGates = [GateModel]()
@@ -54,6 +54,7 @@ struct CourseModel: Codable, Equatable {
         sessions.append(session)
         dateCreated = Date()
         name = session.name
+        uniqueIdentifier = id
     }
     
     init(from decoder: Decoder) throws {
@@ -64,6 +65,8 @@ struct CourseModel: Codable, Equatable {
         exitGates = try container.decode([GateModel].self, forKey: .exitGates)
         dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         sessions = try container.decode([SessionModel].self, forKey: .sessions)
+        uniqueIdentifier = Self.id
+        Self.id += 1
     }
     
     var totalLaps: Int {

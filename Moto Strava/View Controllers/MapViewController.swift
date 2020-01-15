@@ -130,8 +130,10 @@ class MapViewController: UIViewController {
         polyLinesFromCurrentRecording.removeAll()
         
         // create the track
-        let track = SessionModel(withCLLocationArray: locationList, withName: Date().description)
-        let newSessionModel = CourseModel(usingInitialSession: track)
+        let track = modelController.createSession(withCLLocationArray: locationList, withName: Date().description)
+//        let track = SessionModel(withCLLocationArray: locationList, withName: Date().description)
+        let newSessionModel = modelController.createCourse(usingIntialSession: track)
+//        let newSessionModel = CourseModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
         modelController.add(session: newSessionModel)

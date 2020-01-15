@@ -11,44 +11,47 @@ import UIKit
 import CoreGPX
 
 struct SessionModel: Codable, Equatable {
-    
     private var codableLocations: [LocationModel]
-    var locations: [CLLocation] { return codableLocations.map() { $0.location } }
+    private var codableColor: ColorModel
     var name: String
+    var uniqueIdentifier: Int
+    
+    static var id = 1
+
+    var locations: [CLLocation] { return codableLocations.map() { $0.location } }
     var timeStamp: Date { return locations.first!.timestamp }
     var locationCount: Int { return codableLocations.count }
         
-    private var codableColor: ColorModel
-    
     var color: UIColor {
         get { return codableColor.color }
         set { codableColor.color = newValue }
     }
     
-    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String) {
+    init(withCLLocationArray cllocationArray: [CLLocation], withName name: String, with identifier: Int) {
         self.codableLocations = cllocationArray.map { LocationModel(fromCLLocation: $0) }
         self.name = name
         self.codableColor = ColorModel(with: UIColor.red)
+        self.uniqueIdentifier = identifier
     }
     
-    init(withCoreGPX gpx: GPXRoot, withName name: String) {
+    init(withCoreGPX gpx: GPXRoot, withName name: String, with identifier: Int) {
         codableLocations = [LocationModel]()
         for waypoint in gpx.tracks.first!.tracksegments.first!.trackpoints {
             codableLocations.append(LocationModel(fromGPXWaypoint: waypoint))
         }
         self.name = name
         codableColor = ColorModel(with: UIColor.red)
+        uniqueIdentifier = identifier
     }
     
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        name = try container.decode(String.self, forKey: .name)
-//        lapGate = try container.decode(GateModel.self, forKey: .lapGate)
-//        sessions = [TrackModel]()
-//        sectionGates = try container.decode([GateModel].self, forKey: .sectionGates)
-//        codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
-//        codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
-//    }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
+        codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
+        uniqueIdentifier = Self.id
+        Self.id += 1
+    }
     
     var gpxString: String {
         var s = "<?xml version=\"1.0\"?>\n" +
@@ -68,12 +71,6 @@ struct SessionModel: Codable, Equatable {
         return s
     }
     
-    func getTotalLaps(using lapGate: GateModel) -> Int {
-        let laps = getLapPoints(usingLapGate: lapGate).count - 1
-        if laps < 0 { return 0 }
-        return laps
-    }
-    
     var trackDistance: Double {
         var distance = 0.0
         var previousLocation: CLLocation?
@@ -87,6 +84,12 @@ struct SessionModel: Codable, Equatable {
         }
         return distance / 1609.344
     }
+    
+    func getTotalLaps(using lapGate: GateModel) -> Int {
+       let laps = getLapPoints(usingLapGate: lapGate).count - 1
+       if laps < 0 { return 0 }
+       return laps
+   }
     
     func getSectionPoints(usingStartGate startGate: GateModel, usingStopGate stopGate: GateModel) -> [(CLLocation, CLLocation)] {
         

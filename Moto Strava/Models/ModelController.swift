@@ -55,6 +55,21 @@ class ModelController {
         } else { print("couldn't load from URL") }
     }
     
+//     let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
+    
+    func createSession(withCLLocationArray: [CLLocation], withName: String) -> SessionModel {
+        let session = SessionModel(withCLLocationArray: withCLLocationArray, withName: withName, with: model.getNextSessionID())
+        return session
+    }
+    
+//    let newSessionModel = CourseModel(usingInitialSession: track)
+
+    
+    func createCourse(usingIntialSession: SessionModel) -> CourseModel {
+        let course = CourseModel(usingInitialSession: usingIntialSession, with: model.getNextCourseID())
+        return course
+    }
+    
     func remove(course: CourseModel) {
         if let courseIndex = courses.firstIndex(of: course) {
             model.courses.remove(at: courseIndex)
