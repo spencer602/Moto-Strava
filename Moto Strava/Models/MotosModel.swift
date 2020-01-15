@@ -10,29 +10,28 @@ import Foundation
 
 struct MotosModel: Codable {
     var courses = [CourseModel]()
-    private var lastUsedSessionID: Int?
-    private var lastUsedCourseID: Int?
+    private var lastUsedSessionID: Int
+    private var lastUsedCourseID: Int
     
-    init() {}
+    init() {
+        lastUsedCourseID = 0
+        lastUsedSessionID = 0
+    }
     
     init?(withJSON json: Data) {
-        if let newValue = try? JSONDecoder().decode(MotosModel.self, from: json) {
-            self = newValue
-            self.lastUsedSessionID = 70
-            self.lastUsedCourseID = 20
-        }
+        if let newValue = try? JSONDecoder().decode(MotosModel.self, from: json) { self = newValue }
         else { return nil }
     }
     
     var json: Data? { return try? JSONEncoder().encode(self) }
     
     mutating func getNextSessionID() -> Int {
-        lastUsedSessionID! += 1
-        return lastUsedSessionID!
+        lastUsedSessionID += 1
+        return lastUsedSessionID
     }
     
     mutating func getNextCourseID() -> Int {
-        lastUsedCourseID! += 1
-        return lastUsedCourseID!
+        lastUsedCourseID += 1
+        return lastUsedCourseID
     }
 }

@@ -19,9 +19,7 @@ struct CourseModel: Codable, Equatable {
     var name: String
     var dateCreated: Date
     var uniqueIdentifier: Int
-    
-    static var id = 1
-    
+        
     var sectionGates: [(GateModel, GateModel)] {
         var sg = [(GateModel, GateModel)]()
         
@@ -65,8 +63,7 @@ struct CourseModel: Codable, Equatable {
         exitGates = try container.decode([GateModel].self, forKey: .exitGates)
         dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         sessions = try container.decode([SessionModel].self, forKey: .sessions)
-        uniqueIdentifier = Self.id
-        Self.id += 1
+        uniqueIdentifier = try container.decode(Int.self, forKey: .uniqueIdentifier)
     }
     
     var totalLaps: Int {

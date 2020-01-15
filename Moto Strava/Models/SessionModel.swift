@@ -16,8 +16,6 @@ struct SessionModel: Codable, Equatable {
     var name: String
     var uniqueIdentifier: Int
     
-    static var id = 1
-
     var locations: [CLLocation] { return codableLocations.map() { $0.location } }
     var timeStamp: Date { return locations.first!.timestamp }
     var locationCount: Int { return codableLocations.count }
@@ -49,8 +47,7 @@ struct SessionModel: Codable, Equatable {
         name = try container.decode(String.self, forKey: .name)
         codableColor = try container.decode(ColorModel.self, forKey: .codableColor)
         codableLocations = try container.decode([LocationModel].self, forKey: .codableLocations)
-        uniqueIdentifier = Self.id
-        Self.id += 1
+        uniqueIdentifier = try container.decode(Int.self, forKey: .uniqueIdentifier)
     }
     
     var gpxString: String {

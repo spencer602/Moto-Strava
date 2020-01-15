@@ -126,6 +126,7 @@ class ModelController {
     func editName(for course: CourseModel, with name: String) {
         if let courseIndex = courses.firstIndex(of: course) {
             model.courses[courseIndex].name = name
+            saveJSONToFile()
         } else { print("error changing name, course not found") }
     }
     
@@ -169,6 +170,7 @@ class ModelController {
         if let courseIndex = model.courses.firstIndex(of: course) {
             if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
                 model.courses[courseIndex].sessions[sessionIndex].color = color
+                saveJSONToFile()
             } else { print("error setting session color, session not found") }
         } else { print("error setting session color, course not found") }
     }
