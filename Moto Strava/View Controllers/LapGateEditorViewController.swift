@@ -103,12 +103,12 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
 //    private var sectionGates = [GateModel:GateModel]()
     
     /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
-    var rowInModel: Int!
+//    var rowInModel: Int!
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var currentCourse: CourseModel { return modelController.courses[rowInModel] }
+    var currentCourse: CourseModel!
 
    
     override func viewDidLoad() {
@@ -205,14 +205,14 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         }
 
         if selectedAnnotation! == lapGateAnnotation {
-            modelController.setLapGate(for: currentCourse, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
+            currentCourse = modelController.setLapGate(for: currentCourse, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
 //            modelController.setLapGate(at: rowInModel, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
         }
         
         else if startPoints.contains(selectedAnnotation!) {
             let section = selectedGateModelPair!
             let replacement = (GateModel(location: section.0.location, withRadius: Double(slider.value)), section.1)
-            modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
+            currentCourse = modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
             
 //            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: GateModel(location: sectionGates[selectedAnnotationIndex!].0.location, withRadius: Double(slider.value)), endGate: sectionGates[selectedAnnotationIndex!].1)
         }
@@ -220,7 +220,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         else if endPoints.contains(selectedAnnotation!) {
             let section = selectedGateModelPair!
             let replacement = (section.0, GateModel(location: section.1.location, withRadius: Double(slider.value)))
-            modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
+            currentCourse = modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
             
 //            modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: selectedAnnotationIndex!, startGate: sectionGates[selectedAnnotationIndex!].0, endGate: GateModel(location: sectionGates[selectedAnnotationIndex!].1.location, withRadius: Double(slider.value)))
         }
@@ -245,7 +245,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func addSection(_ sender: Any) {
         
-        modelController.addSectionGate(to: currentCourse, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
+        currentCourse = modelController.addSectionGate(to: currentCourse, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
         
 //        modelController.addSectionGate(sessionModelIndex: rowInModel, startGate: GateModel(location: locations.first!), endGate: GateModel(location: locations.last!))
         
@@ -260,7 +260,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
             mapKitView.removeOverlay(circleForAnnotation[endPoints[index]]!)
             
             let section = (gateModelFor(annotation: startPoints[index])!, gateModelFor(annotation: endPoints[index])!)
-            modelController.removeSectionGate(from: currentCourse, section: section)
+            currentCourse = modelController.removeSectionGate(from: currentCourse, section: section)
             
             circleForAnnotation[startPoints.remove(at: index)] = nil
             circleForAnnotation[endPoints.remove(at: index)] = nil
@@ -382,7 +382,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             if dragAnnotation == lapGateAnnotation {
                 print("moved lap gate annotation")
                 let location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
-                modelController.setLapGate(for: currentCourse, with: location)
+                currentCourse = modelController.setLapGate(for: currentCourse, with: location)
                 
 //                modelController.setLapGate(at: rowInModel, with: location)
                 
@@ -397,7 +397,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
                 
                 let replacement = (GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.0.radius), section.1)
                 
-                modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
+                currentCourse = modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
                 
 //                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: startPoints.firstIndex(of: dragAnnotation)!, startGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].0.radius), endGate: sectionGates[startPoints.firstIndex(of: dragAnnotation)!].1)
                 
@@ -413,7 +413,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
                 
                 let replacement = (section.0, GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: section.1.radius))
                 
-            modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
+                currentCourse = modelController.replaceSectionGate(in: currentCourse, replace: section, with: replacement)
                 
 //                modelController.replaceSectionGate(sessionModelIndex: rowInModel, sectionIndex: endPoints.firstIndex(of: dragAnnotation)!, startGate: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].0, endGate: GateModel(location: CLLocation(latitude: dragAnnotation.coordinate.latitude, longitude: dragAnnotation.coordinate.longitude), withRadius: sectionGates[endPoints.firstIndex(of: dragAnnotation)!].1.radius))
                 

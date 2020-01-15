@@ -56,19 +56,21 @@ class ModelController {
     }
     
     func remove(course: CourseModel) {
-        if let courseIndex = courses.firstIndex(of: course) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses.remove(at: courseIndex)
             saveJSONToFile()
         } else { print("error removing course, course not found") }
     }
     
-    func remove(session: SessionModel, from course: CourseModel) {
-        if let courseIndex = courses.firstIndex(of: course) {
-            if let sessionIndex = courses[courseIndex].sessions.firstIndex(of: session) {
+    func remove(session: SessionModel, from course: CourseModel) -> CourseModel? {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
                 model.courses[courseIndex].sessions.remove(at: sessionIndex)
                 saveJSONToFile()
+                return model.courses[courseIndex]
             } else { print("error removing session, session not found") }
         } else { print("error removing session, course not found") }
+        return nil
     }
     
 //    func removeSession(fromSessionModelNumber sessionModel: Int, atSession session: Int) {
@@ -108,10 +110,13 @@ class ModelController {
 //        return distance
 //    }
     
-    func editName(for course: CourseModel, with name: String) {
-        if let courseIndex = courses.firstIndex(of: course) {
+    func editName(for course: CourseModel, with name: String) -> CourseModel? {
+        if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses[courseIndex].name = name
+            saveJSONToFile()
+            return model.courses[courseIndex]
         } else { print("error changing name, course not found") }
+        return nil
     }
     
 //    func editName(at index: Int, with name: String) {
@@ -124,11 +129,13 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func setLapGate(for course: CourseModel, with lapGate: GateModel) {
+    func setLapGate(for course: CourseModel, with lapGate: GateModel) -> CourseModel? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses[courseIndex].lapGate = lapGate
             saveJSONToFile()
+            return model.courses[courseIndex]
         } else { print("error setting lap gate, course not found") }
+        return nil
     }
     
 //    func setLapGate(at index: Int, with lapGate: GateModel) {
@@ -137,11 +144,13 @@ class ModelController {
 ////        print("allegedly saved lapgate \(Date().timeIntervalSince1970)")
 //    }
     
-    func add(session: SessionModel, to course: CourseModel) {
+    func add(session: SessionModel, to course: CourseModel) -> CourseModel? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses[courseIndex].sessions.append(session)
             saveJSONToFile()
-        }
+            return model.courses[courseIndex]
+        } else { print("error adding session, course not found") }
+        return nil
     }
     
 //    func add(at index: Int, with session: SessionModel) {
@@ -150,12 +159,15 @@ class ModelController {
 //    }
 //
     
-    func setColorForSession(in course: CourseModel, for session: SessionModel, with color: UIColor) {
+    func setColorForSession(in course: CourseModel, for session: SessionModel, with color: UIColor) -> (CourseModel, SessionModel)? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
                 model.courses[courseIndex].sessions[sessionIndex].color = color
+                saveJSONToFile()
+                return (model.courses[courseIndex], model.courses[courseIndex].sessions[sessionIndex])
             } else { print("error setting session color, session not found") }
         } else { print("error setting session color, course not found") }
+        return nil
     }
     
     
@@ -165,13 +177,15 @@ class ModelController {
 //    }
     
     
-    func editNameForSession(in course: CourseModel, session: SessionModel, with newName: String) {
+    func editNameForSession(in course: CourseModel, session: SessionModel, with newName: String) -> (CourseModel, SessionModel)? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
                 model.courses[courseIndex].sessions[sessionIndex].name = newName
                 saveJSONToFile()
+                return (model.courses[courseIndex], model.courses[courseIndex].sessions[sessionIndex])
             } else { print("error editing session name, session not found") }
         } else { print("error editing session name, course not found") }
+        return nil
     }
     
 //    func editNameForSession(sessionModelIndex: Int, sessionIndex: Int, with newName: String) {
@@ -179,13 +193,13 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func addSectionGate(to course: CourseModel, startGate: GateModel, endGate: GateModel) {
+    func addSectionGate(to course: CourseModel, startGate: GateModel, endGate: GateModel) -> CourseModel? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses[courseIndex].addSectionGates(startGate: startGate, stopGate: endGate)
             saveJSONToFile()
-        } else {
-            print("Error deleting section from course, course not found")
-        }
+            return model.courses[courseIndex]
+        } else { print("Error deleting section from course, course not found") }
+        return nil
     }
     
 //    func addSectionGate(sessionModelIndex: Int, startGate: GateModel, endGate: GateModel) {
@@ -193,18 +207,15 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func replaceSectionGate(in course: CourseModel, replace original: (GateModel, GateModel), with replacement: (GateModel, GateModel)) {
+    func replaceSectionGate(in course: CourseModel, replace original: (GateModel, GateModel), with replacement: (GateModel, GateModel)) -> CourseModel? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             if let sectionIndex = model.courses[courseIndex].firstIndexOf(startGate: original.0, stopGate: original.1) {
                 model.courses[courseIndex].replaceSectionGates(sectionIndex: sectionIndex, startGate: replacement.0, stopGate: replacement.1)
                 saveJSONToFile()
-            } else {
-                print("error replacing section, section index not found")
-            }
-        } else {
-            print("error replacing section, course not found")
-        }
-        
+                return model.courses[courseIndex]
+            } else { print("error replacing section, section index not found") }
+        } else { print("error replacing section, course not found") }
+        return nil
     }
     
 //    func replaceSectionGate(sessionModelIndex: Int, sectionIndex: Int, startGate: GateModel, endGate: GateModel) {
@@ -212,16 +223,14 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func removeSectionGate(from course: CourseModel, section: (GateModel, GateModel)) {
+    func removeSectionGate(from course: CourseModel, section: (GateModel, GateModel)) -> CourseModel? {
         if let courseIndex = model.courses.firstIndex(of: course) {
             if let sectionIndex = model.courses[courseIndex].firstIndexOf(startGate: section.0, stopGate: section.1) {
                 model.courses[courseIndex].removeSection(at: sectionIndex)
                 saveJSONToFile()
-            } else {
-                print("error deleting section from course, section not in course ")
-            }
-        } else {
-            print("Error deleting section from course, course not in model")
-        }
+                return model.courses[courseIndex]
+            } else { print("error deleting section from course, section not in course ") }
+        } else { print("Error deleting section from course, course not in model") }
+        return nil
     }
 }

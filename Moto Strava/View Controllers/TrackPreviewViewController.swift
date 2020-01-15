@@ -24,9 +24,9 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
     var locationList = [[CLLocation]]()
     var modelController: ModelController!
-    var rowInModel: Int!
+//    var rowInModel: Int!
     
-    var session: CourseModel { return modelController.courses[rowInModel] }
+    var course: CourseModel!
     
     /// the lap gate annotation on the map
     private var lapGateAnnotation = GateModelAnnotation()
@@ -87,7 +87,7 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func addAnnotationsToMap() {
-        for (index, section) in session.sectionGates.enumerated() {
+        for (index, section) in course.sectionGates.enumerated() {
             let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
             let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
             mapKitView.addAnnotation(start)

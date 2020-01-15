@@ -28,12 +28,12 @@ class RunMotoViewController: UIViewController {
     private var lapGateAnnotation = MKPointAnnotation()
     
     /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
-    var rowInModel: Int!
+//    var rowInModel: Int!
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
     
-    var course: CourseModel { return modelController.courses[rowInModel] }
+    var course: CourseModel!
 
     /// the circle that is an overlay to show the size of the LapGate
     private var cir = MKCircle()
@@ -68,7 +68,7 @@ class RunMotoViewController: UIViewController {
         
         let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
         
-        modelController.add(session: track, to: course)
+        course = modelController.add(session: track, to: course)
         
 //        modelController.add(at: rowInModel, with: track)
     }

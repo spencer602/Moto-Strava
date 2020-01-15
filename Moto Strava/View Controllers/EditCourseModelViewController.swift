@@ -13,10 +13,10 @@ import CoreGPX
 
 class EditCourseModelViewController: UIViewController {
     /// these are set when this VC is segued to
-    var rowInModel: Int!
+//    var rowInModel: Int!
     var modelController: ModelController!
     
-    var currentCourse: CourseModel { return modelController.courses[rowInModel] }
+    var currentCourse: CourseModel!
     
     // IBOutlets
 //    @IBOutlet weak var titleTextField: UITextField!
@@ -47,21 +47,23 @@ class EditCourseModelViewController: UIViewController {
         
         // LapGate Editor
         if let gateEditor = segue.destination as? LapGateEditorViewController {
-            gateEditor.rowInModel = rowInModel
+//            gateEditor.rowInModel = rowInModel
             gateEditor.modelController = modelController
             gateEditor.locationList = currentCourse.sessions.map { $0.locations }
             gateEditor.trackColor = currentCourse.allColorsForSessions
+            gateEditor.currentCourse = currentCourse
         }
         
         // RunMoto
         if let runMotoVC = segue.destination as? RunMotoViewController {
-            runMotoVC.rowInModel = rowInModel
+//            runMotoVC.rowInModel = rowInModel
+            runMotoVC.course = currentCourse
             runMotoVC.modelController = modelController
         }
         
         // Session History
         if let sessionHistory = segue.destination as? SessionHistoryViewController {
-            sessionHistory.rowInModel = rowInModel
+//            sessionHistory.rowInModel = rowInModel
             sessionHistory.modelController = modelController
         }
         
@@ -70,13 +72,16 @@ class EditCourseModelViewController: UIViewController {
             mapPreview.trackColor = currentCourse.allColorsForSessions
             mapPreview.lapGate = currentCourse.lapGate
             mapPreview.modelController = modelController
-            mapPreview.rowInModel = rowInModel
+//            mapPreview.rowInModel = rowInModel
+            mapPreview.course = currentCourse
         }
         
         if let editDetail = segue.destination as? EditDetailViewController {
             editDetail.modelController = modelController
-            editDetail.rowInModel = rowInModel
-            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
+//            editDetail.rowInModel = rowInModel
+            editDetail.course = currentCourse
+            editDetail.session = currentCourse.sessions[courseDetailTableView.indexPathForSelectedRow!.row]
+//            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
         }
     }
     
@@ -97,7 +102,7 @@ extension EditCourseModelViewController: UITextFieldDelegate {
     // text field should return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        modelController.editName(for: currentCourse, with: textField.text!)
+        currentCourse = modelController.editName(for: currentCourse, with: textField.text!)
 //        modelController.editName(at: rowInModel, with: textField.text!)
         return true
     }
@@ -112,7 +117,7 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
     // deleting, but only if there is more than 1 session at the track
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete && currentCourse.sessions.count > 1 {
-            modelController.remove(session: currentCourse.sessions[indexPath.row], from: currentCourse)
+            currentCourse = modelController.remove(session: currentCourse.sessions[indexPath.row], from: currentCourse)
 //            modelController.removeSession(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
             courseDetailTableView.reloadData()
        }

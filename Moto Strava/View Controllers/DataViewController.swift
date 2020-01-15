@@ -35,7 +35,7 @@ class DataViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let dest = segue.destination as? EditCourseModelViewController {
             print("Destination as edit detail view controller")
-            dest.rowInModel = courseTableView.indexPathForSelectedRow!.row
+            dest.currentCourse = modelController.courses[courseTableView.indexPathForSelectedRow!.row]
             dest.modelController = modelController
         }
     }
@@ -55,7 +55,7 @@ class DataViewController: UIViewController {
         print(gpx.tracks.first!.tracksegments.first!.trackpoints.count)
         
         let track = SessionModel(withCoreGPX: gpx, withName: "test")
-        modelController.add(session: track, to: modelController.courses.first!)
+        _ = modelController.add(session: track, to: modelController.courses.first!)
         
 //        modelController.add(at: 7, with: track)
     }

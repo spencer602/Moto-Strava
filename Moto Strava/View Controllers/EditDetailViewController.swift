@@ -20,8 +20,8 @@ class EditDetailViewController: UIViewController {
     
     private var tableViewHasReloadedData = false
     
-    var course: CourseModel { return modelController.courses[rowInModel] }
-    var session: SessionModel { return course.sessions[trackInSessions] }
+    var course: CourseModel!
+    var session: SessionModel!
     
     /// the names associated with the default colors for the picker
     static var defaultColorNames: [String] {
@@ -29,11 +29,11 @@ class EditDetailViewController: UIViewController {
     }
     
     /// these are set when this VC is segued to
-    var rowInModel: Int!
+//    var rowInModel: Int!
     var modelController: ModelController!
-    var trackInSessions: Int!
+//    var trackInSessions: Int!
     
-    var currentTrack: SessionModel { return modelController.courses[rowInModel].sessions[trackInSessions] }
+//    var currentTrack: SessionModel { return course.sessions[trackInSessions] }
     
     /// the color picker for track color
     private let colorPicker = UIPickerView()
@@ -45,7 +45,7 @@ class EditDetailViewController: UIViewController {
     
     /// prints out gpx data to console
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
-        print(currentTrack.gpxString)
+        print(session.gpxString)
     }
     
     override func viewDidLoad() {
@@ -92,11 +92,12 @@ class EditDetailViewController: UIViewController {
         
         // track preview
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = [currentTrack.locations]
-            mapPreview.trackColor = [currentTrack.color]
-            mapPreview.lapGate = modelController.courses[rowInModel].lapGate
+            mapPreview.locationList = [session.locations]
+            mapPreview.trackColor = [session.color]
+            mapPreview.lapGate = course.lapGate
             mapPreview.modelController = modelController
-            mapPreview.rowInModel = rowInModel
+            mapPreview.course = course
+//            mapPreview.rowInModel = rowInModel
         }
     }
     
@@ -153,10 +154,10 @@ extension EditDetailViewController: UIPickerViewDelegate, UIPickerViewDataSource
     
     // did select row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        modelController.setColorForSession(in: course, for: session, with: Self.defaultColors[row])
+        (course, session) = modelController.setColorForSession(in: course, for: session, with: Self.defaultColors[row])!
 //        modelController.setColorForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: Self.defaultColors[row])
 //        updateViewFromModel()
-        EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
+        EditDetailViewController.setPreviewImage(using: [session]) { image in
             self.cell.customImageView.image = image
         }
     }
@@ -167,7 +168,7 @@ extension EditDetailViewController: UITextFieldDelegate {
     // text field should return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        modelController.editNameForSession(in: course, session: session, with: textField.text!)
+        (course, session) = modelController.editNameForSession(in: course, session: session, with: textField.text!)!
 //        modelController.editNameForSession(sessionModelIndex: rowInModel, sessionIndex: trackInSessions, with: textField.text!)
         return true
     }
@@ -176,10 +177,10 @@ extension EditDetailViewController: UITextFieldDelegate {
 extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 9 }
-        else if section == 1 { return currentTrack.getLapTimes(usingLapGate: modelController.courses[rowInModel].lapGate).count}
+        else if section == 1 { return session.getLapTimes(usingLapGate: course.lapGate).count}
         else if section > 1 {
-            let (start, stop) = modelController.courses[rowInModel].sectionGates[section - 2]
-            return currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop).count
+            let (start, stop) = course.sectionGates[section - 2]
+            return session.getSectionTimes(usingStartGate: start, stopGate: stop).count
         }
         
         print("error in number of rows in section of edit detail")
@@ -191,7 +192,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "sessionNameCell", for: indexPath) as? EditNameTableViewCell {
-                    cell.titleTextField.text = currentTrack.name
+                    cell.titleTextField.text = session.name
                     cell.titleTextField.delegate = self
                     return cell
                 }
@@ -199,7 +200,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
                 if let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
                     self.cell = cell
                     
-                    EditDetailViewController.setPreviewImage(using: [currentTrack]) { image in
+                    EditDetailViewController.setPreviewImage(using: [session]) { image in
                         cell.customImageView.image = image
                         
                         if !self.tableViewHasReloadedData {
@@ -212,7 +213,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             case 2:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the date label
-                let date = currentTrack.timeStamp
+                let date = session.timeStamp
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateStyle = .full
                 dateFormatter.timeStyle = .short
@@ -222,31 +223,31 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
             case 3:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the distance label
-                cell.textLabel!.text = "\(currentTrack.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
+                cell.textLabel!.text = "\(session.trackDistance.easyToReadNotation(withDecimalPlaces: 3)) miles"
                 return cell
             case 4:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the average speed label
-                cell.textLabel!.text = "Avg speed: \(currentTrack.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
+                cell.textLabel!.text = "Avg speed: \(session.averageSpeed.easyToReadNotation(withDecimalPlaces: 3)) mph"
                 return cell
             case 5:
                let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                // update the duration label
                // update the duration
 //               let (hours, minutes, seconds, _) = currentTrack.duration.timeIntervalToHoursMinutesSeconds()
-               cell.textLabel!.text = "Duration: \(currentTrack.duration.toStringAppropriateForLapTime(withDecimalPlaces: 0))"
+               cell.textLabel!.text = "Duration: \(session.duration.toStringAppropriateForLapTime(withDecimalPlaces: 0))"
                 return cell
             case 6:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the Max Elevation
-                let bestTime = currentTrack.getBestLapTime(usingLapGate: modelController.courses[rowInModel].lapGate)
+                let bestTime = session.getBestLapTime(usingLapGate: course.lapGate)
                 let bestTimeString = bestTime != nil ? bestTime!.toStringAppropriateForLapTime(withDecimalPlaces: 2) : "NA"
                 cell.textLabel!.text = "Best Lap Time: \(bestTimeString)"
                 return cell
             case 7:
                 let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the Max Elevation
-                let maxElevation = (currentTrack.maxAltitude).customRounded(withDecimalPlaces: 0)
+                let maxElevation = (session.maxAltitude).customRounded(withDecimalPlaces: 0)
                 cell.textLabel!.text = "Max Elevation: \(maxElevation)"
                 return cell
             case 8:
@@ -267,7 +268,7 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
         else if indexPath.section == 1 {
             let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
            
-            let lapTimes = currentTrack.getLapTimes(usingLapGate: modelController.courses[rowInModel].lapGate)
+            let lapTimes = session.getLapTimes(usingLapGate: course.lapGate)
             print (indexPath.row)
             cell.textLabel!.text = "Lap \(indexPath.row + 1):    \(lapTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
             return cell
@@ -276,8 +277,8 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
         else if indexPath.section > 1 {
             let cell = editDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
             
-            let (start, stop) = modelController.courses[rowInModel].sectionGates[indexPath.section - 2]
-            let segmentTimes = currentTrack.getSectionTimes(usingStartGate: start, stopGate: stop)
+            let (start, stop) = course.sectionGates[indexPath.section - 2]
+            let segmentTimes = session.getSectionTimes(usingStartGate: start, stopGate: stop)
             //print (indexPath.row)
             cell.textLabel!.text = "Run \(indexPath.row + 1): \(segmentTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
             return cell
@@ -287,13 +288,13 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 + modelController.courses[rowInModel].sectionGates.count
+        return 2 + course.sectionGates.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 { return "Laps" }
         else if section == 0 { return "Session Data" }
-        else if section >= 2 && section < 2 + modelController.courses[rowInModel].sectionGates.count {
+        else if section >= 2 && section < 2 + course.sectionGates.count {
             return "Section \(section - 1)"
         }
         else { return "error" }
