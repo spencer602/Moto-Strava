@@ -16,6 +16,7 @@ class SessionHistoryTableViewCell: UITableViewCell {
     @IBOutlet weak var distanceLabel: UILabel!
     @IBOutlet weak var lapsLabel: UILabel!
     @IBOutlet weak var trackPreviewImage: UIImageView!
+    @IBOutlet weak var bestLapTimeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
