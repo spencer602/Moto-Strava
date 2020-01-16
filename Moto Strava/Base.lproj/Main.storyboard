@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="g1k-dU-Y4S">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="g1k-dU-Y4S">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Edit Detail View Controller-->
+        <!--Session Detail-->
         <scene sceneID="K9c-ll-6Kb">
             <objects>
-                <tableViewController id="fPq-Se-9Aw" customClass="EditDetailViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Session Detail" id="fPq-Se-9Aw" customClass="EditDetailViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r27-br-DL6">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -126,10 +126,10 @@
             </objects>
             <point key="canvasLocation" x="4512" y="819"/>
         </scene>
-        <!--Track Preview View Controller-->
+        <!--Map Preview-->
         <scene sceneID="BdU-Z4-HfF">
             <objects>
-                <viewController id="cto-ms-L0Z" customClass="TrackPreviewViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Map Preview" id="cto-ms-L0Z" customClass="TrackPreviewViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fWc-nl-Ck9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -159,7 +159,7 @@
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
             <objects>
-                <viewController id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Courses" id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KBT-wB-QKw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -190,9 +190,6 @@
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frL-sm-ejB">
                                                     <rect key="frame" x="30" y="21" width="354" height="20.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20.5" id="nJJ-Dq-3S9"/>
-                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -209,22 +206,33 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Segments Completed: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="53D-8S-nlq">
+                                                    <rect key="frame" x="30" y="135.5" width="224" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="fG8-uZ-mzq" firstAttribute="leading" secondItem="MGi-Qd-M7h" secondAttribute="leadingMargin" constant="10" id="0MK-Md-hwi"/>
+                                                <constraint firstItem="00P-cz-4Fz" firstAttribute="leading" secondItem="53D-8S-nlq" secondAttribute="trailing" constant="10" id="2TL-r3-etd"/>
                                                 <constraint firstItem="frL-sm-ejB" firstAttribute="leading" secondItem="MGi-Qd-M7h" secondAttribute="leadingMargin" constant="10" id="2bF-Ns-VB4"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="frL-sm-ejB" secondAttribute="trailing" constant="10" id="2lZ-p2-IbG"/>
                                                 <constraint firstItem="WYn-zy-GHM" firstAttribute="top" secondItem="fG8-uZ-mzq" secondAttribute="bottom" constant="10" id="5X0-ES-d7h"/>
                                                 <constraint firstItem="00P-cz-4Fz" firstAttribute="leading" secondItem="fG8-uZ-mzq" secondAttribute="trailing" constant="10" id="BH3-Zt-9IO"/>
                                                 <constraint firstItem="00P-cz-4Fz" firstAttribute="leading" secondItem="fsi-EH-sOf" secondAttribute="trailing" constant="10" id="IhU-i3-MRH"/>
+                                                <constraint firstItem="53D-8S-nlq" firstAttribute="leading" secondItem="MGi-Qd-M7h" secondAttribute="leadingMargin" constant="10" id="K23-kd-Rjh"/>
                                                 <constraint firstItem="fsi-EH-sOf" firstAttribute="leading" secondItem="MGi-Qd-M7h" secondAttribute="leadingMargin" constant="10" id="NHL-pf-T1V"/>
                                                 <constraint firstItem="frL-sm-ejB" firstAttribute="top" secondItem="MGi-Qd-M7h" secondAttribute="topMargin" constant="10" id="PIL-G7-PU8"/>
                                                 <constraint firstItem="00P-cz-4Fz" firstAttribute="firstBaseline" secondItem="frL-sm-ejB" secondAttribute="baseline" constant="12.5" symbolType="layoutAnchor" id="VeS-uh-W48"/>
+                                                <constraint firstItem="53D-8S-nlq" firstAttribute="top" secondItem="WYn-zy-GHM" secondAttribute="bottom" constant="10" id="W1U-iv-AXZ"/>
                                                 <constraint firstItem="00P-cz-4Fz" firstAttribute="leading" secondItem="WYn-zy-GHM" secondAttribute="trailing" constant="10" id="WBY-np-2PN"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="00P-cz-4Fz" secondAttribute="bottom" constant="10" id="Z0E-NM-DNR"/>
                                                 <constraint firstItem="fG8-uZ-mzq" firstAttribute="top" secondItem="fsi-EH-sOf" secondAttribute="bottom" constant="10" id="dBy-jn-r6r"/>
                                                 <constraint firstItem="WYn-zy-GHM" firstAttribute="leading" secondItem="MGi-Qd-M7h" secondAttribute="leadingMargin" constant="10" id="dEp-Va-cEz"/>
+                                                <constraint firstItem="53D-8S-nlq" firstAttribute="top" secondItem="WYn-zy-GHM" secondAttribute="bottom" constant="10" id="fGh-P6-jFf"/>
                                                 <constraint firstItem="00P-cz-4Fz" firstAttribute="trailing" secondItem="MGi-Qd-M7h" secondAttribute="trailingMargin" constant="10" id="iII-AI-ec7"/>
+                                                <constraint firstItem="00P-cz-4Fz" firstAttribute="leading" secondItem="53D-8S-nlq" secondAttribute="trailing" constant="10" id="iLb-rT-18o"/>
                                                 <constraint firstItem="fsi-EH-sOf" firstAttribute="top" secondItem="frL-sm-ejB" secondAttribute="bottom" constant="10" id="uxg-Od-UfH"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -232,6 +240,7 @@
                                             <outlet property="dateLabel" destination="fsi-EH-sOf" id="LUi-CE-N3p"/>
                                             <outlet property="imageOutlet" destination="00P-cz-4Fz" id="A0n-v8-aEF"/>
                                             <outlet property="lapsLabel" destination="WYn-zy-GHM" id="z6X-5K-Ime"/>
+                                            <outlet property="segmentsCompletedLabel" destination="53D-8S-nlq" id="2M1-Rk-OV5"/>
                                             <outlet property="sessionsLabel" destination="fG8-uZ-mzq" id="uCZ-tN-S4P"/>
                                             <outlet property="titleLabel" destination="frL-sm-ejB" id="8mj-dX-WHn"/>
                                             <segue destination="94e-Px-SPx" kind="show" id="zzM-ts-Wgq"/>
@@ -256,7 +265,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HhQ-8U-dhM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1183" y="734"/>
+            <point key="canvasLocation" x="1182.608695652174" y="733.92857142857144"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="tPB-RR-jY0">
@@ -329,7 +338,7 @@
         <!--Data-->
         <scene sceneID="Eqd-J2-RCQ">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="hs8-Ov-EUq" sceneMemberID="viewController">
+                <navigationController title="Data" automaticallyAdjustsScrollViewInsets="NO" id="hs8-Ov-EUq" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Data" id="KGo-Fd-yss"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="32r-a5-OYy">
@@ -345,10 +354,10 @@
             </objects>
             <point key="canvasLocation" x="382.60869565217394" y="733.92857142857144"/>
         </scene>
-        <!--Lap Gate Editor View Controller-->
+        <!--Gate Editor-->
         <scene sceneID="CnH-De-CXQ">
             <objects>
-                <viewController id="3il-EK-NN0" customClass="LapGateEditorViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Gate Editor" id="3il-EK-NN0" customClass="LapGateEditorViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ClV-iZ-8lK">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -411,10 +420,10 @@
             </objects>
             <point key="canvasLocation" x="2851" y="734"/>
         </scene>
-        <!--Run Moto View Controller-->
+        <!--Create Session-->
         <scene sceneID="DV1-zd-7jI">
             <objects>
-                <viewController id="AFs-pV-nWP" customClass="RunMotoViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Create Session" id="AFs-pV-nWP" customClass="RunMotoViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5LL-UO-bSM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -500,10 +509,10 @@
             </objects>
             <point key="canvasLocation" x="3916" y="19"/>
         </scene>
-        <!--Edit Course Model View Controller-->
+        <!--Course Detail-->
         <scene sceneID="CqV-Pc-ZyT">
             <objects>
-                <viewController id="94e-Px-SPx" customClass="EditCourseModelViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Course Detail" id="94e-Px-SPx" customClass="EditCourseModelViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Mi8-JX-1NJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -605,9 +614,6 @@
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qpf-QB-WSk">
                                                     <rect key="frame" x="30" y="21" width="354" height="18.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20.5" id="ukW-D5-626"/>
-                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>

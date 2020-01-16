@@ -15,4 +15,5 @@ class TrackTableViewCell: UITableViewCell {
     @IBOutlet weak var sessionsLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var lapsLabel: UILabel!
+    @IBOutlet weak var segmentsCompletedLabel: UILabel!
 }

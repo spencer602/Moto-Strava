@@ -23,6 +23,9 @@ class DataViewController: UIViewController {
         super.viewDidLoad()
         courseTableView.delegate = self
         courseTableView.dataSource = self
+//        presentedViewController?.title = "Courses"
+//        navigationController?.title = "Courses"
+        title = "Courses"
         
 //        importGPX()
     }
@@ -103,6 +106,8 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
             cell.lapsLabel.text = "Laps: \(laps)"
             
             cell.sessionsLabel.text = "Sessions: \(thisCourse.sessions.count)"
+            
+            cell.segmentsCompletedLabel.text = "Segments Completed: \(thisCourse.totalSegmentsCompleted)"
            
             return cell
        }

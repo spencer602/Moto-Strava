@@ -34,6 +34,7 @@ class EditCourseModelViewController: UIViewController {
         
         courseDetailTableView.delegate = self
         courseDetailTableView.dataSource = self
+        title = "Course"
         
         updateViewFromModel()
     }
@@ -112,7 +113,7 @@ extension EditCourseModelViewController: UITextFieldDelegate {
 
 extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 { return 5 }
+        if section == 0 { return 5 + course.sectionGates.count }
         else { return course.sessions.count }
     }
     
@@ -173,7 +174,10 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
                 return cell
     
             default:
-                return UITableViewCell()
+                let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                let bestTime = course.getBestSegmentTime(entryGate: course.sectionGates[indexPath.row - 5].0, exitGate: course.sectionGates[indexPath.row - 5].1)?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+                cell.textLabel!.text = "Best Segment \(indexPath.row - 4) time: \(bestTime)"
+                return cell
             }
         }
         else if indexPath.section == 1 {

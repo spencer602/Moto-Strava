@@ -115,6 +115,8 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Gate Editor"
+        
         slider.maximumValue = 100
         slider.minimumValue = 10
         

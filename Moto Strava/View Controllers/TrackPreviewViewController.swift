@@ -44,6 +44,8 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Preview"
+        
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self

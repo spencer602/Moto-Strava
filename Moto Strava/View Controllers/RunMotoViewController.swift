@@ -79,6 +79,7 @@ class RunMotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Create Session"
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
