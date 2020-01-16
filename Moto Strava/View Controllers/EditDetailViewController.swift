@@ -53,6 +53,7 @@ class EditDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Session"
         colorPicker.dataSource = self
         colorPicker.delegate = self
         

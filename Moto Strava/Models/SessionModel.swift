@@ -83,10 +83,15 @@ struct SessionModel: Codable, Equatable {
     }
     
     func getTotalLaps(using lapGate: GateModel) -> Int {
-       let laps = getLapPoints(usingLapGate: lapGate).count - 1
-       if laps < 0 { return 0 }
-       return laps
-   }
+        let laps = getLapPoints(usingLapGate: lapGate).count - 1
+        if laps < 0 { return 0 }
+        return laps
+    }
+    
+    func getTotalSegmentsCompleted(entryGate: GateModel, exitGate: GateModel ) -> Int {
+        let segments = getSectionTimes(usingStartGate: entryGate, stopGate: exitGate)
+        return segments.count
+    }
     
     func getSectionPoints(usingStartGate startGate: GateModel, usingStopGate stopGate: GateModel) -> [(CLLocation, CLLocation)] {
         

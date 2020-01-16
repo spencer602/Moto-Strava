@@ -75,10 +75,32 @@ struct CourseModel: Codable, Equatable {
         return totalLaps
     }
     
+    var totalSegmentsCompleted: Int {
+        var totalSegments = 0
+        for sesh in sessions {
+            for (entry, exit) in sectionGates {
+                totalSegments += sesh.getTotalSegmentsCompleted(entryGate: entry, exitGate: exit)
+            }
+        }
+        return totalSegments
+    }
+    
     var bestLapTime: TimeInterval? {
         let bestLapTimes = sessions.map { $0.getBestLapTime(usingLapGate: lapGate) }
         let bestLapTimesExludingNils: [TimeInterval] = bestLapTimes.filter { $0 != nil } as! [TimeInterval]
         return bestLapTimesExludingNils.sorted().first
+    }
+    
+    func getBestSegmentTime(entryGate: GateModel, exitGate: GateModel) -> TimeInterval? {
+        var bestTime: TimeInterval?
+        for sesh in sessions {
+            var times = sesh.getSectionTimes(usingStartGate: entryGate, stopGate: exitGate)
+            times.sort()
+            if let best = times.first {
+                if bestTime == nil || best < bestTime! { bestTime = best }
+            }
+        }
+        return bestTime
     }
     
     mutating func addSectionGates(startGate: GateModel, stopGate: GateModel) {
