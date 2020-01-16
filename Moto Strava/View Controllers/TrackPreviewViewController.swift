@@ -24,9 +24,10 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
     var locationList = [[CLLocation]]()
     var modelController: ModelController!
-    var rowInModel: Int!
+//    var rowInModel: Int!
+    var courseID: Int!
     
-    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
+    var session: CourseModel! { return modelController.course(with: courseID) }
     
     /// the lap gate annotation on the map
     private var lapGateAnnotation = GateModelAnnotation()

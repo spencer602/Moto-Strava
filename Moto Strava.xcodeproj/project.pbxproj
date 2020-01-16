@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0920F65D23872E3600613DEC /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65C23872E3600613DEC /* LocationModel.swift */; };
-		0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65E23888D2400613DEC /* MotoStravaModel.swift */; };
+		0920F65F23888D2400613DEC /* MotosModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F65E23888D2400613DEC /* MotosModel.swift */; };
 		0920F661238B067600613DEC /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F660238B067600613DEC /* ModelController.swift */; };
 		0920F663238B439700613DEC /* TrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F662238B439700613DEC /* TrackTableViewCell.swift */; };
 		0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0920F664238C96C800613DEC /* UtilityExtensions.swift */; };
@@ -21,11 +21,11 @@
 		09B5182923B9701200CF24CD /* EditNameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5182823B9701200CF24CD /* EditNameTableViewCell.swift */; };
 		09B5182B23B9712E00CF24CD /* ImageViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5182A23B9712E00CF24CD /* ImageViewTableViewCell.swift */; };
 		09B5182D23B9754C00CF24CD /* EditTrackColorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5182C23B9754C00CF24CD /* EditTrackColorTableViewCell.swift */; };
-		09B86E5A239B657700A718B0 /* TrackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B86E59239B657700A718B0 /* TrackModel.swift */; };
+		09B86E5A239B657700A718B0 /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B86E59239B657700A718B0 /* SessionModel.swift */; };
 		09F3A51923B1871700242B9B /* SessionHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */; };
 		09F3A51B23B1877400242B9B /* SessionHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51A23B1877400242B9B /* SessionHistoryTableViewCell.swift */; };
-		09F3A51E23B2E58600242B9B /* SessionsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51D23B2E58600242B9B /* SessionsModel.swift */; };
-		09F3A52023B3108900242B9B /* EditSessionModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51F23B3108900242B9B /* EditSessionModelViewController.swift */; };
+		09F3A51E23B2E58600242B9B /* CourseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51D23B2E58600242B9B /* CourseModel.swift */; };
+		09F3A52023B3108900242B9B /* EditCourseModelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51F23B3108900242B9B /* EditCourseModelViewController.swift */; };
 		09F3A52323B52AFF00242B9B /* Pods_Moto_Strava.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A936E683387BC3B76CE55F84 /* Pods_Moto_Strava.framework */; };
 		09F986F323A967C800DE854A /* 2_laps.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F123A967C800DE854A /* 2_laps.gpx */; };
 		09F986F423A967C800DE854A /* 1_lap.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 09F986F223A967C800DE854A /* 1_lap.gpx */; };
@@ -44,7 +44,7 @@
 /* Begin PBXFileReference section */
 		02B449089FDDE869B85D060C /* Pods-Moto Strava.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Moto Strava.debug.xcconfig"; path = "Target Support Files/Pods-Moto Strava/Pods-Moto Strava.debug.xcconfig"; sourceTree = "<group>"; };
 		0920F65C23872E3600613DEC /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
-		0920F65E23888D2400613DEC /* MotoStravaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotoStravaModel.swift; sourceTree = "<group>"; };
+		0920F65E23888D2400613DEC /* MotosModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotosModel.swift; sourceTree = "<group>"; };
 		0920F660238B067600613DEC /* ModelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		0920F662238B439700613DEC /* TrackTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell.swift; sourceTree = "<group>"; };
 		0920F664238C96C800613DEC /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
@@ -57,12 +57,12 @@
 		09B5182823B9701200CF24CD /* EditNameTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNameTableViewCell.swift; sourceTree = "<group>"; };
 		09B5182A23B9712E00CF24CD /* ImageViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewTableViewCell.swift; sourceTree = "<group>"; };
 		09B5182C23B9754C00CF24CD /* EditTrackColorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackColorTableViewCell.swift; sourceTree = "<group>"; };
-		09B86E59239B657700A718B0 /* TrackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModel.swift; sourceTree = "<group>"; };
+		09B86E59239B657700A718B0 /* SessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionModel.swift; sourceTree = "<group>"; };
 		09F3A51723B160EB00242B9B /* several laps.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "several laps.gpx"; sourceTree = "<group>"; };
 		09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHistoryViewController.swift; sourceTree = "<group>"; };
 		09F3A51A23B1877400242B9B /* SessionHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHistoryTableViewCell.swift; sourceTree = "<group>"; };
-		09F3A51D23B2E58600242B9B /* SessionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsModel.swift; sourceTree = "<group>"; };
-		09F3A51F23B3108900242B9B /* EditSessionModelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSessionModelViewController.swift; sourceTree = "<group>"; };
+		09F3A51D23B2E58600242B9B /* CourseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseModel.swift; sourceTree = "<group>"; };
+		09F3A51F23B3108900242B9B /* EditCourseModelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCourseModelViewController.swift; sourceTree = "<group>"; };
 		09F3A52123B4286F00242B9B /* dtf motos.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dtf motos.gpx"; sourceTree = "<group>"; };
 		09F3A52223B51FCC00242B9B /* dtf motos last 3rd.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "dtf motos last 3rd.gpx"; sourceTree = "<group>"; };
 		09F986F123A967C800DE854A /* 2_laps.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 2_laps.gpx; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 				09FA18302383833D00A5D031 /* DataViewController.swift */,
 				098B968D23ABFBC3007C4649 /* RunMotoViewController.swift */,
 				09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */,
-				09F3A51F23B3108900242B9B /* EditSessionModelViewController.swift */,
+				09F3A51F23B3108900242B9B /* EditCourseModelViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -142,11 +142,11 @@
 			children = (
 				0920F668238D9DCE00613DEC /* ColorModel.swift */,
 				0920F65C23872E3600613DEC /* LocationModel.swift */,
-				0920F65E23888D2400613DEC /* MotoStravaModel.swift */,
-				09B86E59239B657700A718B0 /* TrackModel.swift */,
+				0920F65E23888D2400613DEC /* MotosModel.swift */,
+				09B86E59239B657700A718B0 /* SessionModel.swift */,
 				0920F660238B067600613DEC /* ModelController.swift */,
 				098B968B23AAF812007C4649 /* GateModel.swift */,
-				09F3A51D23B2E58600242B9B /* SessionsModel.swift */,
+				09F3A51D23B2E58600242B9B /* CourseModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -323,10 +323,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				09B5182923B9701200CF24CD /* EditNameTableViewCell.swift in Sources */,
-				09B86E5A239B657700A718B0 /* TrackModel.swift in Sources */,
+				09B86E5A239B657700A718B0 /* SessionModel.swift in Sources */,
 				09FA181D23834D8000A5D031 /* AppDelegate.swift in Sources */,
 				0920F669238D9DCE00613DEC /* ColorModel.swift in Sources */,
-				09F3A51E23B2E58600242B9B /* SessionsModel.swift in Sources */,
+				09F3A51E23B2E58600242B9B /* CourseModel.swift in Sources */,
 				09FA18312383833D00A5D031 /* DataViewController.swift in Sources */,
 				09FA181F23834D8000A5D031 /* SceneDelegate.swift in Sources */,
 				0920F663238B439700613DEC /* TrackTableViewCell.swift in Sources */,
@@ -340,11 +340,11 @@
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,
 				09F986F823A9958500DE854A /* TrackPreviewViewController.swift in Sources */,
 				09F986FA23A9E73700DE854A /* LapGateEditorViewController.swift in Sources */,
-				0920F65F23888D2400613DEC /* MotoStravaModel.swift in Sources */,
+				0920F65F23888D2400613DEC /* MotosModel.swift in Sources */,
 				0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */,
 				09B5182D23B9754C00CF24CD /* EditTrackColorTableViewCell.swift in Sources */,
 				09B5181223B55FE300CF24CD /* GPX.swift in Sources */,
-				09F3A52023B3108900242B9B /* EditSessionModelViewController.swift in Sources */,
+				09F3A52023B3108900242B9B /* EditCourseModelViewController.swift in Sources */,
 				09FA1835238387DB00A5D031 /* MapViewController.swift in Sources */,
 				09F3A51B23B1877400242B9B /* SessionHistoryTableViewCell.swift in Sources */,
 			);

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct ColorModel: Codable, CustomStringConvertible {
+struct ColorModel: Codable, CustomStringConvertible, Equatable {
     var description: String {
         return "Red:\(red) Green: \(green) Blue: \(blue) alpha: \(alpha)"
         //return CustomCodeableColor.allColorNames[colorIndex]

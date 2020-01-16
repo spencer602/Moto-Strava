@@ -130,8 +130,10 @@ class MapViewController: UIViewController {
         polyLinesFromCurrentRecording.removeAll()
         
         // create the track
-        let track = TrackModel(withCLLocationArray: locationList, withName: Date().description)
-        let newSessionModel = SessionsModel(usingInitialSession: track)
+        let track = modelController.createSession(withCLLocationArray: locationList, withName: Date().description)
+//        let track = SessionModel(withCLLocationArray: locationList, withName: Date().description)
+        let newSessionModel = modelController.createCourse(usingIntialSession: track)
+//        let newSessionModel = CourseModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
         modelController.add(session: newSessionModel)
@@ -147,7 +149,7 @@ class MapViewController: UIViewController {
     
     /// adds all of the tracks in the model to the map
     private func addAllTracksToMap() {
-        for session in modelController.listOfSessions {
+        for session in modelController.courses {
             for track in session.sessions {
                 let locationData = track.locations
                 let overlay = MKPolyline.createPolyLine(using: locationData)

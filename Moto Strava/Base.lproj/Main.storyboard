@@ -251,7 +251,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="eK0-p9-rM3"/>
                     <connections>
-                        <outlet property="trackTableView" destination="KTq-OO-QQq" id="93l-rh-7nr"/>
+                        <outlet property="courseTableView" destination="KTq-OO-QQq" id="93l-rh-7nr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HhQ-8U-dhM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -500,10 +500,10 @@
             </objects>
             <point key="canvasLocation" x="3916" y="19"/>
         </scene>
-        <!--Edit Session Model View Controller-->
+        <!--Edit Course Model View Controller-->
         <scene sceneID="CqV-Pc-ZyT">
             <objects>
-                <viewController id="94e-Px-SPx" customClass="EditSessionModelViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="94e-Px-SPx" customClass="EditCourseModelViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Mi8-JX-1NJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -512,7 +512,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="sessionNameCell" rowHeight="60" id="cva-iY-VM3" userLabel="Session Name Cell" customClass="EditNameTableViewCell" customModule="Motos" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="courseNameCell" rowHeight="60" id="cva-iY-VM3" userLabel="Course Name Cell" customClass="EditNameTableViewCell" customModule="Motos" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cva-iY-VM3" id="ath-90-pr7">
@@ -694,7 +694,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="sessionDetailTableView" destination="jDj-3Z-v84" id="EGo-OF-W6F"/>
+                        <outlet property="courseDetailTableView" destination="jDj-3Z-v84" id="EGo-OF-W6F"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aAq-sS-KIk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

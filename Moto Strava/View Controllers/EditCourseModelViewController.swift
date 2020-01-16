@@ -11,18 +11,19 @@ import MapKit
 import CoreGPX
 
 
-class EditSessionModelViewController: UIViewController {
+class EditCourseModelViewController: UIViewController {
     /// these are set when this VC is segued to
-    var rowInModel: Int!
+//    var rowInModel: Int!
     var modelController: ModelController!
+    var courseID: Int!
     
-    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
+    var course: CourseModel! { return modelController.course(with: courseID) }
     
     // IBOutlets
 //    @IBOutlet weak var titleTextField: UITextField!
 //    @IBOutlet weak var imageView: UIImageView!
 //    @IBOutlet weak var sessionsLabel: UILabel!
-    @IBOutlet weak var sessionDetailTableView: UITableView!
+    @IBOutlet weak var courseDetailTableView: UITableView!
     
     private var cell: ImageViewTableViewCell!
     private var tableViewHasReloadedData = false
@@ -31,54 +32,58 @@ class EditSessionModelViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sessionDetailTableView.delegate = self
-        sessionDetailTableView.dataSource = self
+        courseDetailTableView.delegate = self
+        courseDetailTableView.dataSource = self
         
         updateViewFromModel()
-        
-       
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        sessionDetailTableView.reloadData()
+        courseDetailTableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         // LapGate Editor
         if let gateEditor = segue.destination as? LapGateEditorViewController {
-            gateEditor.rowInModel = rowInModel
+            gateEditor.courseID = courseID
+//            gateEditor.rowInModel = rowInModel
             gateEditor.modelController = modelController
-            gateEditor.locationList = session.sessions.map { $0.locations }
-            gateEditor.trackColor = session.allColorsForTracks
+            gateEditor.locationList = course.sessions.map { $0.locations }
+            gateEditor.trackColor = course.allColorsForSessions
         }
         
         // RunMoto
         if let runMotoVC = segue.destination as? RunMotoViewController {
-            runMotoVC.rowInModel = rowInModel
+//            runMotoVC.rowInModel = rowInModel
+            runMotoVC.courseID = courseID
             runMotoVC.modelController = modelController
         }
         
         // Session History
-        if let sessionHistory = segue.destination as? SessionHistoryViewController {
-            sessionHistory.rowInModel = rowInModel
-            sessionHistory.modelController = modelController
-        }
+//        if let sessionHistory = segue.destination as? SessionHistoryViewController {
+//            sessionHistory.rowInModel = rowInModel
+//            sessionHistory.modelController = modelController
+//        }
         
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = session.sessions.map { $0.locations }
-            mapPreview.trackColor = session.allColorsForTracks
-            mapPreview.lapGate = session.lapGate
+            mapPreview.locationList = course.sessions.map { $0.locations }
+            mapPreview.trackColor = course.allColorsForSessions
+            mapPreview.lapGate = course.lapGate
             mapPreview.modelController = modelController
-            mapPreview.rowInModel = rowInModel
+            mapPreview.courseID = courseID
+//            mapPreview.rowInModel = rowInModel
         }
         
         if let editDetail = segue.destination as? EditDetailViewController {
             editDetail.modelController = modelController
-            editDetail.rowInModel = rowInModel
-            editDetail.trackInSessions = sessionDetailTableView.indexPathForSelectedRow!.row
+            editDetail.courseID = courseID
+//            editDetail.rowInModel = rowInModel
+//            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
+            editDetail.sessionID = course.sessions[courseDetailTableView.indexPathForSelectedRow!.row].uniqueIdentifier
+
         }
     }
     
@@ -94,27 +99,29 @@ class EditSessionModelViewController: UIViewController {
     }
 }
 
-extension EditSessionModelViewController: UITextFieldDelegate {
+extension EditCourseModelViewController: UITextFieldDelegate {
     
     // text field should return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        modelController.editNameForSessionModel(at: rowInModel, with: textField.text!)
+        modelController.editName(for: course, with: textField.text!)
+//        modelController.editName(at: rowInModel, with: textField.text!)
         return true
     }
 }
 
-extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSource {
+extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 5 }
-        else { return session.sessions.count }
+        else { return course.sessions.count }
     }
     
     // deleting, but only if there is more than 1 session at the track
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete && session.sessions.count > 1 {
-        modelController.removeTrack(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
-           sessionDetailTableView.reloadData()
+        if editingStyle == .delete && course.sessions.count > 1 {
+            modelController.remove(session: course.sessions[indexPath.row], from: course)
+//            modelController.removeSession(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
+            courseDetailTableView.reloadData()
        }
     }
     
@@ -126,42 +133,42 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
         if indexPath.section == 0 {
             switch indexPath.row {
             case 0:
-                if let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "sessionNameCell", for: indexPath) as? EditNameTableViewCell {
-                    cell.titleTextField.text = session.name
+                if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "courseNameCell", for: indexPath) as? EditNameTableViewCell {
+                    cell.titleTextField.text = course.name
                     cell.titleTextField.delegate = self
                     return cell
                 }
                 
             case 1:
-                if let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
+                if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "mapPreviewCell", for: indexPath) as? ImageViewTableViewCell {
                     self.cell = cell
                     
-                    EditDetailViewController.setPreviewImage(using: session.sessions) { image in
+                    EditDetailViewController.setPreviewImage(using: course.sessions) { image in
                         cell.customImageView.image = image
                         
                         if !self.tableViewHasReloadedData {
                             self.tableViewHasReloadedData = true
-                            self.sessionDetailTableView.reloadData()
+                            self.courseDetailTableView.reloadData()
                         }
                     }
                     return cell
                 }
                 
             case 2:
-                let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "editLapGateCell", for: indexPath)
+                let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "editLapGateCell", for: indexPath)
                 cell.textLabel!.text = "Edit Lap Gate"
                 return cell
                 
             case 3:
-                let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the number of sessions
-                cell.textLabel!.text = "Sessions: \(session.sessions.count)"
+                cell.textLabel!.text = "Sessions: \(course.sessions.count)"
                 return cell
                 
             case 4:
-                let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
+                let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "basicCell", for: indexPath)
                 // update the best Lap Time
-                let bestTime = session.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+                let bestTime = course.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
                 cell.textLabel!.text = "Best Lap Time: \(bestTime)"
                 return cell
     
@@ -170,9 +177,9 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
             }
         }
         else if indexPath.section == 1 {
-            if let cell = sessionDetailTableView.dequeueReusableCell(withIdentifier: "sessionHistoryCell", for: indexPath) as? SessionHistoryTableViewCell {
+            if let cell = courseDetailTableView.dequeueReusableCell(withIdentifier: "sessionHistoryCell", for: indexPath) as? SessionHistoryTableViewCell {
                 
-                let currentSession = session.sessions[indexPath.row]
+                let currentSession = course.sessions[indexPath.row]
                 
                 //title
                 cell.nameLabel.text = currentSession.name
@@ -190,7 +197,7 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
                 
                 EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
                 
-                cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: session.lapGate))"
+                cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: course.lapGate))"
                 
                 return cell
             }
@@ -201,7 +208,7 @@ extension EditSessionModelViewController: UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 { return "Sessions" }
-        else if section == 0 { return "Track Data" }
+        else if section == 0 { return "Course Data" }
         else { return "error" }
     }
     

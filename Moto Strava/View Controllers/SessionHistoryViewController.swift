@@ -13,9 +13,10 @@ class SessionHistoryViewController: UIViewController {
 
     /// the modelController that accesses the model
     var modelController: ModelController!
-    var rowInModel: Int!
+//    var rowInModel: Int!
+    var courseID: Int!
     //var trackInSessions: Int!
-    var session: SessionsModel { return modelController.listOfSessions[rowInModel] }
+    var course: CourseModel! { return modelController.course(with: courseID) }
     
     @IBOutlet private var sessionHistoryTableView: UITableView!
     
@@ -33,9 +34,11 @@ class SessionHistoryViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let dest = segue.destination as? EditDetailViewController {
             print("Destination as edit detail view controller")
-            dest.rowInModel = rowInModel
+//            dest.rowInModel = rowInModel
+            dest.courseID = courseID
             dest.modelController = modelController
-            dest.trackInSessions = sessionHistoryTableView.indexPathForSelectedRow!.row
+            dest.sessionID = course.sessions[sessionHistoryTableView.indexPathForSelectedRow!.row].uniqueIdentifier
+//            dest.trackInSessions = sessionHistoryTableView.indexPathForSelectedRow!.row
         }
     }
 }
@@ -46,14 +49,15 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
     // deleting
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
        if editingStyle == .delete {
-        modelController.removeTrack(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
+        modelController.remove(session: course.sessions[indexPath.row], from: course)
+//        modelController.removeSession(fromSessionModelNumber: rowInModel, atSession: indexPath.row)
            sessionHistoryTableView.reloadData()
        }
     }
 
     // number of rows in section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return session.sessions.count
+        return course.sessions.count
     }
 
     // cell for row at
@@ -61,7 +65,7 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
 
         if let cell = sessionHistoryTableView.dequeueReusableCell(withIdentifier: "sessionHistoryCell", for: indexPath) as? SessionHistoryTableViewCell {
             
-            let currentSession = session.sessions[indexPath.row]
+            let currentSession = course.sessions[indexPath.row]
             
             //title
             cell.nameLabel.text = currentSession.name
@@ -79,7 +83,7 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
             
             EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
             
-            cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: session.lapGate).count - 1)"
+            cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: course.lapGate).count - 1)"
             
             return cell
         }
