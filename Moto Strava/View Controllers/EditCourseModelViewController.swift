@@ -202,7 +202,9 @@ extension EditCourseModelViewController: UITableViewDelegate, UITableViewDataSou
                 EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
                 
                 cell.lapsLabel.text = "Laps: \(currentSession.getTotalLaps(using: course.lapGate))"
-                let bestLapTime = course.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+                
+                let bestLapTime = course.sessions[indexPath.row].getBestLapTime(usingLapGate: course.lapGate)?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
+//                let bestLapTime = course.bestLapTime?.toStringAppropriateForLapTime(withDecimalPlaces: 2) ?? "NA"
                 cell.bestLapTimeLabel.text = "Best Lap: \(bestLapTime)"
                 
                 return cell
