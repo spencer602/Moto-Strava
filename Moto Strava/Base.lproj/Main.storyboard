@@ -159,7 +159,7 @@
         <!--Data-->
         <scene sceneID="kV7-9c-GHF">
             <objects>
-                <viewController title="Courses" id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Gxw-yL-DVJ" userLabel="Data" customClass="DataViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KBT-wB-QKw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
