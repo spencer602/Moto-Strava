@@ -54,12 +54,17 @@ class RunMotoViewController: UIViewController {
     @IBOutlet weak var thisLapTimeLabel: UILabel!
     @IBOutlet weak var lapNumberLabel: UILabel!
     
+    private var timer: Timer?
+    
     
     
     @IBAction func startMotoButtonPressed(_ sender: UIButton) {
         startMotoButton.isHidden = true
         stopMotoButton.isHidden = false
         motoIsStarted = true
+        timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
+            self.updateViewFromModel()
+        }
     }
     
     @IBAction func stopMotoButtonPressed(_ sender: UIButton) {
@@ -119,8 +124,8 @@ class RunMotoViewController: UIViewController {
     }
     
     private func updateViewFromModel() {
-        totalTimeLabel.text = "Total Time: \(currentLocationList.count == 0 ? "" : currentLocationList[0].timestamp.timeIntervalSinceNow.easyToReadTimeNotation(withDecimalPlaces: 2))"
-        thisLapTimeLabel.text = "This Lap: \(bestLocationPerLapInGate.count == 0 ? "" : bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow.easyToReadTimeNotation(withDecimalPlaces: 2))"
+        totalTimeLabel.text = "Total Time: \(currentLocationList.count == 0 ? "" : (currentLocationList[0].timestamp.timeIntervalSinceNow * -1.0).easyToReadTimeNotation(withDecimalPlaces: 2))"
+        thisLapTimeLabel.text = "This Lap Time: \(bestLocationPerLapInGate.count == 0 ? "" : (bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow * -1.0).easyToReadTimeNotation(withDecimalPlaces: 2))"
         lapNumberLabel.text = "Lap Number: \(bestLocationPerLapInGate.count)"
     }
 
