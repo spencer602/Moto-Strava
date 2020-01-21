@@ -26,8 +26,10 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     var modelController: ModelController!
 //    var rowInModel: Int!
     var courseID: Int!
+    var sessionID: Int?
     
-    var session: CourseModel! { return modelController.course(with: courseID) }
+    
+    var course: CourseModel! { return modelController.course(with: courseID) }
     
     /// the lap gate annotation on the map
     private var lapGateAnnotation = GateModelAnnotation()
@@ -58,7 +60,18 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
         
-        addTracksToMap()
+        if (sessionID == nil) {
+            mapKitView.add(sessions: course.sessions) { overlay, color in
+                colorForPolyline[overlay] = color
+            }
+        } else {
+            mapKitView.add(sessions: [modelController.session(inCourse: course, withSessionID: sessionID!)!]) { overlay, color in
+                colorForPolyline[overlay] = color
+            }
+        }
+        
+        
+//        addTracksToMap()
         
         zoomMapTo()
         
@@ -66,7 +79,7 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
             // sets the initial location of the lapgate
              lapGateAnnotation.coordinate = lapGate!.location.coordinate
             
-            lapGateAnnotation.title = "Lap"
+             lapGateAnnotation.title = "Lap"
             
              //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
              mapKitView.addAnnotation(lapGateAnnotation)
@@ -77,20 +90,26 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
              //calculatePointsInGateRadius()
         }
         
-        addAnnotationsToMap()
+        mapKitView.addAnnotations(courses: [course]) { start, stop in
+            startPoints.append(start)
+            endPoints.append(stop)
+        }
+        
+        
+//        addAnnotationsToMap()
     }
   
-    /// adds all of the tracks in the model to the map
-    private func addTracksToMap() {
-        for (index, ll) in locationList.enumerated() {
-            let overlay = MKPolyline.createPolyLine(using: ll)
-            colorForPolyline[overlay] = trackColor[index]
-            mapKitView.addOverlay(overlay)
-        }
-    }
+//    /// adds all of the tracks in the model to the map
+//    private func addTracksToMap() {
+//        for (index, ll) in locationList.enumerated() {
+//            let overlay = MKPolyline.createPolyLine(using: ll)
+//            colorForPolyline[overlay] = trackColor[index]
+//            mapKitView.addOverlay(overlay)
+//        }
+//    }
     
     private func addAnnotationsToMap() {
-        for (index, section) in session.sectionGates.enumerated() {
+        for (index, section) in course.sectionGates.enumerated() {
             let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
             let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
             mapKitView.addAnnotation(start)

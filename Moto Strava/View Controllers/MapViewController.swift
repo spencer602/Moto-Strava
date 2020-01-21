@@ -136,7 +136,7 @@ class MapViewController: UIViewController {
 //        let newSessionModel = CourseModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
-        modelController.add(session: newSessionModel)
+        modelController.add(course: newSessionModel)
         
         // remove all of the locations from the current list
         locationList.removeAll()
@@ -322,4 +322,3 @@ extension MapViewController: MKMapViewDelegate {
         mapKitView.setRegion(region, animated: true)
     }
 }
-

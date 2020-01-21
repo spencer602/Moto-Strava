@@ -82,6 +82,10 @@ struct SessionModel: Codable, Equatable {
         return distance / 1609.344
     }
     
+    mutating func add(newLocation: CLLocation) {
+        codableLocations.append(LocationModel(fromCLLocation: newLocation))
+    }
+    
     func getTotalLaps(using lapGate: GateModel) -> Int {
         let laps = getLapPoints(usingLapGate: lapGate).count - 1
         if laps < 0 { return 0 }

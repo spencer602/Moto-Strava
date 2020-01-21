@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MapKit
 
 extension Double {
     
@@ -187,5 +188,37 @@ extension Int {
             newValue *= base
         }
         return newValue
+    }
+}
+
+extension MKMapView {
+    /// adds all of the tracks in the model to the map
+    func add(sessions: [SessionModel], beforeAddOverlay: (MKPolyline, UIColor) -> Void ) {
+        for session in sessions {
+            let locationData = session.locations
+            let overlay = MKPolyline.createPolyLine(using: locationData)
+            beforeAddOverlay(overlay, session.color)
+            addOverlay(overlay)
+        }
+    }
+    
+    func addAnnotations(courses: [CourseModel], beforeAddAnnotation: (GateModelAnnotation, GateModelAnnotation) -> Void) {
+        for course in courses {
+            for (index, section) in course.sectionGates.enumerated() {
+                let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
+                let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
+                
+                beforeAddAnnotation(start, stop)
+                
+                addAnnotation(start)
+                addAnnotation(stop)
+
+                let startCircle = MKCircle(center: start.coordinate, radius: section.0.radius)
+                let stopCircle = MKCircle(center: stop.coordinate, radius: section.1.radius)
+
+                addOverlay(startCircle)
+                addOverlay(stopCircle)
+            }
+        }
     }
 }
