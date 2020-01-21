@@ -24,11 +24,6 @@ class MapViewController: UIViewController {
     /// used to manage things relation to gathering location data
     let locationManager = CLLocationManager()
     
-    private let defaultColor = UIColor.red
-    
-    /// the locations we are collecting while recording tracks
-    private var locationList = [CLLocation]()
-    
     /// keeps track of whether we have initially zoomed to our current location yet or not
     private var hasZoomedToFirstLocation = false
     
@@ -36,7 +31,7 @@ class MapViewController: UIViewController {
     var isRecordingTracks = false
     
     /// the complete list of logged locations from our current track recording
-    private var polyLinesFromCurrentRecording = [MKPolyline]()
+    private var polyLineFromCurrentRecording = MKPolyline()
     
     private var colorForPolyline = [MKPolyline:UIColor]()
     
@@ -44,6 +39,21 @@ class MapViewController: UIViewController {
     @IBOutlet private weak var mapKitView: MKMapView!
     @IBOutlet private weak var recordTrackButton: UIButton!
     @IBOutlet private weak var stopRecordingButton: UIButton!
+    
+    private var courseID: Int?
+    private var sessionID: Int?
+    
+    private var timer: Timer?
+    
+    private var course: CourseModel? {
+        if courseID == nil { return nil }
+        return modelController.course(with: courseID!)
+    }
+    
+    private var session: SessionModel? {
+        if sessionID == nil { return nil }
+        return modelController.session(inCourse: course!, withSessionID: sessionID!)
+    }
     
     /// our model controller, which must be set to a value (currently it is set in viewDidLoad)
     var modelController: ModelController!
@@ -76,15 +86,13 @@ class MapViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // clears the tracks, this could be improved by sending notifications when the model changes
-        removeAllTracks()
+        mapKitView.removeOverlays(mapKitView.overlays)
+        colorForPolyline.removeAll()
         
-        // adds the tracks for a current recording (if there is one)
-        if polyLinesFromCurrentRecording.count > 0 {
-            mapKitView.addOverlays(polyLinesFromCurrentRecording)
-        }
-    
         // adds the rest of the tracks from the model
-        addAllTracksToMap()
+        mapKitView.add(sessions: modelController.allSessions) { overlay, color in
+            colorForPolyline[overlay] = color
+        }
         
         locationManager.startUpdatingLocation()
     }
@@ -114,54 +122,11 @@ class MapViewController: UIViewController {
     @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
         isRecordingTracks = false
         // zoom the map to the recently created track
-        zoomMapTo()
+        mapKitView.zoomMapTo(locations: session!.locations)
         // add the complete track to the map
-        mapKitView.addOverlay(MKPolyline.createPolyLine(using: locationList))
         
         recordTrackButton.isHidden = false
         stopRecordingButton.isHidden = true
-        
-        // remove the sections of track that were added while recording (as breadcrumbs)
-        for pl in polyLinesFromCurrentRecording {
-            mapKitView.removeOverlay(pl)
-        }
-        
-        // we are finished recording now, so remove all overlays from the list
-        polyLinesFromCurrentRecording.removeAll()
-        
-        // create the track
-        let track = modelController.createSession(withCLLocationArray: locationList, withName: Date().description)
-//        let track = SessionModel(withCLLocationArray: locationList, withName: Date().description)
-        let newSessionModel = modelController.createCourse(usingIntialSession: track)
-//        let newSessionModel = CourseModel(usingInitialSession: track)
-        
-        // add the track to the model's list of tracks
-        modelController.add(course: newSessionModel)
-        
-        // remove all of the locations from the current list
-        locationList.removeAll()
-        
-        let overlay = MKPolyline.createPolyLine(using: track.locations)
-        colorForPolyline[overlay] = track.color
-        mapKitView.addOverlay(overlay)
-        
-    }
-    
-    /// adds all of the tracks in the model to the map
-    private func addAllTracksToMap() {
-        for session in modelController.courses {
-            for track in session.sessions {
-                let locationData = track.locations
-                let overlay = MKPolyline.createPolyLine(using: locationData)
-                colorForPolyline[overlay] = track.color
-                mapKitView.addOverlay(overlay)
-            }
-        }
-    }
-    
-    /// removes all of the tracks from the map
-    private func removeAllTracks() {
-        mapKitView.removeOverlays(mapKitView.overlays)
     }
     
     /// zooms to current location with hard coded region height/width
@@ -182,56 +147,45 @@ extension MapViewController: CLLocationManagerDelegate {
     
     // locationManager delegate method
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("\(Date()): did update location")
-//        let date = Date()
-//
-//        print("time differenece between: \(locations.first!.timestamp.distance(to: date))")
-//        print("current time: \(date)")
-//
-//        let df = DateFormatter()
-//        df.dateFormat = "HH:mm:ss.SSS"
-//        print("timestamp of first: \(df.string(from: locations.first!.timestamp))")
         
         // if we haven't zoomed in to the first logged location yet, do so here
         if !hasZoomedToFirstLocation {
-            print(locationList.count)
             hasZoomedToFirstLocation = true
             zoomToCurrentLocation()
         }
         
-//        print("route Accuracy: \(locations.first!.horizontalAccuracy)")
-        
-        // educational purposes:, haven't ever seen a situation where locations.count > 1
-        if locations.count > 1 {
-            print("route #####   Locations.count: \(locations.count)")
-            print("route #####   Locations.count: \(locations.count)")
-            print("route #####   Locations.count: \(locations.count)")
-            print("route #####   Locations.count: \(locations.count)")
-            print("route #####   Locations.count: \(locations.count)")
-        }
-        
         if isRecordingTracks {
             // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
-            guard let lastLocation = locationList.last else {
-                locationList.append(locations.first!)
-                return
+            if session == nil {
+                print("session was == nil")
+                let newMoto = modelController.createSession(withCLLocationArray: [locations.first!], withName: locations.first!.timestamp.description)
+                
+                if course == nil {
+                    let thisCourse = modelController.createCourse(usingIntialSession: newMoto)
+                    courseID = thisCourse.uniqueIdentifier
+                    print("newCourseID: \(courseID!)")
+                    modelController.add(course: thisCourse)
+                } else {
+                    modelController.add(session: newMoto, to: course!)
+                }
+                
+                sessionID = newMoto.uniqueIdentifier
+                print("newSessionID: \(sessionID!)")
+                
+//                timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
+//                    self.updateViewFromModel()
+//                }
+            } else {
+                modelController.addLocation(course: course!, session: session!, location: locations.first!)
             }
-            
-            
-            
-//            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
-            
-            locationList.append(locations.first!)
-            
-            let newLocation = locations.first!
-            
-            // create the new 'change in coordinates'
-            let coordinates = [lastLocation.coordinate, newLocation.coordinate]
+                        
             // create an MKPolyline from the two coordinates
-            let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
-            colorForPolyline[polyLine] = defaultColor
+            mapKitView.removeOverlay(polyLineFromCurrentRecording)
+            let polyLine = MKPolyline.createPolyLine(using: session!.locations)
+            colorForPolyline[polyLineFromCurrentRecording] = nil
+            colorForPolyline[polyLine] = session!.color
             // add the polyline to the list of polylines in current recording
-            polyLinesFromCurrentRecording.append(polyLine)
+            polyLineFromCurrentRecording = polyLine
             // add an overlay as a MKPolyline
             mapKitView.addOverlay(polyLine)
             
@@ -258,11 +212,5 @@ extension MapViewController: MKMapViewDelegate {
         renderer.strokeColor = colorForPolyline[polyline]
         renderer.lineWidth = 2
         return renderer
-    }
-    
-    /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: locationList)
-        mapKitView.setRegion(region, animated: true)
     }
 }
