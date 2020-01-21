@@ -202,13 +202,20 @@ extension MKMapView {
         }
     }
     
-    func addAnnotations(courses: [CourseModel], beforeAddAnnotation: (GateModelAnnotation, GateModelAnnotation) -> Void) {
+    func addAnnotations(courses: [CourseModel], beforeAddAnnotation: (GateModelAnnotation?, GateModelAnnotation?, GateModelAnnotation?) -> Void, dictionaryUpdate: ((GateModelAnnotation, MKCircle) -> Void)?) {
         for course in courses {
+            let lap = GateModelAnnotation(coordinate: course.lapGate.location, title: "Lap")
+            let lapCircle = MKCircle(center: lap.coordinate, radius: course.lapGate.radius)
+            beforeAddAnnotation(nil, nil, lap)
+            addAnnotation(lap)
+            addOverlay(lapCircle)
+            dictionaryUpdate?(lap,lapCircle)
+
             for (index, section) in course.sectionGates.enumerated() {
                 let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
                 let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
                 
-                beforeAddAnnotation(start, stop)
+                beforeAddAnnotation(start, stop, nil)
                 
                 addAnnotation(start)
                 addAnnotation(stop)
@@ -218,7 +225,114 @@ extension MKMapView {
 
                 addOverlay(startCircle)
                 addOverlay(stopCircle)
+                
+                dictionaryUpdate?(start,startCircle)
+                dictionaryUpdate?(stop, stopCircle)
             }
         }
     }
+    
+    func zoomMapTo(locations: [CLLocation]) {
+        let region = MKCoordinateRegion.mapRegion(using: locations)
+        setRegion(region, animated: true)
+    }
 }
+
+
+extension UIImage {
+    
+    /**
+     draws lines on an image using data from the array of CGPoint
+     
+     - Parameter points: the array of points from which we will be drawing lines between
+     - Parameter image: the image on which we will draw the lines
+     - Parameter color: the color we will be using to draw the lines
+     
+     - Returns: the marked up image
+     */
+    static func drawLines(using points: [CGPoint], on image: UIImage, with color: UIColor) -> UIImage? {
+        let imageSize = image.size
+        let scale: CGFloat = 0
+        
+        UIGraphicsBeginImageContextWithOptions(imageSize, false, scale)
+        
+        let path = UIBezierPath()
+        
+        image.draw(at: CGPoint.zero)
+        
+        path.move(to: points[0])
+        
+        // draw the lines between sequential points
+        for (index, point) in points.enumerated() {
+            if index == 0 { continue }
+            path.addLine(to: point)
+        }
+        
+        color.setStroke()
+        
+        path.stroke()
+        
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+}
+
+
+extension MKPolyline {
+    
+   /**
+    creates and returns an MKPolyLine following along all of the logged locations
+    
+    - Returns: an MKPolyLine following along all of the logged locations
+    */
+   static func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
+       // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
+       let coords: [CLLocationCoordinate2D] = locationData.map { location in
+           CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+       }
+       // create and return an MKPolyLine with the coordinates
+       return MKPolyline(coordinates: coords, count: coords.count)
+   }
+}
+
+extension MKCoordinateRegion {
+    
+    /**
+     creates and returns a MKCoordinateRegion enclosing all of the logged locations
+     
+     - Parameter locations: the locations of which we will be including in the region
+     
+     - Returns: a MKCoordinateRegion enclosing all of the logged locations
+     */
+    static func mapRegion(using locations: [CLLocation]) -> MKCoordinateRegion {
+        // if there are no locations, send a generic region
+        if locations.count == 0 {
+            print("Error, no locations logged yet")
+            return MKCoordinateRegion()
+        }
+        
+        let latitudes = locations.map { location -> Double in
+            return location.coordinate.latitude
+        }
+
+        let longitudes = locations.map { location -> Double in
+            return location.coordinate.longitude
+        }
+
+        // gather the max and mins of each
+        let maxLat = latitudes.max()!
+        let minLat = latitudes.min()!
+        let maxLong = longitudes.max()!
+        let minLong = longitudes.min()!
+                
+        // center around the middle of the extremes
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
+                                          longitude: (minLong + maxLong) / 2)
+        // span the differences (with a ~1/3 buffer)
+        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
+                                  longitudeDelta: (maxLong - minLong) * 1.3)
+        return MKCoordinateRegion(center: center, span: span)
+    }
+}
+

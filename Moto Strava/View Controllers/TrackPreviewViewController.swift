@@ -17,31 +17,27 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
     
-    /// the track color. NOTE -  this needs to be set from the VC that segues here
-    var trackColor = [UIColor]()
-    var colorForPolyline = [MKPolyline:UIColor]()
+    private var colorForPolyline = [MKPolyline:UIColor]()
     
-    /// the locations for the track we are previewing. NOTE - this needs to be set from the VC that segues here
-    var locationList = [[CLLocation]]()
+    /// NOTE -  these need to be set from the VC that segues here
     var modelController: ModelController!
-//    var rowInModel: Int!
     var courseID: Int!
     var sessionID: Int?
     
-    
     var course: CourseModel! { return modelController.course(with: courseID) }
+    var session: SessionModel? {
+        if sessionID == nil { return nil }
+        return modelController.session(inCourse: course, withSessionID: sessionID!)!
+    }
     
     /// the lap gate annotation on the map
     private var lapGateAnnotation = GateModelAnnotation()
-    
-    var lapGate: GateModel?
-    
+        
     /// the circle that is an overlay to show the size of the LapGate
-    private var cir = MKCircle()
+    private var circleForLapgate = MKCircle()
     
-    
-    var startPoints = [GateModelAnnotation]()
-    var endPoints = [GateModelAnnotation]()
+    private var startPoints = [GateModelAnnotation]()
+    private var endPoints = [GateModelAnnotation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,84 +47,29 @@ class TrackPreviewViewController: UIViewController, CLLocationManagerDelegate {
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
+        
         // allows background updates
         locationManager.allowsBackgroundLocationUpdates = true
         mapKitView.showsUserLocation = true
         mapKitView.mapType = .satellite
+        
         // setting the activity type, this could be changed for better optimization?
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
         
-        if (sessionID == nil) {
-            mapKitView.add(sessions: course.sessions) { overlay, color in
-                colorForPolyline[overlay] = color
-            }
-        } else {
-            mapKitView.add(sessions: [modelController.session(inCourse: course, withSessionID: sessionID!)!]) { overlay, color in
-                colorForPolyline[overlay] = color
-            }
-        }
+        let sessions = sessionID == nil ? course.sessions : [modelController.session(inCourse: course, withSessionID: sessionID!)!]
         
-        
-//        addTracksToMap()
-        
-        zoomMapTo()
-        
-        if lapGate != nil {
-            // sets the initial location of the lapgate
-             lapGateAnnotation.coordinate = lapGate!.location.coordinate
-            
-             lapGateAnnotation.title = "Lap"
-            
-             //lapGate.coordinate = locationList[Int(slider.value.rounded())].coordinate
-             mapKitView.addAnnotation(lapGateAnnotation)
-             
-             // sets the original circle representing the lap gate
-             cir = MKCircle(center: lapGateAnnotation.coordinate, radius: lapGate!.radius)
-             mapKitView.addOverlay(cir)
-             //calculatePointsInGateRadius()
-        }
-        
-        mapKitView.addAnnotations(courses: [course]) { start, stop in
-            startPoints.append(start)
-            endPoints.append(stop)
-        }
-        
-        
-//        addAnnotationsToMap()
-    }
+        mapKitView.add(sessions: sessions) { overlay, color in colorForPolyline[overlay] = color }
   
-//    /// adds all of the tracks in the model to the map
-//    private func addTracksToMap() {
-//        for (index, ll) in locationList.enumerated() {
-//            let overlay = MKPolyline.createPolyLine(using: ll)
-//            colorForPolyline[overlay] = trackColor[index]
-//            mapKitView.addOverlay(overlay)
-//        }
-//    }
-    
-    private func addAnnotationsToMap() {
-        for (index, section) in course.sectionGates.enumerated() {
-            let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")
-            let stop = GateModelAnnotation(coordinate: section.1.location, title: "Stop: \(index+1)")
-            mapKitView.addAnnotation(start)
-            mapKitView.addAnnotation(stop)
-            startPoints.append(start)
-            endPoints.append(stop)
-
-            let startCircle = MKCircle(center: start.coordinate, radius: section.0.radius)
-            let stopCircle = MKCircle(center: stop.coordinate, radius: section.1.radius)
-
-            mapKitView.addOverlay(startCircle)
-            mapKitView.addOverlay(stopCircle)
-        }
-    }
-    
-    /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: locationList.first!)
-        mapKitView.setRegion(region, animated: true)
+        let locations = sessionID == nil ? course.allLocations : session!.locations
+        mapKitView.zoomMapTo(locations: locations)
+        
+        mapKitView.addAnnotations(courses: [course], beforeAddAnnotation: { start, stop, lap in
+            if start != nil { startPoints.append(start!) }
+            if stop != nil { endPoints.append(stop!) }
+            if lap != nil { lapGateAnnotation = lap! }
+        }, dictionaryUpdate: nil)
     }
 }
 
@@ -155,14 +96,17 @@ extension TrackPreviewViewController: MKMapViewDelegate {
         }
         
         // else it's some other overlay, this should never happen
-        else {
-            return MKOverlayRenderer(overlay: overlay)
-        }
+        else { return MKOverlayRenderer(overlay: overlay) }
     }
     
     // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is GateModelAnnotation else { return nil }
+        guard annotation is GateModelAnnotation else {
+            print("ERROR: annotation was not a Gate Model Annotation, mapView(viewFor annotation) in trackPreviewVC")
+            return nil
+        }
+        
+        print("SUCCESS: annotation was a Gate Model Annotation")
 
         let annotationView = MKPinAnnotationView()
         annotationView.annotation = annotation
@@ -170,41 +114,10 @@ extension TrackPreviewViewController: MKMapViewDelegate {
         annotationView.isDraggable = false
         annotationView.canShowCallout = true
         
-        if startPoints.contains(annotation as! GateModelAnnotation) {
-            annotationView.pinTintColor = UIColor.green
-        }
-        else if endPoints.contains(annotation as! GateModelAnnotation ) {
-            annotationView.pinTintColor = UIColor.red
-        }
-        else if lapGateAnnotation == (annotation as! GateModelAnnotation) {
-            annotationView.pinTintColor = UIColor.blue
-        }
+        if startPoints.contains(annotation as! GateModelAnnotation) { annotationView.pinTintColor = UIColor.green }
+        else if endPoints.contains(annotation as! GateModelAnnotation ) { annotationView.pinTintColor = UIColor.red }
+        else if lapGateAnnotation == (annotation as! GateModelAnnotation) { annotationView.pinTintColor = UIColor.blue }
                 
         return annotationView
-
-        
-        
-        
-        
-        
-        
-        
-        
-//        guard annotation is MKPointAnnotation else { return nil }
-//
-//        let identifier = "Annotation"
-//        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-//
-//        if annotationView == nil {
-//            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-//            annotationView!.canShowCallout = false
-//            print("filter annotationView was nil")
-//        } else {
-//            annotationView!.annotation = annotation
-//        }
-//
-//        annotationView!.isDraggable = true
-//
-//        return annotationView
     }
 }
