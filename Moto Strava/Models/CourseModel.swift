@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import MapKit
 
 struct CourseModel: Codable, Equatable {
     
@@ -32,6 +33,15 @@ struct CourseModel: Codable, Equatable {
     
     var allColorsForSessions: [UIColor] {
         return sessions.map { $0.color }
+    }
+    
+    var allLocations: [CLLocation] {
+        var locations = [CLLocation]()
+        for sesh in sessions {
+            locations.append(contentsOf: sesh.locations)
+        }
+        
+        return locations
     }
     
     enum CodingKeys: String, CodingKey {

@@ -136,7 +136,7 @@ class MapViewController: UIViewController {
 //        let newSessionModel = CourseModel(usingInitialSession: track)
         
         // add the track to the model's list of tracks
-        modelController.add(session: newSessionModel)
+        modelController.add(course: newSessionModel)
         
         // remove all of the locations from the current list
         locationList.removeAll()
@@ -175,62 +175,6 @@ class MapViewController: UIViewController {
     }
 }
 
-extension MKCoordinateRegion {
-    
-    /**
-     creates and returns a MKCoordinateRegion enclosing all of the logged locations
-     
-     - Parameter locations: the locations of which we will be including in the region
-     
-     - Returns: a MKCoordinateRegion enclosing all of the logged locations
-     */
-    static func mapRegion(using locations: [CLLocation]) -> MKCoordinateRegion {
-        // if there are no locations, send a generic region
-        if locations.count == 0 {
-            print("Error, no locations logged yet")
-            return MKCoordinateRegion()
-        }
-        
-        let latitudes = locations.map { location -> Double in
-            return location.coordinate.latitude
-        }
-
-        let longitudes = locations.map { location -> Double in
-            return location.coordinate.longitude
-        }
-
-        // gather the max and mins of each
-        let maxLat = latitudes.max()!
-        let minLat = latitudes.min()!
-        let maxLong = longitudes.max()!
-        let minLong = longitudes.min()!
-                
-        // center around the middle of the extremes
-        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2,
-                                          longitude: (minLong + maxLong) / 2)
-        // span the differences (with a ~1/3 buffer)
-        let span = MKCoordinateSpan(latitudeDelta: (maxLat - minLat) * 1.3,
-                                  longitudeDelta: (maxLong - minLong) * 1.3)
-        return MKCoordinateRegion(center: center, span: span)
-    }
-}
-
-extension MKPolyline {
-    
-   /**
-    creates and returns an MKPolyLine following along all of the logged locations
-    
-    - Returns: an MKPolyLine following along all of the logged locations
-    */
-   static func createPolyLine(using locationData: [CLLocation]) -> MKPolyline {
-       // map the coordinates to an array of CLLocationCoordinates2D - aka reduce to a list of lats and longs
-       let coords: [CLLocationCoordinate2D] = locationData.map { location in
-           CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-       }
-       // create and return an MKPolyLine with the coordinates
-       return MKPolyline(coordinates: coords, count: coords.count)
-   }
-}
 
 // MARK: - Location Management
 
@@ -322,4 +266,3 @@ extension MapViewController: MKMapViewDelegate {
         mapKitView.setRegion(region, animated: true)
     }
 }
-

@@ -50,10 +50,7 @@ class EditCourseModelViewController: UIViewController {
         // LapGate Editor
         if let gateEditor = segue.destination as? LapGateEditorViewController {
             gateEditor.courseID = courseID
-//            gateEditor.rowInModel = rowInModel
             gateEditor.modelController = modelController
-            gateEditor.locationList = course.sessions.map { $0.locations }
-            gateEditor.trackColor = course.allColorsForSessions
         }
         
         // RunMoto
@@ -62,27 +59,15 @@ class EditCourseModelViewController: UIViewController {
             runMotoVC.courseID = courseID
             runMotoVC.modelController = modelController
         }
-        
-        // Session History
-//        if let sessionHistory = segue.destination as? SessionHistoryViewController {
-//            sessionHistory.rowInModel = rowInModel
-//            sessionHistory.modelController = modelController
-//        }
-        
+        // map preview
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = course.sessions.map { $0.locations }
-            mapPreview.trackColor = course.allColorsForSessions
-            mapPreview.lapGate = course.lapGate
             mapPreview.modelController = modelController
             mapPreview.courseID = courseID
-//            mapPreview.rowInModel = rowInModel
         }
         
         if let editDetail = segue.destination as? EditDetailViewController {
             editDetail.modelController = modelController
             editDetail.courseID = courseID
-//            editDetail.rowInModel = rowInModel
-//            editDetail.trackInSessions = courseDetailTableView.indexPathForSelectedRow!.row
             editDetail.sessionID = course.sessions[courseDetailTableView.indexPathForSelectedRow!.row].uniqueIdentifier
 
         }

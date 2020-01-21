@@ -19,6 +19,12 @@ class ModelController {
         loadModelFromJSON()
     }
     
+    var allSessions: [SessionModel] {
+        var sessions = [SessionModel]()
+        for course in courses { sessions.append(contentsOf: course.sessions) }
+        return sessions
+    }
+    
     private func saveJSONToFile() {
         if let json = model.json {
             if let url = try? FileManager.default.url(
@@ -103,8 +109,8 @@ class ModelController {
 //        return motoStravaModel.listOfTracks[index].name
 //    }
     
-    func add(session: CourseModel) {
-        model.courses.append(session)
+    func add(course: CourseModel) {
+        model.courses.append(course)
         saveJSONToFile()
     }
     
@@ -247,6 +253,19 @@ class ModelController {
             }
         } else {
             print("Error deleting section from course, course not in model")
+        }
+    }
+    
+    func addLocation(course: CourseModel, session: SessionModel, location: CLLocation) {
+        if let courseIndex = model.courses.firstIndex(of: course) {
+            if let sessionIndex = model.courses[courseIndex].sessions.firstIndex(of: session) {
+                model.courses[courseIndex].sessions[sessionIndex].add(newLocation: location)
+                saveJSONToFile()
+            } else {
+                print("error adding location, section not in course ")
+            }
+        } else {
+            print("Error adding location, course not in model")
         }
     }
 }

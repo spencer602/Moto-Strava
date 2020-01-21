@@ -95,11 +95,12 @@ class EditDetailViewController: UIViewController {
         
         // track preview
         if let mapPreview = segue.destination as? TrackPreviewViewController {
-            mapPreview.locationList = [session.locations]
-            mapPreview.trackColor = [session.color]
-            mapPreview.lapGate = course.lapGate
+//            mapPreview.locationList = [session.locations]
+//            mapPreview.trackColor = [session.color]
+//            mapPreview.lapGate = course.lapGate
             mapPreview.modelController = modelController
             mapPreview.courseID = courseID
+            mapPreview.sessionID = sessionID
 //            mapPreview.rowInModel = rowInModel
         }
     }

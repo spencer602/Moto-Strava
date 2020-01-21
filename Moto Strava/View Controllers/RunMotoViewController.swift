@@ -16,23 +16,21 @@ class RunMotoViewController: UIViewController {
     private var motoIsStarted = false
     
     /// the complete list of logged locations from our current track recording
-    private var polyLinesFromCurrentRecording = [MKPolyline]()
+    private var polyLineFromCurrentRecording = MKPolyline()
+    
+    private var colorForPolyline = [MKPolyline:UIColor]()
     
     /// used to manage things relation to gathering location data
     private let locationManager = CLLocationManager()
 
-    /// the locations we are collecting while recording tracks
-    private var currentLocationList = [CLLocation]()
-
-    /// the lap gate annotation
-    private var lapGateAnnotation = MKPointAnnotation()
-    
-    /// the row in the model for which we are editing the lap gate for.  NOTE - this needs to be set in the VC that segues to here
-//    var rowInModel: Int!
-    var courseID: Int!
+    /// the gate annotations
+    private var lapGateAnnotation = GateModelAnnotation()
+    private var startPoints = [GateModelAnnotation]()
+    private var endPoints = [GateModelAnnotation]()
     
     /// the universal model controller we are using to view and manipulate our model.  NOTE - this needs to be set in the VC that segues to here
     var modelController: ModelController!
+    var courseID: Int!
     
     var course: CourseModel! { return modelController.course(with: courseID) }
 
@@ -56,57 +54,56 @@ class RunMotoViewController: UIViewController {
     
     private var timer: Timer?
     
+    private var thisMoto: SessionModel? {
+        if thisMotoID == nil { return nil }
+        return modelController.session(inCourse: course, withSessionID: thisMotoID!)
+    }
     
+    private var thisMotoID: Int?
     
     @IBAction func startMotoButtonPressed(_ sender: UIButton) {
         startMotoButton.isHidden = true
         stopMotoButton.isHidden = false
         motoIsStarted = true
-        timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
-            self.updateViewFromModel()
-        }
+        
+        locationManager.requestLocation()
     }
     
     @IBAction func stopMotoButtonPressed(_ sender: UIButton) {
         startMotoButton.isHidden = false
         stopMotoButton.isHidden = true
         motoIsStarted = false
-        
-        let track = modelController.createSession(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
-        
-//        let track = SessionModel(withCLLocationArray: currentLocationList, withName: currentLocationList.first!.timestamp.description)
-        
-        modelController.add(session: track, to: course)
-        
-//        modelController.add(at: rowInModel, with: track)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Create Session"
+        
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
+        
         // allows background updates
         locationManager.allowsBackgroundLocationUpdates = true
         mapKitView.showsUserLocation = true
         mapKitView.mapType = .satellite
+        
         // setting the activity type, this could be changed for better optimization?
         locationManager.activityType = .otherNavigation
         mapKitView.delegate = self
         locationManager.startUpdatingLocation()
 
-        addTrackToMap()
-        zoomMapTo()
-
-        lapGateAnnotation.coordinate = course.lapGate.location.coordinate
+        // add sessions to map, then zoom map to sessions
+        mapKitView.add(sessions: course.sessions) { overlay, color in colorForPolyline[overlay] = color }
+        mapKitView.zoomMapTo(locations: course.allLocations)
         
-        mapKitView.addAnnotation(lapGateAnnotation)
-        
-        cir = MKCircle(center: lapGateAnnotation.coordinate, radius: Double(course.lapGate.radius))
-        mapKitView.addOverlay(cir)
-        
+        // add annotations to map
+        mapKitView.addAnnotations(courses: [course], beforeAddAnnotation: { start, stop, lap in
+            if start != nil { startPoints.append(start!) }
+            if stop != nil { endPoints.append(stop!) }
+            if lap != nil { lapGateAnnotation = lap! }
+        }, dictionaryUpdate: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,8 +112,6 @@ class RunMotoViewController: UIViewController {
         locationManager.startUpdatingLocation()
     }
     
-    
-    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
@@ -124,23 +119,11 @@ class RunMotoViewController: UIViewController {
     }
     
     private func updateViewFromModel() {
-        totalTimeLabel.text = "Total Time: \(currentLocationList.count == 0 ? "" : (currentLocationList[0].timestamp.timeIntervalSinceNow * -1.0).easyToReadTimeNotation(withDecimalPlaces: 2))"
-        thisLapTimeLabel.text = "This Lap Time: \(bestLocationPerLapInGate.count == 0 ? "" : (bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow * -1.0).easyToReadTimeNotation(withDecimalPlaces: 2))"
+        totalTimeLabel.text = "Total Time: \(thisMoto!.locationCount == 0 ? "" : (thisMoto!.locations.first!.timestamp.timeIntervalSinceNow * -1.0).toStringAppropriateForLapTime(withDecimalPlaces: 2))"
+        thisLapTimeLabel.text = "This Lap Time: \(bestLocationPerLapInGate.count == 0 ? "" : (bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow * -1.0).toStringAppropriateForLapTime(withDecimalPlaces: 2))"
         lapNumberLabel.text = "Lap Number: \(bestLocationPerLapInGate.count)"
     }
 
-    /// adds the track to the map
-    private func addTrackToMap() {
-        let overlay = MKPolyline.createPolyLine(using: course.sessions.first!.locations)
-        mapKitView.addOverlay(overlay)
-    }
-
-    /// creates a region encompassing all logged locations and adds the overaly to the map
-    private func zoomMapTo() {
-        let region = MKCoordinateRegion.mapRegion(using: course.sessions.first!.locations)
-        mapKitView.setRegion(region, animated: true)
-    }
-    
     /**
      calculates and returns the location closest to the given point
      
@@ -161,15 +144,15 @@ class RunMotoViewController: UIViewController {
         }
         return closest.0
     }
-    
-    private func updateLabels() {
-        
-    }
 }
 
 // MARK: - Location Management
 
 extension RunMotoViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("error in one time request of location????")
+    }
     
     // did update location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -178,30 +161,28 @@ extension RunMotoViewController: CLLocationManagerDelegate {
             print("route Accuracy: \(locations.first!.horizontalAccuracy)")
                   
             // educational purposes:, haven't ever seen a situation where locations.count > 1
-            if locations.count > 1 {
-                print("route #####   Locations.count: \(locations.count)")
+            if locations.count > 1 { print("route #####   Locations.count: \(locations.count)") }
+            
+            if thisMoto == nil {
+                let newMoto = modelController.createSession(withCLLocationArray: [locations.first!], withName: locations.first!.timestamp.description)
+                modelController.add(session: newMoto, to: course)
+                thisMotoID = newMoto.uniqueIdentifier
+                
+                timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
+                    self.updateViewFromModel()
+                }
+            } else {
+                modelController.addLocation(course: course, session: thisMoto!, location: locations.first!)
             }
-      
-            // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
-            guard let lastLocation = currentLocationList.last else {
-                currentLocationList.append(locations.first!)
-                return
-            }
-      
-            print("route Distance from last: \(lastLocation.distance(from: locations.first!))")
+            
+            let newPolyline = MKPolyline.createPolyLine(using: thisMoto!.locations)
+            
+            mapKitView.removeOverlay(polyLineFromCurrentRecording)
+            colorForPolyline[polyLineFromCurrentRecording] = nil
+            colorForPolyline[newPolyline] = thisMoto!.color
+            polyLineFromCurrentRecording = newPolyline
 
-            currentLocationList.append(locations.first!)
-
-            let newLocation = locations.first!
-
-            // create the new 'change in coordinates'
-            let coordinates = [lastLocation.coordinate, newLocation.coordinate]
-            // create an MKPolyline from the two coordinates
-            let polyLine = (MKPolyline(coordinates: coordinates, count: 2))
-            // add the polyline to the list of polylines in current recording
-            polyLinesFromCurrentRecording.append(polyLine)
-            // add an overlay as a MKPolyline
-            mapKitView.addOverlay(polyLine)
+            mapKitView.addOverlay(newPolyline)
             
             
             // only do this if you want to re-center the region around the most recent location
@@ -231,7 +212,7 @@ extension RunMotoViewController: CLLocationManagerDelegate {
                 }
             }
         }
-        updateViewFromModel()
+//        updateViewFromModel()
     }
 }
 
@@ -244,17 +225,22 @@ extension RunMotoViewController: MKMapViewDelegate {
         // ensures that the overlay is an MKPolyLine
         if let polyline = overlay as? MKPolyline {
             
-            if polyLinesFromCurrentRecording.contains(polyline) {
-                let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = UIColor.red
-                renderer.lineWidth = 2
-                return renderer
-            } else {
-                let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = course.sessions.first!.color
-                renderer.lineWidth = 2
-                return renderer
-            }
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = colorForPolyline[polyline]!
+            renderer.lineWidth = 2
+            return renderer
+            
+//            if polyLinesFromCurrentRecording.contains(polyline) {
+//                let renderer = MKPolylineRenderer(polyline: polyline)
+//                renderer.strokeColor = UIColor.red
+//                renderer.lineWidth = 2
+//                return renderer
+//            } else {
+//                let renderer = MKPolylineRenderer(polyline: polyline)
+//                renderer.strokeColor = course.sessions.first!.color
+//                renderer.lineWidth = 2
+//                return renderer
+//            }
             
         }
         else if let polyline = overlay as? MKCircle {
@@ -271,21 +257,23 @@ extension RunMotoViewController: MKMapViewDelegate {
 
     // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is MKPointAnnotation else { return nil }
-
-        let identifier = "Annotation"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
-        if annotationView == nil {
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            print("filter annotationView was nil")
-        } else {
-            annotationView!.annotation = annotation
+       guard annotation is GateModelAnnotation else {
+            print("ERROR: annotation was not a Gate Model Annotation, mapView(viewFor annotation) in trackPreviewVC")
+            return nil
         }
-         
-        annotationView!.isDraggable = false
-        annotationView!.canShowCallout = false
+        
+        print("SUCCESS: annotation was a Gate Model Annotation")
 
+        let annotationView = MKPinAnnotationView()
+        annotationView.annotation = annotation
+        
+        annotationView.isDraggable = false
+        annotationView.canShowCallout = true
+        
+        if startPoints.contains(annotation as! GateModelAnnotation) { annotationView.pinTintColor = UIColor.green }
+        else if endPoints.contains(annotation as! GateModelAnnotation ) { annotationView.pinTintColor = UIColor.red }
+        else if lapGateAnnotation == (annotation as! GateModelAnnotation) { annotationView.pinTintColor = UIColor.blue }
+                
         return annotationView
     }
 }
