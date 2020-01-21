@@ -101,13 +101,8 @@ extension TrackPreviewViewController: MKMapViewDelegate {
     
     // view for annotation
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is GateModelAnnotation else {
-            print("ERROR: annotation was not a Gate Model Annotation, mapView(viewFor annotation) in trackPreviewVC")
-            return nil
-        }
+        guard annotation is GateModelAnnotation else { return nil }
         
-        print("SUCCESS: annotation was a Gate Model Annotation")
-
         let annotationView = MKPinAnnotationView()
         annotationView.annotation = annotation
         
