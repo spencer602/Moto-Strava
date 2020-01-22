@@ -22,6 +22,7 @@
 		09B5182B23B9712E00CF24CD /* ImageViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5182A23B9712E00CF24CD /* ImageViewTableViewCell.swift */; };
 		09B5182D23B9754C00CF24CD /* EditTrackColorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B5182C23B9754C00CF24CD /* EditTrackColorTableViewCell.swift */; };
 		09B86E5A239B657700A718B0 /* SessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B86E59239B657700A718B0 /* SessionModel.swift */; };
+		09CA27C323D7B91700632E1F /* CreateSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09CA27C223D7B91700632E1F /* CreateSessionViewController.swift */; };
 		09F3A51923B1871700242B9B /* SessionHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */; };
 		09F3A51B23B1877400242B9B /* SessionHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51A23B1877400242B9B /* SessionHistoryTableViewCell.swift */; };
 		09F3A51E23B2E58600242B9B /* CourseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A51D23B2E58600242B9B /* CourseModel.swift */; };
@@ -58,6 +59,7 @@
 		09B5182A23B9712E00CF24CD /* ImageViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewTableViewCell.swift; sourceTree = "<group>"; };
 		09B5182C23B9754C00CF24CD /* EditTrackColorTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTrackColorTableViewCell.swift; sourceTree = "<group>"; };
 		09B86E59239B657700A718B0 /* SessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionModel.swift; sourceTree = "<group>"; };
+		09CA27C223D7B91700632E1F /* CreateSessionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionViewController.swift; sourceTree = "<group>"; };
 		09F3A51723B160EB00242B9B /* several laps.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "several laps.gpx"; sourceTree = "<group>"; };
 		09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHistoryViewController.swift; sourceTree = "<group>"; };
 		09F3A51A23B1877400242B9B /* SessionHistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionHistoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				098B968D23ABFBC3007C4649 /* RunMotoViewController.swift */,
 				09F3A51823B1871700242B9B /* SessionHistoryViewController.swift */,
 				09F3A51F23B3108900242B9B /* EditCourseModelViewController.swift */,
+				09CA27C223D7B91700632E1F /* CreateSessionViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				09F3A51923B1871700242B9B /* SessionHistoryViewController.swift in Sources */,
 				0920F667238C9E0200613DEC /* EditDetailViewController.swift in Sources */,
 				09F986F823A9958500DE854A /* TrackPreviewViewController.swift in Sources */,
+				09CA27C323D7B91700632E1F /* CreateSessionViewController.swift in Sources */,
 				09F986FA23A9E73700DE854A /* LapGateEditorViewController.swift in Sources */,
 				0920F65F23888D2400613DEC /* MotosModel.swift in Sources */,
 				0920F665238C96C800613DEC /* UtilityExtensions.swift in Sources */,

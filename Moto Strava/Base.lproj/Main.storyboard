@@ -289,7 +289,7 @@
         <!--Create-->
         <scene sceneID="GPe-37-OOv">
             <objects>
-                <viewController title="Create" id="6sH-tc-B36" sceneMemberID="viewController">
+                <viewController title="Create" id="6sH-tc-B36" customClass="CreateSessionViewController" customModule="Motos" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZL4-sE-GGk">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -375,6 +375,9 @@
                                         <exclude reference="1Az-cm-BPQ"/>
                                     </mask>
                                 </variation>
+                                <connections>
+                                    <action selector="recordTrackButtonPressed:" destination="6sH-tc-B36" eventType="touchUpInside" id="eiJ-P0-1dH"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8OZ-4J-yl5">
                                 <rect key="frame" x="10" y="134" width="394" height="30"/>
@@ -524,6 +527,14 @@
                         </variation>
                     </view>
                     <tabBarItem key="tabBarItem" title="Create" id="mkp-gB-rax"/>
+                    <connections>
+                        <outlet property="courseLabel" destination="nP4-fZ-Jae" id="s4N-Rq-o7j"/>
+                        <outlet property="lapLabel" destination="8OZ-4J-yl5" id="H23-kU-8Dc"/>
+                        <outlet property="mapKitView" destination="jEj-7w-ofm" id="g9Z-E1-Haa"/>
+                        <outlet property="recordTrackButton" destination="gfE-L8-KTr" id="V8q-dR-oaK"/>
+                        <outlet property="segmentLabel" destination="V5y-BG-VbT" id="N9f-fC-hOG"/>
+                        <outlet property="totalTimeLabel" destination="2vi-A0-ZnE" id="sbt-4W-rer"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V7N-1M-Zgt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
