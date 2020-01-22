@@ -36,6 +36,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("second Map View Controller")
                 mvc.modelController = model
             }
+            if let nc = tbc.viewControllers?[2] as? UINavigationController {
+                if let csvc = nc.viewControllers.first as? CreateSessionViewController {
+                    csvc.modelController = model
+                }
+            }
         }
 
     }
