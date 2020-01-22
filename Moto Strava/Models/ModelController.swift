@@ -26,17 +26,19 @@ class ModelController {
     }
     
     private func saveJSONToFile() {
-        if let json = model.json {
-            if let url = try? FileManager.default.url(
-                for: .applicationSupportDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: true).appendingPathComponent("motoStravaModelThree.json") {
-                do {
-                    try json.write(to: url)
-                    print("saved successfully!")
-                } catch let error {
-                    print("couldn't save \(error)")
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let json = self.model.json {
+                if let url = try? FileManager.default.url(
+                    for: .applicationSupportDirectory,
+                    in: .userDomainMask,
+                    appropriateFor: nil,
+                    create: true).appendingPathComponent("motoStravaModelThree.json") {
+                    do {
+                        try json.write(to: url)
+                        print("saved successfully!")
+                    } catch let error {
+                        print("couldn't save \(error)")
+                    }
                 }
             }
         }

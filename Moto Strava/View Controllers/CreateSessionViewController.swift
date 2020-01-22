@@ -80,7 +80,10 @@ class CreateSessionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        courseID = modelController.courses.first!.uniqueIdentifier
+        // this is for testing
+//        courseID = modelController.courses.first!.uniqueIdentifier
+        
+        courseLabel.isUserInteractionEnabled = true
         
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -100,16 +103,14 @@ class CreateSessionViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        print("view will disappear!")
+        if !isRecordingTracks { locationManager.stopUpdatingLocation() }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         updateTracksAndAnnotations()
-        
         locationManager.startUpdatingLocation()
-        
         updateViewFromModel()
     }
     
@@ -119,35 +120,53 @@ class CreateSessionViewController: UIViewController {
         if !isRecordingTracks { locationManager.stopUpdatingLocation() }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let dest = segue.destination as? CourseChooserTableViewController {
+            dest.courses = modelController.courses
+            dest.afterChoosingCourse = { chosenID in
+                if chosenID == nil { self.courseID = nil }
+                else { self.courseID = self.modelController.courses[chosenID!].uniqueIdentifier }
+                self.updateViewFromModel()
+                self.updateTracksAndAnnotations()
+            }
+        }
+    }
+    
+
+    
     /**
      target action from when the 'record track' button is pressed. starts recording a track
      
      - Parameter sender: the button that triggered the action
      */
     @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
-        isRecordingTracks = true
-//        recordTrackButton.isHidden = true
-//        stopRecordingButton.isHidden = false
-    }
-   
-    /**
-      target action from when the 'stop recording track' button is pressed. stops recording a track
-      
-      - Parameter sender: the button that triggered the action
-      */
-    @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
-        isRecordingTracks = false
-        // zoom the map to the recently created track
-        mapKitView.zoomMapTo(locations: session!.locations)
-        // add the complete track to the map
-        
-//        recordTrackButton.isHidden = false
-//        stopRecordingButton.isHidden = true
+        if !isRecordingTracks {
+            isRecordingTracks = true
+            startTime = Date()
+            timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
+                self.updateViewFromModel()
+            }
+            
+            recordTrackButton.setTitle("Stop", for: .normal)
+            recordTrackButton.backgroundColor = .red
+        } else {
+            isRecordingTracks = false
+            timer?.invalidate()
+            
+            recordTrackButton.setTitle("Start", for: .normal)
+            recordTrackButton.backgroundColor = .green
+            sessionID = nil
+            courseID = nil
+            startTime = nil
+            pointsInGate = nil
+            bestLocationPerLapInGate.removeAll()
+        }
+        updateViewFromModel()
     }
     
     func updateViewFromModel() {
-        courseLabel.text = courseID != nil ? modelController.course(with: courseID!)!.name : "Course: Create New Course"
-        totalTimeLabel.text = startTime != nil ? "Total Time: " + startTime!.timeIntervalSinceNow.toStringAppropriateForLapTime(withDecimalPlaces: 2) : "Total Time: Not Started"
+        courseLabel.text = courseID != nil ? "Course: " + modelController.course(with: courseID!)!.name : "Course: Create a New Course"
+        totalTimeLabel.text = startTime != nil ? "Total Time: " + (startTime!.timeIntervalSinceNow * -1.0).toStringAppropriateForLapTime(withDecimalPlaces: 2) : "Total Time: Not Started"
         let lapNumber = bestLocationPerLapInGate.count
         let lapTime = lapNumber == 0 ? "Not Started" : (Date().timeIntervalSinceNow - bestLocationPerLapInGate.last!.timestamp.timeIntervalSinceNow).toStringAppropriateForLapTime(withDecimalPlaces: 2)
         lapLabel.text = "Lap: \(lapNumber): \(lapTime)"
@@ -155,12 +174,13 @@ class CreateSessionViewController: UIViewController {
         
     }
     
-    func updateTracksAndAnnotations() {
+    private func updateTracksAndAnnotations() {
         // clears the tracks, this could be improved by sending notifications when the model changes
         mapKitView.removeOverlays(mapKitView.overlays)
         colorForPolyline.removeAll()
         startPoints.removeAll()
         endPoints.removeAll()
+        mapKitView.removeAnnotations(mapKitView.annotations)
         
         if course != nil {
             // adds the rest of the tracks from the model
@@ -246,17 +266,14 @@ extension CreateSessionViewController: CLLocationManagerDelegate {
             } else {
                 modelController.addLocation(course: course!, session: session!, location: locations.first!)
             }
-                        
-            // create an MKPolyline from the two coordinates
-            mapKitView.removeOverlay(polyLineFromCurrentRecording)
-            let polyLine = MKPolyline.createPolyLine(using: session!.locations)
-            colorForPolyline[polyLineFromCurrentRecording] = nil
-            colorForPolyline[polyLine] = session!.color
-            // add the polyline to the list of polylines in current recording
-            polyLineFromCurrentRecording = polyLine
-            // add an overlay as a MKPolyline
-            mapKitView.addOverlay(polyLine)
             
+            if session!.locations.count > 1 {
+                let locations = [session!.locations[session!.locations.count - 2], session!.locations[session!.locations.count - 1]]
+                let polyline = MKPolyline.createPolyLine(using: locations)
+                colorForPolyline[polyline] = session!.color
+                mapKitView.addOverlay(polyline)
+            }
+                        
             // only do this if yo want to re-center the region around the most recent location
             // let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
             // mapKitView.setRegion(region, animated: true)
