@@ -83,7 +83,7 @@ extension SessionHistoryViewController: UITableViewDelegate, UITableViewDataSour
             
             EditDetailViewController.setPreviewImage(using: [currentSession]) { image in cell.trackPreviewImage.image = image }
             
-            cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: course.lapGate).count - 1)"
+            cell.lapsLabel.text = "Laps: \(currentSession.getLapPoints(usingLapGate: course.lapGate)!.count - 1)"
             
             return cell
         }

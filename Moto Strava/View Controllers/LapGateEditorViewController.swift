@@ -28,14 +28,14 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     
     /// the lap gate annotation on the map
-    private var lapGateAnnotation = GateModelAnnotation()
+    private var lapGateAnnotation: GateModelAnnotation?
     private var colorForPolyline = [MKPolyline:UIColor]()
     private var circleForAnnotation = [GateModelAnnotation:MKCircle]()
     private var startPoints = [GateModelAnnotation]()
     private var endPoints = [GateModelAnnotation]()
     
     var course: CourseModel! { return modelController.course(with: courseID) }
-    private var lapGate: GateModel { return course.lapGate }
+    private var lapGate: GateModel? { return course.lapGate }
     
     private var sectionGates: [(GateModel, GateModel)] { return course.sectionGates }
     
@@ -83,7 +83,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         slider.minimumValue = 10
         
         // sets the slider to where it should be given the current LapGate radius
-        slider.setValue(Float(lapGate.radius), animated: false)
+        // slider.setValue(Float(lapGate.radius), animated: false)
 
         // send the user a request to allow location permissions
         locationManager.requestAlwaysAuthorization()
@@ -140,7 +140,7 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
         }
 
         if selectedAnnotation! == lapGateAnnotation {
-            modelController.setLapGate(for: course, with: GateModel(location: lapGate.location, withRadius: Double(slider.value)))
+            modelController.setLapGate(for: course, with: GateModel(location: lapGate!.location, withRadius: Double(slider.value)))
         }
         
         else if startPoints.contains(selectedAnnotation!) {
@@ -162,22 +162,55 @@ class LapGateEditorViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func addSection(_ sender: Any) {
-        
-        modelController.addSectionGate(to: course, startGate: GateModel(location: course.sessions.first!.locations.first!), endGate: GateModel(location: course.sessions.first!.locations.last!))
+        if lapGate != nil {
+            modelController.addSectionGate(to: course, startGate: GateModel(location: course.sessions.first!.locations.first!), endGate: GateModel(location: course.sessions.first!.locations.last!))
 
-        populateAnnotationsFromModel()
+            populateAnnotationsFromModel()
+        } else {
+            let alert = UIAlertController(
+                title: "Which Type of Gate?",
+                message: "Would you like to add a Lap Gate or a Section Gate Pair?",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(
+                title: "Lap Gate",
+                style: .default,
+                handler: { _ in
+                    let newLocation = self.course.sessions.first?.locations.first ?? CLLocation()
+                    let newGate = GateModel(location: newLocation)
+                    self.modelController.setLapGate(for: self.course, with: newGate)
+                    self.populateAnnotationsFromModel()
+                    }
+                )
+            )
+            
+            alert.addAction(UIAlertAction(
+                title: "Section Gate",
+                style: .default,
+                handler: { _ in
+                    self.modelController.addSectionGate(to: self.course, startGate: GateModel(location: self.course.sessions.first!.locations.first!), endGate: GateModel(location: self.course.sessions.first!.locations.last!))
+                        self.populateAnnotationsFromModel()
+                    }
+                )
+            )
+            
+            present(alert, animated: true)
+        }
     }
     
     // this could be optimized
     @IBAction func deleteButtonPressed(_ sender: Any) {
-        if let currentlySelected = selectedAnnotation, currentlySelected != lapGateAnnotation {
-            let index = (startPoints.contains(currentlySelected) ? startPoints.firstIndex(of: currentlySelected)! : endPoints.firstIndex(of: currentlySelected)!)
-            
-            let section = (gateModelFor(annotation: startPoints[index])!, gateModelFor(annotation: endPoints[index])!)
-            modelController.removeSectionGate(from: course, section: section)
-            
+        if let currentlySelected = selectedAnnotation {
+            if currentlySelected != lapGateAnnotation {
+                let index = (startPoints.contains(currentlySelected) ? startPoints.firstIndex(of: currentlySelected)! : endPoints.firstIndex(of: currentlySelected)!)
+                
+                let section = (gateModelFor(annotation: startPoints[index])!, gateModelFor(annotation: endPoints[index])!)
+                modelController.removeSectionGate(from: course, section: section)
+                
+            } else { modelController.setLapGate(for: course, with: nil) }
             populateAnnotationsFromModel()
         }
+        
     }
     
     /// calculates the number of points on the track that fall within the gate radius
@@ -254,7 +287,7 @@ extension LapGateEditorViewController: MKMapViewDelegate {
             var newCircle: MKCircle!
             
             if dragAnnotation == lapGateAnnotation {
-                let location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate.radius)
+                let location = GateModel(location: CLLocation(latitude: view.annotation!.coordinate.latitude, longitude: view.annotation!.coordinate.longitude), withRadius: lapGate!.radius)
                 modelController.setLapGate(for: course, with: location)
                                 
                 newCircle = MKCircle(center: location.location.coordinate, radius: location.radius)

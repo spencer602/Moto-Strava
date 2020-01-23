@@ -103,7 +103,7 @@ extension DataViewController: UITableViewDelegate, UITableViewDataSource {
             
             let laps = thisCourse.totalLaps
             
-            cell.lapsLabel.text = "Laps: \(laps)"
+            cell.lapsLabel.text = "Laps: \(laps?.description ?? "NA")"
             
             cell.sessionsLabel.text = "Sessions: \(thisCourse.sessions.count)"
             

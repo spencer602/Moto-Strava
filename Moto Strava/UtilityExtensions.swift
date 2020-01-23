@@ -204,12 +204,15 @@ extension MKMapView {
     
     func addAnnotations(courses: [CourseModel], beforeAddAnnotation: (GateModelAnnotation?, GateModelAnnotation?, GateModelAnnotation?) -> Void, dictionaryUpdate: ((GateModelAnnotation, MKCircle) -> Void)?) {
         for course in courses {
-            let lap = GateModelAnnotation(coordinate: course.lapGate.location, title: "Lap")
-            let lapCircle = MKCircle(center: lap.coordinate, radius: course.lapGate.radius)
-            beforeAddAnnotation(nil, nil, lap)
-            addAnnotation(lap)
-            addOverlay(lapCircle)
-            dictionaryUpdate?(lap,lapCircle)
+            if let lapGate = course.lapGate {
+                let lap = GateModelAnnotation(coordinate: lapGate.location, title: "Lap")
+                let lapCircle = MKCircle(center: lap.coordinate, radius: lapGate.radius)
+                beforeAddAnnotation(nil, nil, lap)
+                addAnnotation(lap)
+                addOverlay(lapCircle)
+                dictionaryUpdate?(lap,lapCircle)
+            }
+           
 
             for (index, section) in course.sectionGates.enumerated() {
                 let start = GateModelAnnotation(coordinate: section.0.location, title: "Start: \(index+1)")

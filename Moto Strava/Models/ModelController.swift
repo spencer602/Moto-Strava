@@ -156,7 +156,7 @@ class ModelController {
 //        saveJSONToFile()
 //    }
     
-    func setLapGate(for course: CourseModel, with lapGate: GateModel) {
+    func setLapGate(for course: CourseModel, with lapGate: GateModel?) {
         if let courseIndex = model.courses.firstIndex(of: course) {
             model.courses[courseIndex].lapGate = lapGate
             saveJSONToFile()

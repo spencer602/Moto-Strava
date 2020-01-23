@@ -191,7 +191,7 @@ extension RunMotoViewController: CLLocationManagerDelegate {
                 
                 
             // if the current location is in the gate
-            if locations.first!.distance(from: course.lapGate.location) <= Double(course.lapGate.radius) {
+            if locations.first!.distance(from: course.lapGate!.location) <= Double(course.lapGate!.radius) {
                 print("filter we are in the gate")
                 
                 if pointsInGate == nil { pointsInGate = [CLLocation]() }

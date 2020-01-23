@@ -15,7 +15,7 @@ struct CourseModel: Codable, Equatable {
     private var entryGates: [GateModel]
     private var exitGates: [GateModel]
     
-    var lapGate: GateModel
+    var lapGate: GateModel?
     var sessions: [SessionModel]
     var name: String
     var dateCreated: Date
@@ -68,7 +68,9 @@ struct CourseModel: Codable, Equatable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         name = try container.decode(String.self, forKey: .name)
-        lapGate = try container.decode(GateModel.self, forKey: .lapGate)
+        if container.contains(.lapGate) {
+            lapGate = try container.decode(GateModel.self, forKey: .lapGate)
+        }
         entryGates = try container.decode([GateModel].self, forKey: .entryGates)
         exitGates = try container.decode([GateModel].self, forKey: .exitGates)
         dateCreated = try container.decode(Date.self, forKey: .dateCreated)
@@ -76,10 +78,11 @@ struct CourseModel: Codable, Equatable {
         uniqueIdentifier = try container.decode(Int.self, forKey: .uniqueIdentifier)
     }
     
-    var totalLaps: Int {
+    var totalLaps: Int? {
+        if lapGate == nil { return nil }
         var totalLaps = 0
         for sesh in sessions {
-            let newLaps = sesh.getTotalLaps(using: lapGate)
+            let newLaps = sesh.getTotalLaps(using: lapGate)!
             totalLaps += newLaps
         }
         return totalLaps
@@ -96,6 +99,7 @@ struct CourseModel: Codable, Equatable {
     }
     
     var bestLapTime: TimeInterval? {
+        if lapGate == nil { return nil }
         let bestLapTimes = sessions.map { $0.getBestLapTime(usingLapGate: lapGate) }
         let bestLapTimesExludingNils: [TimeInterval] = bestLapTimes.filter { $0 != nil } as! [TimeInterval]
         return bestLapTimesExludingNils.sorted().first

@@ -86,8 +86,9 @@ struct SessionModel: Codable, Equatable {
         codableLocations.append(LocationModel(fromCLLocation: newLocation))
     }
     
-    func getTotalLaps(using lapGate: GateModel) -> Int {
-        let laps = getLapPoints(usingLapGate: lapGate).count - 1
+    func getTotalLaps(using lapGate: GateModel?) -> Int? {
+        if lapGate == nil { return nil }
+        let laps = getLapPoints(usingLapGate: lapGate)!.count - 1
         if laps < 0 { return 0 }
         return laps
     }
@@ -160,12 +161,13 @@ struct SessionModel: Codable, Equatable {
         return sectionPoints
     }
     
-    func getLapPoints(usingLapGate lapGate: GateModel) -> [CLLocation] {
+    func getLapPoints(usingLapGate lapGate: GateModel?) -> [CLLocation]? {
+        if lapGate == nil { return nil }
         var pointsInGate = [CLLocation]()
         var bestLapPoints = [CLLocation]()
         for loc in locations {
             // if the current location is in the gate
-            if loc.distance(from: lapGate.location) <= Double(lapGate.radius) {
+            if loc.distance(from: lapGate!.location) <= Double(lapGate!.radius) {
 //                print("filter we are in the gate")
                                 
                 pointsInGate.append(loc)
@@ -175,8 +177,8 @@ struct SessionModel: Codable, Equatable {
 //                    print("filter points in gate: \(pointsInGate.count)")
 //                    for p in pointsInGate { print("filter timestamp:\(p.timestamp)") }
                     
-                    let closest = lapGate.location.getLocationClosestAndBothAdjascent(locations: pointsInGate)
-                    let fabricatedClosest = lapGate.location.interpolateToFindClosestPoint(usingPoints: closest, interTrack: 20)
+                    let closest = lapGate!.location.getLocationClosestAndBothAdjascent(locations: pointsInGate)
+                    let fabricatedClosest = lapGate!.location.interpolateToFindClosestPoint(usingPoints: closest, interTrack: 20)
                     
 //                    print("filter closest calculated: \(closest!.timestamp)")
                     pointsInGate.removeAll()
@@ -188,13 +190,15 @@ struct SessionModel: Codable, Equatable {
         return bestLapPoints
     }
     
-    func getBestLapTime(usingLapGate lapGate: GateModel) -> TimeInterval? {
-        return getLapTimes(usingLapGate: lapGate).sorted().first
+    func getBestLapTime(usingLapGate lapGate: GateModel?) -> TimeInterval? {
+        if lapGate == nil { return nil }
+        return getLapTimes(usingLapGate: lapGate)?.sorted().first
     }
     
-    func getLapTimes(usingLapGate lapGate: GateModel) -> [TimeInterval] {
+    func getLapTimes(usingLapGate lapGate: GateModel?) -> [TimeInterval]? {
+        if lapGate == nil { return nil }
         var lapTimes = [TimeInterval]()
-        let lapPoints = getLapPoints(usingLapGate: lapGate)
+        let lapPoints = getLapPoints(usingLapGate: lapGate)!
         if lapPoints.count == 0 { return lapTimes }
     
         var starting = lapPoints[0]

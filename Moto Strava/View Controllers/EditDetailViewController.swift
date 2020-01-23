@@ -181,7 +181,7 @@ extension EditDetailViewController: UITextFieldDelegate {
 extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 9 }
-        else if section == 1 { return session.getLapTimes(usingLapGate: course.lapGate).count}
+        else if section == 1 { return session.getLapTimes(usingLapGate: course.lapGate)?.count ?? 0 }
         else if section > 1 {
             let (start, stop) = course.sectionGates[section - 2]
             return session.getSectionTimes(usingStartGate: start, stopGate: stop).count
@@ -274,7 +274,8 @@ extension EditDetailViewController: UITableViewDelegate, UITableViewDataSource {
            
             let lapTimes = session.getLapTimes(usingLapGate: course.lapGate)
             print (indexPath.row)
-            cell.textLabel!.text = "Lap \(indexPath.row + 1):    \(lapTimes[indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
+            // we should be able to explicitly unwrap here because we shouldn't get in here if there are no laps
+            cell.textLabel!.text = "Lap \(indexPath.row + 1):    \(lapTimes![indexPath.row].toStringAppropriateForLapTime(withDecimalPlaces: 2))"
             return cell
         }
         

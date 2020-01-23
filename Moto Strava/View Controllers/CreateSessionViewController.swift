@@ -278,28 +278,32 @@ extension CreateSessionViewController: CLLocationManagerDelegate {
             // let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
             // mapKitView.setRegion(region, animated: true)
 
-            // if the current location is in the gate
-            if locations.first!.distance(from: course!.lapGate.location) <= Double(course!.lapGate.radius) {
-                print("filter we are in the gate")
-                
-                if pointsInGate == nil { pointsInGate = [CLLocation]() }
-                
-                pointsInGate?.append(locations.first!)
-            } else {
-                if pointsInGate != nil {
-                    // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
-                    print("filter points in gate: \(pointsInGate!.count)")
-                    for p in pointsInGate! { print("filter timestamp:\(p.timestamp)") }
-                    
-                    let closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGateAnnotation.coordinate.latitude, longitude: lapGateAnnotation.coordinate.longitude))
-                    
-                    print("filter closest calculated: \(closest!.timestamp)")
-                    pointsInGate = nil
-                    
-                    bestLocationPerLapInGate.append(closest!)
-                }
-            }
+            if course!.lapGate != nil {
+                // if the current location is in the gate
+                if locations.first!.distance(from: course!.lapGate!.location) <= Double(course!.lapGate!.radius) {
+                    print("filter we are in the gate")
 
+                    if pointsInGate == nil { pointsInGate = [CLLocation]() }
+
+                    pointsInGate?.append(locations.first!)
+                } else {
+                    if pointsInGate != nil {
+                        // if the location isn't in the gate, but there are points in the gate, then we must have just left the gate
+                        print("filter points in gate: \(pointsInGate!.count)")
+                        for p in pointsInGate! { print("filter timestamp:\(p.timestamp)") }
+
+                        let closest = getLocationClosestToPoint(locations: pointsInGate!, point: CLLocation(latitude: lapGateAnnotation.coordinate.latitude, longitude: lapGateAnnotation.coordinate.longitude))
+
+                        print("filter closest calculated: \(closest!.timestamp)")
+                        pointsInGate = nil
+
+                        bestLocationPerLapInGate.append(closest!)
+                    }
+                }
+
+            }
+            
+           
 
         }
     }
