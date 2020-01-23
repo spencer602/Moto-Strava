@@ -36,10 +36,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("second Map View Controller")
                 mvc.modelController = model
             }
-            if let nc = tbc.viewControllers?[2] as? UINavigationController {
-                if let csvc = nc.viewControllers.first as? CreateSessionViewController {
-                    csvc.modelController = model
-                }
+            
+            if let csvc =  tbc.viewControllers?[2] as? CreateSessionViewController {
+                csvc.modelController = model
             }
         }
 
@@ -72,7 +71,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
                 mvc.locationManager.startUpdatingLocation()
             }
-            
         }
     }
     
@@ -83,13 +81,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
         
-        
         if let vc = window?.rootViewController as? UITabBarController {
-            if let mvc = vc.selectedViewController as? MapViewController {
-                if !mvc.isRecordingTracks {
-                    print("stopped updating location")
-
-                    mvc.locationManager.stopUpdatingLocation()
+            if let createSessionVC = vc.viewControllers?[2] as? CreateSessionViewController {
+                if !createSessionVC.isRecordingTracks {
+                    createSessionVC.locationManager.stopUpdatingLocation()
                 }
             }
             

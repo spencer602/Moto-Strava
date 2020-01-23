@@ -58,8 +58,8 @@ class CreateSessionViewController: UIViewController {
     @IBOutlet weak var lapLabel: UILabel!
     @IBOutlet weak var segmentLabel: UILabel!
        
-    private var courseID: Int?
-    private var sessionID: Int?
+    var courseID: Int?
+    var sessionID: Int?
     
     private var timer: Timer?
     private var startTime: Date?

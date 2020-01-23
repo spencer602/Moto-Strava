@@ -73,6 +73,15 @@ class EditCourseModelViewController: UIViewController {
         }
     }
     
+    @IBAction func createNewSession(_ sender: Any) {
+        if let tbc = tabBarController {
+            if let createVC = tbc.viewControllers?[2] as? CreateSessionViewController {
+                createVC.courseID = courseID
+                tbc.selectedIndex = 2
+            }
+        }
+    }
+    
     /// updates the tableview data from the model
     private func updateViewFromModel() {
         // update the track name

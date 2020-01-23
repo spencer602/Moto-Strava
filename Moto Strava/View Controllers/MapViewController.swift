@@ -27,33 +27,10 @@ class MapViewController: UIViewController {
     /// keeps track of whether we have initially zoomed to our current location yet or not
     private var hasZoomedToFirstLocation = false
     
-    /// keeps track of whether or not we are currently recording tracks
-    var isRecordingTracks = false
-    
-    /// the complete list of logged locations from our current track recording
-    private var polyLineFromCurrentRecording = MKPolyline()
-    
     private var colorForPolyline = [MKPolyline:UIColor]()
     
     /// the main instance of mapKit
     @IBOutlet private weak var mapKitView: MKMapView!
-    @IBOutlet private weak var recordTrackButton: UIButton!
-    @IBOutlet private weak var stopRecordingButton: UIButton!
-    
-    private var courseID: Int?
-    private var sessionID: Int?
-    
-    private var timer: Timer?
-    
-    private var course: CourseModel? {
-        if courseID == nil { return nil }
-        return modelController.course(with: courseID!)
-    }
-    
-    private var session: SessionModel? {
-        if sessionID == nil { return nil }
-        return modelController.session(inCourse: course!, withSessionID: sessionID!)
-    }
     
     /// our model controller, which must be set to a value (currently it is set in viewDidLoad)
     var modelController: ModelController!
@@ -76,12 +53,6 @@ class MapViewController: UIViewController {
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        print("view will disappear!")
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -95,38 +66,6 @@ class MapViewController: UIViewController {
         }
         
         locationManager.startUpdatingLocation()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        if !isRecordingTracks { locationManager.stopUpdatingLocation() }
-    }
-    
-    /**
-     target action from when the 'record track' button is pressed. starts recording a track
-     
-     - Parameter sender: the button that triggered the action
-     */
-    @IBAction private func recordTrackButtonPressed(_ sender: UIButton) {
-        isRecordingTracks = true
-        recordTrackButton.isHidden = true
-        stopRecordingButton.isHidden = false
-    }
-   
-    /**
-      target action from when the 'stop recording track' button is pressed. stops recording a track
-      
-      - Parameter sender: the button that triggered the action
-      */
-    @IBAction func stopRecordingTrackButtonPressed(_ sender: UIButton) {
-        isRecordingTracks = false
-        // zoom the map to the recently created track
-        mapKitView.zoomMapTo(locations: session!.locations)
-        // add the complete track to the map
-        
-        recordTrackButton.isHidden = false
-        stopRecordingButton.isHidden = true
     }
     
     /// zooms to current location with hard coded region height/width
@@ -152,46 +91,6 @@ extension MapViewController: CLLocationManagerDelegate {
         if !hasZoomedToFirstLocation {
             hasZoomedToFirstLocation = true
             zoomToCurrentLocation()
-        }
-        
-        if isRecordingTracks {
-            // make sure this isn't our first location to be logged (in which case locationList.last would be nil)
-            if session == nil {
-                print("session was == nil")
-                let newMoto = modelController.createSession(withCLLocationArray: [locations.first!], withName: locations.first!.timestamp.description)
-                
-                if course == nil {
-                    let thisCourse = modelController.createCourse(usingIntialSession: newMoto)
-                    courseID = thisCourse.uniqueIdentifier
-                    print("newCourseID: \(courseID!)")
-                    modelController.add(course: thisCourse)
-                } else {
-                    modelController.add(session: newMoto, to: course!)
-                }
-                
-                sessionID = newMoto.uniqueIdentifier
-                print("newSessionID: \(sessionID!)")
-                
-//                timer = Timer.scheduledTimer(withTimeInterval: 0.031567, repeats: true) { timer in
-//                    self.updateViewFromModel()
-//                }
-            } else {
-                modelController.addLocation(course: course!, session: session!, location: locations.first!)
-            }
-                        
-            // create an MKPolyline from the two coordinates
-            mapKitView.removeOverlay(polyLineFromCurrentRecording)
-            let polyLine = MKPolyline.createPolyLine(using: session!.locations)
-            colorForPolyline[polyLineFromCurrentRecording] = nil
-            colorForPolyline[polyLine] = session!.color
-            // add the polyline to the list of polylines in current recording
-            polyLineFromCurrentRecording = polyLine
-            // add an overlay as a MKPolyline
-            mapKitView.addOverlay(polyLine)
-            
-            // only do this if yo want to re-center the region around the most recent location
-            // let region = MKCoordinateRegion(center: newLocation.coordinate, latitudinalMeters: 500, longitudinalMeters: 500)
-            // mapKitView.setRegion(region, animated: true)
         }
     }
 }

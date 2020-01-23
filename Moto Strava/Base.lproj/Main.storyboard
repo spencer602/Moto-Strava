@@ -279,7 +279,7 @@
                     <connections>
                         <segue destination="hs8-Ov-EUq" kind="relationship" relationship="viewControllers" id="crz-3r-Rk2"/>
                         <segue destination="O7z-Cx-2jx" kind="relationship" relationship="viewControllers" id="Psl-Yf-vhS"/>
-                        <segue destination="fuX-rI-jJU" kind="relationship" relationship="viewControllers" id="KS9-xG-f5a"/>
+                        <segue destination="6sH-tc-B36" kind="relationship" relationship="viewControllers" id="ULf-33-0Lc"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zne-lk-CRJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -295,7 +295,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Course?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nP4-fZ-Jae">
-                                <rect key="frame" x="10" y="98" width="394" height="30"/>
+                                <rect key="frame" x="10" y="54" width="394" height="30"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="90.5" id="6zZ-kf-gZF">
@@ -319,8 +319,8 @@
                                     <outletCollection property="gestureRecognizers" destination="eNa-MC-gMe" appends="YES" id="i4B-sf-Zrv"/>
                                 </connections>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="2vi-A0-ZnE">
-                                <rect key="frame" x="10" y="138" width="394" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2vi-A0-ZnE">
+                                <rect key="frame" x="10" y="94" width="394" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="Y56-zk-zpO"/>
                                 </constraints>
@@ -338,8 +338,8 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Segment Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="V5y-BG-VbT">
-                                <rect key="frame" x="10" y="218" width="394" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Segment Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V5y-BG-VbT">
+                                <rect key="frame" x="10" y="174" width="394" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="cOT-Ry-Paw"/>
                                 </constraints>
@@ -358,7 +358,7 @@
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gfE-L8-KTr">
-                                <rect key="frame" x="10" y="258" width="394" height="48"/>
+                                <rect key="frame" x="10" y="214" width="394" height="48"/>
                                 <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="1Az-cm-BPQ">
@@ -383,8 +383,8 @@
                                     <action selector="recordTrackButtonPressed:" destination="6sH-tc-B36" eventType="touchUpInside" id="eiJ-P0-1dH"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="8OZ-4J-yl5">
-                                <rect key="frame" x="10" y="178" width="394" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8OZ-4J-yl5">
+                                <rect key="frame" x="10" y="134" width="394" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="250" id="KZS-GU-CKF"/>
                                 </constraints>
@@ -403,7 +403,7 @@
                                 </variation>
                             </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="jEj-7w-ofm">
-                                <rect key="frame" x="10" y="316" width="394" height="487"/>
+                                <rect key="frame" x="10" y="272" width="394" height="531"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -475,15 +475,15 @@
                                 <exclude reference="O4Y-P6-Wf8"/>
                                 <exclude reference="Xno-IA-8MR"/>
                                 <exclude reference="vHJ-eb-p9h"/>
-                                <exclude reference="Huu-yS-joQ"/>
-                                <exclude reference="fKq-1Z-9T2"/>
-                                <exclude reference="gro-t6-NHv"/>
-                                <exclude reference="qOV-YE-2Vz"/>
                                 <exclude reference="197-p4-424"/>
                                 <exclude reference="D8g-UQ-TQa"/>
                                 <exclude reference="LuK-fg-vHu"/>
                                 <exclude reference="PKr-BL-rqk"/>
                                 <exclude reference="vZR-Wn-gfE"/>
+                                <exclude reference="Huu-yS-joQ"/>
+                                <exclude reference="fKq-1Z-9T2"/>
+                                <exclude reference="gro-t6-NHv"/>
+                                <exclude reference="qOV-YE-2Vz"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
@@ -499,10 +499,10 @@
                                 <include reference="URz-8a-dLG"/>
                                 <include reference="Xno-IA-8MR"/>
                                 <include reference="vHJ-eb-p9h"/>
-                                <include reference="Huu-yS-joQ"/>
-                                <include reference="qOV-YE-2Vz"/>
                                 <include reference="PKr-BL-rqk"/>
                                 <include reference="vZR-Wn-gfE"/>
+                                <include reference="Huu-yS-joQ"/>
+                                <include reference="qOV-YE-2Vz"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular">
@@ -522,14 +522,15 @@
                                 <include reference="ken-0o-buI"/>
                                 <include reference="8kh-wm-wJd"/>
                                 <include reference="O4Y-P6-Wf8"/>
-                                <include reference="fKq-1Z-9T2"/>
-                                <include reference="gro-t6-NHv"/>
                                 <include reference="197-p4-424"/>
                                 <include reference="D8g-UQ-TQa"/>
                                 <include reference="LuK-fg-vHu"/>
+                                <include reference="fKq-1Z-9T2"/>
+                                <include reference="gro-t6-NHv"/>
                             </mask>
                         </variation>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Create" id="Qjj-uv-gDh"/>
                     <navigationItem key="navigationItem" id="rrA-oD-ZQe"/>
                     <connections>
                         <outlet property="courseLabel" destination="nP4-fZ-Jae" id="s4N-Rq-o7j"/>
@@ -547,7 +548,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1291.304347826087" y="2144.8660714285711"/>
+            <point key="canvasLocation" x="383" y="2128"/>
         </scene>
         <!--Course Chooser Table View Controller-->
         <scene sceneID="uhK-yR-qQt">
@@ -585,7 +586,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JD2-zz-N4f" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2084" y="2144"/>
+            <point key="canvasLocation" x="1229" y="2127"/>
         </scene>
         <!--Map-->
         <scene sceneID="q6r-q3-Nei">
@@ -595,42 +596,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="satellite" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dQx-7S-0be">
-                                <rect key="frame" x="0.0" y="110" width="414" height="703"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="4wm-Ae-5ec">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sQg-df-tJs">
-                                <rect key="frame" x="20" y="55" width="91" height="30"/>
-                                <state key="normal" title="Record Track"/>
-                                <connections>
-                                    <action selector="recordTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="OkK-9B-ndg"/>
-                                </connections>
-                            </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fOb-aM-vkF" userLabel="Stop Recording Track">
-                                <rect key="frame" x="10" y="55" width="148" height="30"/>
-                                <state key="normal" title="Stop Recording Track"/>
-                                <connections>
-                                    <action selector="recordTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="aCP-k9-huI"/>
-                                    <action selector="stopRecordingTrackButtonPressed:" destination="O7z-Cx-2jx" eventType="touchUpInside" id="zHb-5e-xKi"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="sQg-df-tJs" firstAttribute="leading" secondItem="hBo-Iq-hMe" secondAttribute="leading" constant="20" id="3M0-CT-XWr"/>
-                            <constraint firstItem="sQg-df-tJs" firstAttribute="top" secondItem="hBo-Iq-hMe" secondAttribute="top" constant="11" id="3dg-me-mX6"/>
-                            <constraint firstItem="hBo-Iq-hMe" firstAttribute="trailing" secondItem="fOb-aM-vkF" secondAttribute="trailing" constant="256" id="7mx-48-dYW"/>
-                            <constraint firstItem="fOb-aM-vkF" firstAttribute="leading" secondItem="hBo-Iq-hMe" secondAttribute="leading" constant="10" id="Hw7-E9-YUV"/>
-                            <constraint firstItem="fOb-aM-vkF" firstAttribute="top" secondItem="hBo-Iq-hMe" secondAttribute="top" constant="11" id="YqU-6A-lPs"/>
-                            <constraint firstItem="hBo-Iq-hMe" firstAttribute="trailing" secondItem="sQg-df-tJs" secondAttribute="trailing" constant="303" id="ZEi-wl-Cac"/>
+                            <constraint firstItem="4wm-Ae-5ec" firstAttribute="top" secondItem="Ygx-9X-1eY" secondAttribute="top" id="OzE-Oc-KGS"/>
+                            <constraint firstAttribute="trailing" secondItem="4wm-Ae-5ec" secondAttribute="trailing" id="fQW-W2-n1V"/>
+                            <constraint firstItem="4wm-Ae-5ec" firstAttribute="leading" secondItem="Ygx-9X-1eY" secondAttribute="leading" id="rRd-bs-pa0"/>
+                            <constraint firstItem="hBo-Iq-hMe" firstAttribute="bottom" secondItem="4wm-Ae-5ec" secondAttribute="bottom" id="uqt-ln-km3"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hBo-Iq-hMe"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Map" id="jpJ-ie-bD8"/>
                     <connections>
-                        <outlet property="mapKitView" destination="dQx-7S-0be" id="ADB-PS-LsI"/>
-                        <outlet property="recordTrackButton" destination="sQg-df-tJs" id="8yY-oK-0jx"/>
-                        <outlet property="stopRecordingButton" destination="fOb-aM-vkF" id="Jil-E1-co6"/>
+                        <outlet property="mapKitView" destination="4wm-Ae-5ec" id="hCU-Vj-BdD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wjH-iA-kXi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -731,28 +712,28 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="satellite" rotateEnabled="NO" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pNA-KX-m4a">
-                                <rect key="frame" x="0.0" y="315" width="414" height="498"/>
+                                <rect key="frame" x="0.0" y="271" width="414" height="591"/>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ag-qz-zrf">
-                                <rect key="frame" x="72" y="120" width="242" height="21"/>
+                                <rect key="frame" x="72" y="76" width="242" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This Lap: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4y-G4-Zga">
-                                <rect key="frame" x="72" y="159" width="255" height="21"/>
+                                <rect key="frame" x="72" y="115" width="255" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lap Number: 0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9bE-Uz-QCe">
-                                <rect key="frame" x="72" y="206" width="264" height="21"/>
+                                <rect key="frame" x="72" y="162" width="264" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yf9-tG-ksA">
-                                <rect key="frame" x="161" y="253" width="92" height="36"/>
+                                <rect key="frame" x="161" y="209" width="92" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="Y8v-tZ-kIk"/>
                                 </constraints>
@@ -763,7 +744,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="096-GJ-KdC" userLabel="Stop Moto">
-                                <rect key="frame" x="161.5" y="253" width="91" height="36"/>
+                                <rect key="frame" x="161.5" y="209" width="91" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="73" id="0r6-fb-Toe"/>
                                 </constraints>
@@ -1013,7 +994,7 @@
                     <navigationItem key="navigationItem" id="a4G-iH-NqV">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="clock" catalog="system" id="rLj-SY-9PA" userLabel="Start new session">
                             <connections>
-                                <segue destination="AFs-pV-nWP" kind="show" id="ceT-kz-vj6"/>
+                                <action selector="createNewSession:" destination="94e-Px-SPx" id="oGI-rJ-c5l"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -1024,25 +1005,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aAq-sS-KIk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2004" y="734"/>
-        </scene>
-        <!--Create-->
-        <scene sceneID="EJo-70-BFm">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fuX-rI-jJU" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Create" id="mkp-gB-rax"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IQK-C2-8bR">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="6sH-tc-B36" kind="relationship" relationship="rootViewController" id="tbM-Dn-quA"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="RHh-i0-JhD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="381.15942028985512" y="2144.8660714285711"/>
         </scene>
     </scenes>
     <resources>
